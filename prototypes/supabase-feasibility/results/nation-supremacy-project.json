@@ -1,0 +1,89 @@
+{
+  "date_utc": "2026-10-23",
+  "run": "Prompt 10.2 - replacement project and Pages site",
+  "supabase": {
+    "project_name": "Nation Supremacy",
+    "ref": "lqdzchtfxrbtwsrpkrzo",
+    "region": "ap-south-1",
+    "postgres": "17.11.0.003",
+    "status_at_end": "ACTIVE_HEALTHY",
+    "organization": "cjppmvjnkjlzpvwebzai (display name NATIONSPHERE; organization creation is not exposed by the connector, so the project could not be placed in a new organization)",
+    "public_schema_objects": "none - the new project was empty before the feasibility schema was created",
+    "migrations_applied": [
+      "0001_schema.sql",
+      "0002_functions.sql",
+      "0003_grants_and_rls.sql",
+      "0004_schedule.sql"
+    ],
+    "objects_created": {
+      "tables": ["audit", "cron_heartbeat", "nations", "profiles", "turn_applied", "turn_runs"],
+      "functions": ["cron_tick", "current_slot", "resolve_current_turn", "resolve_slot", "resolve_turn"],
+      "policies": ["profiles_select_own", "profiles_update_own"]
+    }
+  },
+  "slot_arithmetic": {
+    "2026-10-23T08:00:00Z": 248992,
+    "2026-10-23T09:59:59Z": 248992,
+    "2026-10-23T10:00:00Z": 248993,
+    "cross_check": "identical to the values measured in the previous project on the same day"
+  },
+  "turn_tests": [
+    { "test": "batch 1 of 250", "outcome": "partial", "applied_this_batch": 250, "remaining": 750, "duration_ms": 9.763 },
+    { "test": "resume, batches 2-4", "outcome": "completed", "nations_applied": 1000, "batches": 4 },
+    { "test": "full 1,000-nation slot in one call", "outcome": "completed", "nations_applied": 1000, "batches_run": 4, "duration_ms": 35.488 },
+    { "test": "duplicate trigger on a completed slot", "outcome": "noop", "reason": "slot already completed" },
+    { "test": "older slot", "outcome": "noop", "reason": "older than the last completed slot", "last_completed": 248992 },
+    { "test": "invalid batch size", "outcome": "rejected", "reason": "batch size out of range" },
+    { "test": "injected failure at nation 100", "outcome": "exception P0001; transaction rolled back", "run_rows_after": 0, "markers_after": 0, "audit_rows_after": 0, "treasury_sum_after": 10000, "nations_touched_after": 0 },
+    { "test": "retry after the failed transaction", "outcome": "completed", "nations_applied": 1000 },
+    { "test": "conservation after four slots", "markers": 4000, "audit_rows": 4000, "treasury_sum": 40000, "wrong_treasury_rows": 0, "ledger": "248992:completed:1000:4 248993:completed:1000:4 248994:completed:1000:4 248995:completed:1000:4" }
+  ],
+  "access_control": [
+    { "role": "authenticated (sub=user-a)", "action": "select own profile", "result": "1 row" },
+    { "role": "authenticated (sub=user-a)", "action": "select user-b profile", "result": "0 rows" },
+    { "role": "authenticated (sub=user-a)", "action": "update own profile", "result": "1 row" },
+    { "role": "authenticated (sub=user-a)", "action": "update user-b profile", "result": "0 rows" },
+    { "role": "authenticated", "action": "select feasibility.nations", "result": "1000 rows (world read allowed)" },
+    { "role": "authenticated", "action": "update feasibility.nations.treasury", "result": "42501 permission denied for table nations" },
+    { "role": "authenticated", "action": "execute feasibility.resolve_slot", "result": "42501 permission denied for function resolve_slot" },
+    { "role": "anon", "action": "select feasibility.profiles", "result": "42501 permission denied for table profiles" }
+  ],
+  "scheduler": {
+    "extension": "pg_cron",
+    "product_job": "nation-supremacy-turn [0 */2 * * *] active=true",
+    "minute_test_job": "feasibility-minute-heartbeat [* * * * *]",
+    "minute_test_firings": ["2026-10-23T10:34:00Z", "2026-10-23T10:35:00Z", "2026-10-23T10:36:00Z"],
+    "minute_test_status": "3/3 succeeded (cron.job_run_details), 3 heartbeat rows",
+    "minute_test_removed": true,
+    "jobs_remaining": 1,
+    "product_job_firings_observed_here": 0,
+    "note": "The product job is configured and active. Its first firing after creation is 12:00:00Z, outside this session's verification window; the heartbeat table will record it."
+  },
+  "storage": {
+    "nation_turns": 4000,
+    "nations_bytes": 565248,
+    "turn_applied_bytes": 491520,
+    "audit_bytes": 565248,
+    "database_total_bytes": 12900019,
+    "derived_bytes_per_nation_turn": 264,
+    "basis": "relation sizes are page-quantised (8 kB pages), so this is an average over 4,000 turns, not a per-row measurement"
+  },
+  "cloudflare": {
+    "pages_project": "nation-supremacy",
+    "production_url": "https://nation-supremacy.pages.dev",
+    "deploy_method": "Pages Advanced Mode (_worker.js) via the multipart deployment endpoint",
+    "http": { "/": 200, "/health": 200, "/nope": 404, "POST /": 405 },
+    "page_bytes": 1145,
+    "security_headers": ["content-security-policy", "x-content-type-options", "referrer-policy", "x-frame-options", "permissions-policy"],
+    "deleted_worker": "nation-supremacy",
+    "deleted_at_utc": "2026-10-23T10:34:17Z",
+    "old_url_status_after_deletion": "HTTP 404, Cloudflare error 1104 (worker does not exist)"
+  },
+  "supabase_legacy": {
+    "project": "NATIONSPHERE",
+    "ref": "suotjamclwdithcitspe",
+    "status_after": "PAUSING (paused by this run)",
+    "deleted": false,
+    "reason": "the connected Supabase integration exposes no project-deletion action"
+  }
+}

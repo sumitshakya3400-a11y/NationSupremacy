@@ -189,6 +189,8 @@ want_status = {
     "D-001": "Confirmed", "D-002": "Confirmed", "D-003": "Confirmed",
     "D-004": "Provisional", "D-005": "Superseded by D-008", "D-006": "Provisional",
     "D-007": "Confirmed", "D-008": "Confirmed",
+    # Prompt 10.2: the Pages address and the dedicated project are owner instructions.
+    "D-009": "Confirmed", "D-010": "Confirmed",
 }
 for did, expected in want_status.items():
     rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*" + re.escape(did) + r"\s*\|", ln)]
@@ -203,6 +205,10 @@ if "Nation Supremacy" not in dec:
     fail.append("DECISIONS: D-007 does not name Nation Supremacy")
 if "Supabase" not in dec:
     fail.append("DECISIONS: D-008 does not record the Supabase direction")
+if "nation-supremacy.pages.dev" not in dec:
+    fail.append("DECISIONS: D-009 does not record the Pages address")
+if "lqdzchtfxrbtwsrpkrzo" not in dec:
+    fail.append("DECISIONS: D-010 does not record the dedicated project reference")
 if 'Keep "Operations Points" as a provisional' not in dec:
     fail.append("DECISIONS: D-004 decision text altered")
 if "Treat Cloudflare Workers + D1 as initial candidates only" not in dec:

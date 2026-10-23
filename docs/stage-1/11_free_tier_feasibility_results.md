@@ -5,6 +5,8 @@
 **Status:** Measurement record. Supersedes the planned statuses in [Report 10](10_stage_1_gate_evidence_and_feasibility_plan.md) where they differ. §14 lists the claims in v1.0 that were wrong and what replaced them; read it before quoting anything above it.
 **Scope:** GATE-13, GATE-16, GATE-18. No architecture decision is approved here, and Stage 1 is not declared complete.
 
+> **Superseding note (2026-10-23, Prompt 10.2).** This report is the historical record of the first Supabase + Cloudflare pass: the page then lived on the Worker `nation-supremacy` at `nation-supremacy.nationsphere.workers.dev`, and the backend lived in the `NATIONSPHERE` project. Both have since been replaced — the site moved to **https://nation-supremacy.pages.dev** (Cloudflare Pages) and the backend to a dedicated project named **Nation Supremacy** (`lqdzchtfxrbtwsrpkrzo`, `ap-south-1`). The measurements below are unchanged; the URLs and project reference are **not current** and are kept deliberately as history. See [Report 12](12_nation_supremacy_deployment_and_resource_separation.md).
+
 ---
 
 ## 0. Summary — read this first

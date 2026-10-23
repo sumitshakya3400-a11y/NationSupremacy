@@ -9,11 +9,12 @@ Checks (document QA only, no game code):
      grew to 18 with DEF-016/017/018, which the report and this script both
      assert. Corrected 2026-10-23 — the assertion already expected 18.)
   4. Inherited register counts observed in the owning reports.
-  5. Local Markdown links resolve.
-  6. DECISIONS.md holds D-001..D-008: D-004 still Provisional, D-005
-     Superseded by D-008, D-007/D-008 the owner-approved name and provider
-     direction. (Updated 2026-10-23 for Prompt 10.1: the old guard asserted
-     that no D-007 existed, which was correct only while nothing was approved.)
+  5. Local Markdown links resolve.   6. DECISIONS.md holds D-001..D-010: D-004 still Provisional, D-005
+      Superseded by D-008, D-007/D-008 the owner-approved name and provider
+      direction, D-009/D-010 the Pages address and the dedicated project.
+      (Updated 2026-10-23 for Prompt 10.1: the old guard asserted that no D-007
+      existed, which was correct only while nothing was approved. Updated again
+      for Prompt 10.2 when two more owner instructions were recorded.)
   7. No production code outside docs/qa_backups and the authorised spike
      directory prototypes/ (document-QA scripts allowed). Scoped 2026-10-23
      when Prompt 10 introduced the feasibility prototype; the intent (no game
@@ -142,7 +143,7 @@ check(len(r_ids) == 21, "R-01..R-21 (21)", str(len(r_ids)))
 check(len(fo) == 27, "FO-001..027 (27)", str(len(fo)))
 check(len(v_ids) == 10, "V-1..V-10 (10)", str(len(v_ids)))
 check(len(cv) == 6, "CV-001..006 (6)", str(len(cv)))
-check(len(d_ids) == 8, "D-001..D-008 (8)", str(len(d_ids)))
+check(len(d_ids) == 10, "D-001..D-010 (10)", str(len(d_ids)))
 check(
     len(f_ids) == 28 and "F-007" not in f_ids and "F-028" not in f_ids and "F-003b" in f_ids,
     "F register 28 rows; F-007/F-028 unassigned; F-003b present",
@@ -248,6 +249,17 @@ check("10:00:00Z" in r11 and "pg_cron" in r11,
 check("Superseded by D-008" in decisions, "D-005 supersession is recorded")
 check("Nation Supremacy" in ctx and "Supabase" in ctx,
       "AI_CONTEXT carries the official name and the selected backend")
+
+# 12. Prompt 10.2 state ------------------------------------------------------
+r12 = read(DOCS / "stage-1" / "12_nation_supremacy_deployment_and_resource_separation.md")
+check("https://nation-supremacy.pages.dev" in r12, "Report 12 records the live Pages address")
+check("lqdzchtfxrbtwsrpkrzo" in r12, "Report 12 records the dedicated project reference")
+check("paused" in r12.lower() and "not deleted" in r12.lower(),
+      "Report 12 states the legacy project is paused, not deleted")
+check("| D-009 |" in decisions and "| D-010 |" in decisions,
+      "D-009/D-010 recorded in the decision log")
+for label, blob in (("AI_CONTEXT", ctx), ("AI_HANDOFF", hand), ("PROJECT_PROGRESS", prog)):
+    check("nation-supremacy.pages.dev" in blob, f"{label} carries the current Pages address")
 
 print()
 print(f"{checks - len(failures)}/{checks} checks passed")
