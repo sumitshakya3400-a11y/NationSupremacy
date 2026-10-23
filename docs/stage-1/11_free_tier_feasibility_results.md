@@ -116,7 +116,7 @@ No authentication, no session, no rate limiting, no per-user authorization, no r
 | Free backups | **7-day Time Travel** | **None** on Free | D1, decisively (SEC-030) |
 | Idle behaviour | Always available | **Paused after 1 week of inactivity** (the existing `NATIONSPHERE` project is currently INACTIVE) | D1, decisively for a 12-turn/day world |
 | Connection model from a Worker | Native binding, no pooler | Pooler/Hyperdrive; extra hop and connection budget | D1 |
-| Scheduling | Native UTC cron (5 free) | `pg_cron` inside Postgres | Tie in principle; D1 unobserved (see §7) |
+| Scheduling | Native UTC cron (5 free); one boundary observed firing live | `pg_cron` inside Postgres; not exercised | D1 on evidence, not only on principle (see §7) |
 | Recovery/restore | Time Travel + `d1 export` | None on Free | D1 |
 | Relational maturity, auth, storage, realtime | Weaker (no native auth; SQLite) | Much stronger | Supabase |
 | Lock-in | SQLite dialect; export available | Postgres; portable | Supabase |
@@ -371,3 +371,25 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 2. **Owner/next session:** leave the Worker deployed for 24 hours and read `spike_runs`, or accept that PV-01's 12-boundary criterion stays open; the trigger itself is now proven.
 3. **Engineering (next Stage 2 spike):** fix the scheduled handler's missing per-invocation cap, then measure the 250→1,000 CPU crossover and a continuation mechanism if 1,000 is a real target.
 4. **Do not** start the Game Design Bible or a production schema on the strength of this report. The architecture decision (D-005) stays **Provisional**.
+
+---
+
+## 13. Final audit — the fifteen required questions
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Which project files and connected resources were inspected? | All nine Stage-1 reports, the four continuity files, both validators and `DECISIONS.md`, plus the extracted archive manifest. Cloudflare: account, Worker list, D1 list, one existing unrelated Worker (`nationsphere-api`, read only), schedules, analytics. Supabase: one project's status (`NATIONSPHERE`, `INACTIVE`). GitHub: connector inspected, no project repository exists. |
+| 2 | Was the Prompt 9 correction state verified? | Yes. The working tree matched `Project X step 9 correction.zip` on **38/38** SHA-256 comparisons before any edit, and `DECISIONS.md` was not modified by this pass. |
+| 3 | Were the exact gate definitions retrieved? | Yes, verbatim from P9 §20.2 (criteria) and §20.4 (blocking conditions), restated in Report 10 §3. |
+| 4 | Which integrations and actions were actually available? | **Cloudflare:** read plus write — Worker upload, D1 create/query, schedule read/write. Billing read is **not** available (403). **GitHub:** read-only actions (search/commits/PRs); no repository for this project, so nothing could be pushed. **Supabase:** read of project metadata only; the project was paused and was deliberately left paused. |
+| 5 | Was a real deployment completed? | **Yes** — Worker `px-feasibility-spike` on `workers.dev`, real D1 database, two cron schedules. Local workerd tests also ran; they are reported separately from the deployment. |
+| 6 | What evidence supports or contradicts D1's suitability? | **Supports:** exactly-once resolution across 250 nations, resumable batches, safe failure on injected limits, 7-day Time Travel, always-on availability, 6.01 rows written per nation-turn ⇒ ~1,386-nation write ceiling, a live cron firing. **Contradicts:** 36.6–61.6 ms CPU for 1,000 nations in one invocation (10 ms budget), the 50-query-per-invocation cap, single-threaded per database, and no per-invocation record cap in the current handler. |
+| 7 | What evidence supports or contradicts Supabase's suitability? | **Supports (documentary):** unlimited API requests, Postgres maturity, auth/storage/realtime, portability. **Contradicts:** free plan has **no backups or PITR** (collides with SEC-030/SEC-032) and **pauses after a week of inactivity**, which is fatal for a world that must advance 12 times a day. Not tested empirically — a documented decision, not an oversight (§4). |
+| 8 | Which configuration best fits requirements and ₹0? | **Workers + D1 remains the tested candidate; Supabase is the documented fallback/exit path.** D-005 stays **Provisional**; no architecture is approved. |
+| 9 | Was a real two-hour UTC scheduled trigger tested? | **Yes, at one boundary.** `08:46:41Z` completed slot 248992 (1,000 nations, 14.9 s); `08:51:00Z` correctly no-opped it (0 writes). Twelve consecutive boundaries were **not** observed (PV-01 open). |
+| 10 | Results for persistence, idempotency, recovery, resumability? | Ledger persists the last completed slot across invocations; repeated and out-of-order slots are refused; 250 nations applied exactly once (250 markers, 250 audit rows, value conserved); injected interruption returns 409, records an `error` run, and a resume completes exactly once; a simulated storage limit fails safely without marking the turn complete and recovers afterwards. |
+| 11 | Which measurements are reproducible, which are estimates? | **Reproducible:** rows written/read (6.01 per nation-turn), statements per nation-turn (3.0), requests per batch, wall clock, batch counts — all from D1 rows the scripts recreate. **Sampled/estimated:** CPU (analytics buckets, no per-invocation ID), the 250→1,000 crossover, and all monthly extrapolations. |
+| 12 | Which tests passed, failed, skipped or were blocked? | **Passed:** 11/11 unit, 23/23 local integration, all deployed checks, `validate_final.py`, `09_validate.py` (68/68). **Blocked:** billing/plan read (403), GitHub push/CI (no repo, read-only), e-mail (no provider), Argon2id CPU (no benchmark), 24-hour run and real quota exhaustion (not attempted). **Skipped by design:** Supabase empirical test, mid-batch OS kill. |
+| 13 | Final status of each readiness gate? | **GATE-13 CONDITIONAL**, **GATE-16 CONDITIONAL**, **GATE-18 CONDITIONAL** — reasons and evidence in §9.1. No gate moved to PASS; none moved to FAIL. |
+| 14 | Does Stage 1 meet its documented completion criteria? | **No.** 17 pass / 3 conditional / 0 fail. Documentation is complete and consistent; readiness is not. |
+| 15 | Exact next task? | Owner decisions **OD-02** (scope), a capacity target, and OD-06/07 (backups, e-mail); then leave the spike deployed 24 hours to close PV-01's 12-boundary criterion, and cap per-invocation work in the scheduled handler before any 1,000-nation claim. |
