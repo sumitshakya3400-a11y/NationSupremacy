@@ -1,0 +1,19 @@
+§22.4 @L165 prompt-ref=True: e as SEC-019/20/21 family | **Design dependency, not scope**: war's rules don't exist yet (Prompt 6 §22.4's input list). Record as the war stage's invitation, not a 
+
+§22.4 @L165 prompt-ref=False: tion, not a system assumed here. **ST-020 (dependent)** | D-004; SDQ-008; SYS-011/012; Prompt 6 §15/§22.4; SEC-015/19/20/21 | | TH-023 | Improper backup restoration 
+
+§22.4 @L476 prompt-ref=True: ign manipulation** (TH-022): deferred to the war stage as an *explicit design dependency* (Prompt 6 §22.4's input list and D-004's provisional status); the inherited
+
+§22.4 @L559 prompt-ref=True: ed, idempotent, boundary-resolved | Same family | Same | Explicitly deferred to war stage (Prompt 6 §22.4's invitation list + D-004) | | Duplicate campaign resolutio
+
+§22.4 @L1225 prompt-ref=True: §10.2, TH-022's row); no war mechanics invented; the war stage's design invitation stands (Prompt 6 §22.4's input list) | | 8 | Player onboarding/accessibility (Prom
+
+F-2 @L1285: registers, **every prior project register was scanned** (Prompt 1's F/O/RI/D I families, Prompt 2's F-2…/O-2…, Prompt 3's FO-001…027 + FI/OPI, Prompt 4's PXE/PR/VE/V register, Prompt 
+
+QM @L144: t perfection. ST-013 | F-029 watchlist; SYS-018 onboarding; V-3 persona stress; PXE-017? (untouched) | | TH-002 | Session hijack / token theft | Liv
+
+QM @L145:  without request-level binding, nothing stops fast in-session strikes. ST-014 | INT-011?; ECON-013 orders; Prompt 6/a; persona Mira | | TH-003 | Mul
+
+QM @L168: en, this is *projection*, not abuse. **ST-018** | DP-004; §9; OSQ-004; SEC-029; PR-1? |  ### 2.4 Actor-to-threat coverage checklist  | Prompt-req
+
+QM @L1080: ce test:** ST-018 (automation throttle). 8. **Requirements:** SEC-001, SEC-005, SEC-028?no — SEC-029, OSQ-002/003 posture.  ### W-18-Q — insider/ove

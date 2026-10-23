@@ -1,0 +1,17 @@
+SYG @ 164399 (line 880):
+ase-grain dedup + deterministic boundary | SEC-018, SEC-019, SEC-020, SEC-021 | SYG-016's pipeline is the whole game's mutation engine (§6.1); a duplicate or partial resolution *is* a global economy incident
+
+TH-003 row:
+| TH-003 | Multi-account funneling / value transfer | Economy (treasury, MAT), trade ledger, integrity statistics | Web access; time; several email inboxes (or one account per household, misused) | Precondition: multiple accounts allowed or undetected; fresh-account restrictions absent/bugged. One player runs N nations, directs all surplus across trades to a dominant nation (R-13's vector). | L4 (genre-verified top abuse family; cheap tooling) · I4 (distorts competitive integrity + economy) → **16 Critical** | SEC-023 (fresh-account window, per-pair velocity caps, transfer-graph rules **under test conditions**), ECON-013's directed-trade restrictions (P28-class precedents [FV] per Prompt 1/3), R-13 controls, R-16's conservative-response design (overlap review only) | Trade-graph shape: per-pair asymmetry cap breaches; circular/self-trading patterns flagged to reviewers (R-13/R-16's postures); manual reports | Review-then-act: accounts escalated one queue; no automated resource clawback at launch (R-16: conservative) | If multi-accounting is policy-*permitted*, "abuse" becomes contract violation, not exploit, and enforcement runs on policy grounds — the distinction matters and is OSQ-001's subject. ST-016 | R-01/R-13/R-16; ECON-013; F-016/F-017; Prompt 3 §8; FO-009 |
+
+TH-003 row:
+| TH-003 | Multi-account economic funnelling | §2.1 | Critical |
+
+SEC-028 row:
+| SEC-028 | Report intake design | Reports record source, target, category, time (§12.2); evidence links are pointers, not essays; repeat clusters are de-prioritized for review, and the source identity is visible to reviewers | Report abuse (TH-016) | L | §12.2 | TH-016 | OSQ-005 | — | AC: intake fields exactly as listed; reviewer-side source visibility verified | review | L |
+
+SEC-027 row:
+| SEC-027 | Elevated permission + two-person rule for the most destructive ops | Levels 4–5 of §12.3's ladder and ops-grade corrections require step-up + a second identity (where two exist) and are fully logged | Malicious/compromised privileged (TH-017/018/019) | L | §12.5; TH-019's proposal | TH-017/018/019 | OSQ-012 | — | AC: two-person approvals appear in the ledger for destructive ops (ST-019) | drill | L |
+
+07: R-21 -> FOUND
+07: R-13 ids around R-19..R-21: ['13', '14', '15', '16', '17', '18', '19', '20', '21']

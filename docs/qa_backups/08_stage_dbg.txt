@@ -1,0 +1,8 @@
+
+
+SAMPLE
+| SEC-001 | Unique verified account identity | Every account has one unique iden ~T ight scope | test | PL |
+| SEC-002 | Password handling + step-up | Passwords stored as memory-hard hashes ~T coped list | test | PL |
+| SEC-003 | Session issuance/rotation/revocation | Sessions are bounded (absolut ~T l sessions | test | PL |
+| SEC-004 | Rate-limited recovery | Recovery attempts are throttled per e-mail a ~T e accounts | test | PL |
+| SEC-005 | Login attempt caps + honest lockout | Sign-in attempts capped per ac ~T enumerates | test | PL |

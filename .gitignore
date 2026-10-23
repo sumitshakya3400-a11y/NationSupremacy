@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Wrangler / Miniflare local state (contains local D1 data)
+.wrangler/
+.dev.vars
+
+# Environment files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+*.log
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+
+# Freebuff workspace marker (tooling metadata, not project content)
+.freebuff/

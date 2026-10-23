@@ -1,0 +1,4 @@
+L810: **Waiting until public-launch (stage B):** the account stack's *full* depth (SEC-001–005, 007/008), abuse-evidence rules (SEC-023), moderation ladder (SEC-026), backups + restore discipline (SEC-030), audit spine (SEC-031). **Later hardening (stage C):** SEC-006 (admin separation — a single-operator project's posture), SEC-015 (turn-stamp server-side attribution), SEC-017 (ledger discipline), SEC-022 (delay disclosure contract), SEC-024 (abuse evidence retention), SEC-027/028 (its own moderation
+
+L896: | B5 | Audit spine completed for every §13.2 category (the stage-A rows were spine-critical; stage B fills the rest) | SEC-031 | §13's categories exist in the design's *whole* shape: without the full set the evidence spine is a selective system, which is its own trust failure (SEC-031's "evidence is complete" requirement) |
+

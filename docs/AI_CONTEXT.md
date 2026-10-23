@@ -1,0 +1,114 @@
+# AI_CONTEXT.md — Master Project Context
+
+**Last updated:** 2026-10-23 (Stage 1, Prompt 9 complete — integrated synthesis and readiness audit; **Stage 1 not complete — conditionally ready**; zero-cost feasibility conditional)
+**Audience:** Any AI model or human developer resuming this project without prior conversation access. Read this file first, then [AI_HANDOFF.md](AI_HANDOFF.md), then the stage reports it references.
+
+---
+
+## 1. What this project is
+
+A **persistent, multiplayer, browser-based nation-strategy game**. Players access it through an ordinary web browser at a public URL — no client download. A player governs a fictional nation in a shared world that advances on a **fixed global turn every two hours (12 turns/day, UTC boundaries)**, with server-resolved production, upkeep and periodic effects, and player actions between turns.
+
+The design intent combines: nation development, economic management, domestic politics, diplomacy, player trading, alliances, and strategic warfare. The world is **fictional and mapless** — represented as a symbolic network of nations and relationships, not a geographic map.
+
+**Status:** Stage 1 (research stage). The originally recorded pipeline was **eight** prompts; on 2026-10-23 the owner explicitly authorized **Prompt 9 — Integrated Design Synthesis and Stage-1 Readiness Audit**, and that synthesis is now **complete** ([stage-1/09_integrated_design_synthesis_and_readiness_audit.md](stage-1/09_integrated_design_synthesis_and_readiness_audit.md)). **Stage 1 is not complete:** the audit's 20 proposed gates return **17 pass, 3 conditional, 0 fail** after the 2026-10-23 correction pass (GATE-13/16/18 remain conditional), so the readiness verdict is **conditionally ready** to proceed to bounded next-stage work. The nine-prompt sequence is an executed working sequence, not a recorded approval in [DECISIONS.md](DECISIONS.md). The project currently contains research documents, continuity records, and document-QA tooling — Python QA/recovery scripts plus their outputs under `docs/qa_backups/` (per the Prompt 8 report §25.6 and Prompt 9's `09_validate.py`). Production game implementation has not started: these scripts inspect and validate documents only and are not part of the game. All project content lives under `docs/`.
+
+---
+
+## 2. Confirmed project constraints (do not change without documented approval)
+
+### Platform
+- Browser-based website; publicly accessible URL; no downloaded client.
+- **Free-first hosting/infrastructure wherever practical.** Cloudflare Workers + Cloudflare D1 are *initial candidates, not guarantees*. Hosting must be validated against current provider limits (see [stage-1/01_competitor_research.md](stage-1/01_competitor_research.md) Section 6 — notably **D1 free tier: 100,000 rows written/day**, with query-failure enforcement since 2026-09-01).
+- **₹0 required monthly hosting/service cost (owner-stated, Prompt 9 brief, 2026-10-23).** The target is zero cash expenditure on *required* platform and service fees while operating within verified free-tier limits and terms; no paid plan may be a routine requirement. This is a constraint, not a capacity guarantee: the audit finds the ₹0 plan **plausible for a small playtest, conditional at a limited launch, and unsupported for roughly 2,000+ active players** under its stated assumptions. It is **not** a DECISIONS entry (none was added by Prompt 9); it is recorded here with attribution.
+- Architecture must stay economical, maintainable, and small-project-appropriate.
+
+### World
+- Fictional world; **no geographic map**, no real-world borders; symbolic network view of nations and relationships.
+- International relationships may include alliances, rivalries, treaties, trade, diplomacy, warfare.
+
+### Time
+- One global turn every 2 hours; 12/day; fixed UTC boundaries.
+- Players act between turns; the server resolves scheduled production, upkeep, recurring effects.
+- World advances while players are offline. Scheduled processing must be reliable, recoverable, and protected against duplicate execution.
+
+### Gameplay areas (intended exploration space, NOT finalized requirements)
+Nation creation/development · economy & resources · cities/infrastructure · research/tech progression · domestic politics & stability · player-driven trading · diplomacy & treaties · player-created alliances · alliance governance & shared treasury · alliance coordination · abstract (mapless) warfare · intelligence & logistics · war objectives & battle reports · peace agreements & consequences · world news, rankings, notifications, social interaction · security/anti-cheat/moderation.
+
+**Provisional concept (unapproved):** a possible military action resource named **Operations Points (OP)**. Final rules/values have NOT been approved.
+
+### Development approach
+- AI performs as much research/design/coding/testing/documentation as practical, in defined stages.
+- One authoritative document collection is the source of truth (`docs/`).
+- New AI sessions and different models must be able to continue from saved records alone.
+- Design decisions get documented, never silently changed.
+- **No production implementation begins merely because an AI suggested a feature.**
+
+---
+
+## 3. Development stage plan
+
+Stage 1's originally recorded pipeline was the **eight research prompts**. On 2026-10-23 the owner explicitly authorized a ninth — **Prompt 9: Integrated Design Synthesis and Stage-1 Readiness Audit** — which synthesizes and audits the eight reports; it is **complete**. The nine-prompt sequence is therefore an **executed working sequence**, but it is **not a [DECISIONS.md](DECISIONS.md) entry**, and per D-002 every subsequent task still requires explicit authorization. Completed: **Prompts 1–9** (Prompt 9 delivered 2026-10-23, then corrected and re-verified the same day; the three conditional gates in its §20 are the remaining Stage 1 work). See [PROJECT_PROGRESS.md](PROJECT_PROGRESS.md) for full status and [AI_HANDOFF.md](AI_HANDOFF.md) for the current handoff.
+
+After Stage 1's research prompts, later stages produce a Game Design Bible, then design finals, then implementation. The Game Design Bible, once it exists, becomes the authority for approved game rules.
+
+---
+
+## 4. How to distinguish claim types in this project
+
+Every research finding carries one of these labels. Never promote a label silently:
+
+- **Confirmed requirement** — fixed project constraint (Section 2 above).
+- **Research finding** — evidence-backed observation about existing games (stage reports; stable IDs F-xxx).
+- **Design opportunity / provisional proposal** — candidate idea, not approved: the OP concept, Prompt 2's improvement opportunities (O-1…O-12), and Prompt 3's feature-opportunity register (FO-001…FO-027, with statuses per Prompt 3 Section 10 — none approved).
+- **Approved decision** — recorded only in [DECISIONS.md](DECISIONS.md) with status `Confirmed`.
+
+## 5. Key document index
+
+| Path | Role |
+|---|---|
+| [AI_CONTEXT.md](AI_CONTEXT.md) | This file — master context |
+| [AI_HANDOFF.md](AI_HANDOFF.md) | Cross-AI handoff: current state, next task |
+| [PROJECT_PROGRESS.md](PROJECT_PROGRESS.md) | Stage-1 prompt tracker |
+| [DECISIONS.md](DECISIONS.md) | Project decision log |
+| [stage-1/01_competitor_research.md](stage-1/01_competitor_research.md) | Prompt 1: genre/competitor research + infra limits |
+| [stage-1/02_strengths_weaknesses_player_frustrations.md](stage-1/02_strengths_weaknesses_player_frustrations.md) | Prompt 2: player-experience evidence, finding IDs F-001…F-029, opportunities O-1…O-12 |
+| [stage-1/03_feature_comparison_opportunity_analysis.md](stage-1/03_feature_comparison_opportunity_analysis.md) | Prompt 3: cross-game feature comparison matrix, cross-system interactions, feasibility assessment, dependency analysis, and feature-opportunity register FO-001…FO-027 (none approved; see its Section 10 for statuses) |
+| [stage-1/04_target_audience_and_player_experience.md](stage-1/04_target_audience_and_player_experience.md) | Prompt 4: audience landscape, persona set (Mira/Tomas/Yuna/Ade/Kwame), experience promise + pillars PX-P1…P5 (proposed), first-journey map, 2h-turn experience policy direction, risk register PXE-001…019, experience principles PR-1…PR-10 (proposed), experience-opportunity register PXO-001…022, validation plan V-1…V-10 (none approved) |
+| [stage-1/05_core_game_concept_and_design_pillars.md](stage-1/05_core_game_concept_and_design_pillars.md) | Prompt 5: recommended concept **CX-5 "The Community of Nations"** (provisional) with runner-up CX-3; fantasy FX-A + two faces (DX-A′ builder / DX-A″ strategist); pillars DP-001…006; differentiators UXD-001…005 (UXD-001 headline); anti-pillars AP-001…008; risks CCR-001…012; validation CV-001…006 + H-1…H-6; decision-register DIR-1…6 and RC-1…5. None approved |
+| [stage-1/06_core_gameplay_systems_and_interactions.md](stage-1/06_core_gameplay_systems_and_interactions.md) | Prompt 6: gameplay-architecture framework (provisional) — 18-system catalog SYS-001…018 (22 task areas consolidated by exclusion, not ID-merging); tier plan (A foundation = 5 build units / 6 IDs with SYS-002+003 as one economy build; B interaction = 5 systems; C expansion = 7 entries; D excluded areas), Section 15 = military/campaigns; interaction map INT-001…014; dependency questions SDQ-001…018 (P0s: 001/002/003/004/009/010/016/018); simplification register SIM-001…012 (12 permanent postures); mechanics opportunities MO-001…008; integrity-risk register R-01…012; three-class turn-timing contract (immediate/queued/at-boundary, elaborating PXO-003); OP (D-004) evaluated in §15G, decision left open (SDQ-008); 2026-10-22 residual pass re-verified refs/registers/tier summary. None approved |
+| [stage-1/08_security_privacy_fair_play_and_trust.md](stage-1/08_security_privacy_fair_play_and_trust.md) | Prompt 8: security & trust design report (Sections 0–26; 2026-10-23 correction pass applied, v after that pass) — all recommendations proposal-status. Threat register **TH-001…025** (each with actor/precondition/likelihood-impact reasoning, mitigation, detection, recovery, residual risk, validation); requirements register **SEC-001…033** with **SEC-009 deliberately reserved** (32 defined; account block 001–008, request-integrity block 010+); tests **ST-001…020** all *designed-not-executed*; owner questions **OSQ-001…012** (multi-account policy, step-up level, e-mail verification, automation policy shape, moderation staffing, public-history visibility, recovery tier, monitoring scale, abuse-detection data, jurisdiction work, the stage-B approval line OSQ-011, operator access); 18 walkthroughs **W-18-A…R**. Core posture: server-authoritative validation of every valuable action (SEC-010/011), per-resource authority checks (SEC-012), idempotency + single-spend atomicity (SEC-014/016), exactly-once turn resolution (SEC-018…021), audit-spine ledger (SEC-031), conservative review-then-act abuse handling (no automated bans on single signals, no surveillance posture); privacy minimization inventory (§11); moderation ladder proposed (§12); a rebuilt-file corruption incident fully documented (§25.2) with QA scripts declared under `docs/qa_backups/` (§25.6). None approved |
+| [stage-1/07_economy_design_and_market_structure.md](stage-1/07_economy_design_and_market_structure.md) | Prompt 7: economy design structure (v1.2 after the 2026-10-22 correction pass, its accepted final micro-correction, and 2026-10-23 targeted fixes to the emphasis-timing and reserve-interest wording; DEF-018's offer-reservation conflict is preserved as open; Sections 0–27 — §26 is the QA record, §27 the handoff — 20 deliverables) — all recommendations proposal-status. Treasury ECON-001 (single national pool, commitment-reservation display, zero debt, no interest); five development lines L-PRO/L-COM/L-ADM/L-WRK/L-RDY (ECON-002, SDQ-001 narrowed to numerics open); four tradeable material classes MAT-01…04 (ECON-006, SDQ-002 narrowed; fifth deferred ECON-023); scarcity engine ECON-011 (SDQ-009 narrowed; efficiency asymmetry + emphasis-gated yields + pairing sockets + two-route sourcing floor; no trade mandates); directed fee-free atomic trades at first playable (ECON-013, SDQ-015/004 discipline); listing market staged behind gate G-1…G-6 (ECON-014/018; Model B retained ECON-021); respecialization ECON-017 (SDQ-016 narrowed: paid, one-per-turn, boundary-effective); inflation posture ECON-019 with C1–C4 accounting identity; financial-rejected directions ECON-020 (interest, activity rewards, lending, dual currency re-openable as ECOQ-001 watch); integrity extension R-13…R-21 added inside Prompt 6's R register (atomic-pair/zero-partial invariant R-19 is a design invariant); timing classification of every economic action (§14, more granular than the three-class contract); finance-explanation contract (§15: six number types, four surfaces); storage/write-budget plan (§16, SDQ-003 stays open, D-005 stays provisional); worked examples EX-1 with A–F accounting (§17); paper tests + sensitivity analysis (§18); economy first-playable boundary + registration loops (§19); unvalidated-open ECOQ-001…013 (001–009 core, 010 MAT-01 spoilage option, 011 fifth-class revisit trigger, 012 war-stage MAT-04 two-route guarantee, 013 systemic-shock frequency/size posture); validation experiments ECV-001…005 (005 = respecialization scenario + failure-case sweep; coexisting with V/CV, none executed); fresh 2026-10-22 research: registered D1/Workers S1–S3 with the current-10ms-vs-Prompt-1-recorded-50ms cron-CPU discrepancy flagged. None approved |
+| [stage-1/09_integrated_design_synthesis_and_readiness_audit.md](stage-1/09_integrated_design_synthesis_and_readiness_audit.md) | Prompt 9: integrated design synthesis and Stage-1 readiness audit — verdict **conditionally ready**; **Stage 1 incomplete**; zero-cost verdict **conditional** (plausible for FPB/small playtest, conditional at limited launch, unsupported at 2,000+); 39 REQ, 14 ZD, 20 GATE, 18 DEF, 12 OD, 15 PV, 17 TQ; P8 DEF-004/005/010, P7 DEF-016/017 and P2 DEF-008 fixed 2026-10-23 (GATE-03 now pass; 8 of 18 defects fixed, 6 open conditions); DEF-018 preserved as an open trade-reservation ambiguity; all recommendations unapproved; DECISIONS unchanged |
+
+## 6. Working rules for any AI session
+
+1. Read AI_CONTEXT.md + AI_HANDOFF.md + PROJECT_PROGRESS.md before acting.
+2. Read the referenced stage reports in full when the task touches their topics.
+3. Inspect the actual repository; verify paths instead of assuming.
+4. Preserve existing work; never overwrite the Prompt 1, 2, or 3 reports.
+5. Ask for clarification only when genuinely necessary.
+6. Record incomplete work honestly in the handoff and progress files.
+7. Do not begin a new prompt without explicit user authorization.
+
+---
+
+## 7. Current top risks and open questions
+
+- **D1 write-quota pressure** at 12 turns/day — a first-class architecture constraint (Prompt 1, Section 6.1).
+- **Zero-cost capacity is unmeasured** — 10 ms cron CPU, 50 subrequests/invocation, write amplification from audit rows/indexes, and the 500 MB per-database cap are the four numbers that decide the ₹0 claim; the audit estimates ~1,100–2,000 active nations, not P7's ~3,000, and 2,000+ active players is not supported (Prompt 9 §17; PV-01…PV-07).
+- **"First playable" is ambiguous** — P5's concept test excludes auth/integrity, while P6/P7 require trade and P8 requires the Stage-A baseline; the audit proposes CP (supervised, pre-provisioned) vs FPB (real build) and leaves the choice to the owner (DEF-001/002; OD-02).
+- **Economy numerics still do not exist** — ECOQ-002 (drains/austerity), ECOQ-004 (asymmetry/respec), and ECOQ-005 (thresholds) block an implementable economy; structure is settled, numbers are not (Prompt 9 §8.9).
+- **Newcomer catch-up gap** — genre-wide documented frustration (finding F-012); our mapless design forces an explicit answer in a later design stage.
+- **Community dependence** — genre's fun engine is social; a small launch world needs a plan for low-activity periods (F-003b).
+- **Protection/absence systems are exploitable in the genre** (F-017) — must be adversarially designed.
+- **Onboarding/jargon burden is genre-wide** (F-010) — in-context teaching is a first-class system, not polish.
+- **Market-integrity requirements are high** (Prompt 3 Section 8, FO-009): player trading needs anti-multi, anti-automation and collusion defenses — not a simple backend feature.
+- **War-system balance has the largest design-scope risk** (Prompt 3 Section 8, FO-010/FO-011/FO-017); no values decided anywhere.
+- **FO-013 (mapless symbolic economy/diplomacy view) is the keystone** Prompt 3 identified for the world-network representation — it needs dedicated exploration in a later stage.
+- **Prompt 4 audience direction (proposed, not approved):** primary = "steady-check-in multiplayer strategist" (short sessions 1–3 × 5–15 min/day); secondary = organized community + diplomat players; future = optimizers/competitors/roleplayers. Top experience risks: empty-world demotivation (PXE-015), jargon wall (PXE-016), invisible turn consequences (PXE-003/013), first-week friction (PXE-002/007/012), obligation creep (PXE-004), time-over-judgment drift (PXE-006). Cadence policy direction: no presence requirements, queue-first, absence = digest not dread.
+- **Prompt 6 framework direction (proposed, not approved):** 18 catalog systems (SYS-001…018), staged boot = Tier A (5 build units, 6 IDs: turn engine SYS-016; national economy SYS-002+003; specialization/structural scarcity SYS-004; digest/explanation SYS-017; onboarding SYS-018) → Tier B interaction layer (trade SYS-005 directed-first/market staged, relationships SYS-008, minimal treaties SYS-009, acts-driven reputation SYS-013, chronicle SYS-015) → Tier C expansion (policy full levers SYS-006, research SYS-007, alliances SYS-010, military SYS-011/012, rankings SYS-014; SYS-001's emphasis/identity depth, which also serves the core as a record system). Elections/contracts/consumer-demand/espionage/seasonality excluded (FO-019…023 statuses unchanged); one currency, development lines instead of cities/population, standing registers instead of one ladder (DP-001). War stays a later dedicated stage (FO-010/011/017 as inputs); the P0 SDQ set gates all further specification.
+- **Prompt 7 economy direction (proposed, not approved):** one treasury pool with reservation display and zero debt (ECON-001); five development lines with Science as a SYS-007 program class (ECON-002); four material classes with per-class two-use/two-route floors (ECON-006); structural scarcity engine with no artificial trade catalysts (ECON-011); directed trades first, fee-free, atomic at offer/accept, refusal free (ECON-013); a listing market only behind gate G-1…G-6 (ECON-014/018, ECON-016 fee policy gated); paid one-per-turn boundary-effective respecialization (ECON-017); CF-accounting C1–C4 identity with drain-scaled sinks and no yield-on-cash or interest (ECON-019; ECON-020 rejects activity rewards, lending, dual currency, interest). Top-ranked open numeric risks: ECOQ-002 (treasury drain curves + austerity thresholds — the single most consequential untuned parameter family) and ECOQ-004 (scarcity/respecialization/velocity-band numerics). FO-018 (catch-up) stays owner-held; ECON-012's five constraints bind any future catch-up design. The atomic-pair/zero-partial transfer invariant (R-19) binds any future trade mechanism. 10-ms cron-CPU on Workers free plan (current official, S2) is a flag inside D-005 validation, not a provider decision.
+- **Prompt 8 security direction (proposed, not approved):** the minimum viable security baseline is server-authoritative value computation + per-resource authorization + idempotent, exactly-once turn resolution + a permanent audit ledger, all staged: baseline before first playable, account-recovery/backups/moderation tooling before public launch, deeper hardening later. Top threats: TH-003/006/008/009 (multi-account funnelling, client-trust violation, IDOR, scheduler double-execution — all Critical). Open owner questions OSQ-001…012 (see report §20); all 20 ST tests are designed-not-executed; the whole register is inputs-only per D-003's discipline (OSQ-011 governs which stage-B items are actually adopted).
+- **Prompt 9 synthesis verdict (not an approval):** research is complete enough to proceed, but **Stage 1 is not complete** — 17/20 proposed gates pass, 3 are conditional (GATE-13 bypassed validation, GATE-16 free-tier component fit, GATE-18 unmeasured capacity). The P8 staging defects (DEF-004/005/010) were corrected on 2026-10-23, so GATE-03 now passes with recorded accepted conditions. The integrated design is coherent; architecture, implementation, and launch are not ready. Next action = owner decisions OD-01/02/03/06 + the free-tier measurement spike, **not** code.
+- **Prompt 5 concept direction (proposed, not approved):** recommended concept **CX-5 "Community of Nations"** — steward one developing nation inside a legible relationship-network world; economy + diplomatic standing central, stability/research supporting, military bounded-optional, cultural influence deferred. Six provisional pillars (DP-001 paths-plural, DP-002 decisions-over-presence, DP-003 network-as-world, DP-004 self-explaining world with a transparency-vs-mystery boundary, DP-005 structural interdependence bounded by DP-001, DP-006 bounded conflict) and eight anti-pillars (AP-001…008). Headline differentiator UXD-001 (self-explaining world). Open concept validations H-1…H-6 via CV-001…006 (six experiments, none executed); Prompt 4's validation register is the full V-1…V-10 (all still open) — next-stage-blocking subset: V-2 (P0) and V-4 plus the CV experiments; V-3/V-5/V-6 before beta/pre-launch; V-7/V-8 beta; V-9 roadmap; V-10 post-v1. First-playable boundary defined (§15) — testing phase only, no build authorized.

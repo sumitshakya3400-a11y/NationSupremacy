@@ -1,0 +1,2 @@
+232206 U+9632 | t→requirement traceability | ✅ PASS | Every TH- row names ≥1防护 SEC requirement; every SEC row names ≥1 threat; both directions verified prog
+232207 U+62A4 | →requirement traceability | ✅ PASS | Every TH- row names ≥1防护 SEC requirement; every SEC row names ≥1 threat; both directions verified progr
