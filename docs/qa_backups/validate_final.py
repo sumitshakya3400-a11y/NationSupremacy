@@ -57,7 +57,9 @@ for name, text in [("AI_CONTEXT", ctx), ("AI_HANDOFF", hnd), ("PROJECT_PROGRESS"
     required = [
         (r"Prompt 9", "prompt-9 mention"),
         (r"Prompt 9[^.\n]{0,120}(complete|executed|delivered)", "prompt-9 completed"),
-        (r"Stage 1 is[^.]{0,10}not complete|Stage 1 is incomplete|Stage 1 NOT complete", "stage-1-incomplete"),
+        # Disclosure history: the audit's "not complete" language is retained in
+        # Report 9, while the continuity files now carry the closed state.
+        (r"Stage 1 is[^.\n]{0,10}not complete|Stage 1 is incomplete|Stage 1 NOT complete|Stage 1 is CLOSED|STAGE 1 CLOSED", "stage-1 status"),
         (r"nine[- ]prompt|9 prompts|Prompt 9", "nine-prompt sequence"),
         (r"Prompt 8", "prompt-8 mention"),
         (r"correction|corrected|passed", "prompt-8 correction wording"),
@@ -191,6 +193,8 @@ want_status = {
     "D-007": "Confirmed", "D-008": "Confirmed",
     # Prompt 10.2: the Pages address and the dedicated project are owner instructions.
     "D-009": "Confirmed", "D-010": "Confirmed",
+    # Final closure: the owner closed Stage 1 and authorized Stage 2.
+    "D-011": "Confirmed",
 }
 for did, expected in want_status.items():
     rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*" + re.escape(did) + r"\s*\|", ln)]

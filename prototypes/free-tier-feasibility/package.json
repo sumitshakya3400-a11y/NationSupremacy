@@ -8,7 +8,7 @@
     "dev": "wrangler dev --port 8787",
     "dev:scheduled": "wrangler dev --port 8787 --test-scheduled",
     "deploy": "wrangler deploy",
-    "test": "node --test test/",
+    "test": "node --test test/slots.test.js",
     "test:integration": "node scripts/integration.mjs",
     "schema:local": "wrangler d1 execute px-feasibility-spike --local --file=./schema/0001_init.sql"
   },

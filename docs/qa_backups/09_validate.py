@@ -143,7 +143,7 @@ check(len(r_ids) == 21, "R-01..R-21 (21)", str(len(r_ids)))
 check(len(fo) == 27, "FO-001..027 (27)", str(len(fo)))
 check(len(v_ids) == 10, "V-1..V-10 (10)", str(len(v_ids)))
 check(len(cv) == 6, "CV-001..006 (6)", str(len(cv)))
-check(len(d_ids) == 10, "D-001..D-010 (10)", str(len(d_ids)))
+check(len(d_ids) == 11, "D-001..D-011 (11)", str(len(d_ids)))
 check(
     len(f_ids) == 28 and "F-007" not in f_ids and "F-028" not in f_ids and "F-003b" in f_ids,
     "F register 28 rows; F-007/F-028 unassigned; F-003b present",
@@ -260,6 +260,20 @@ check("| D-009 |" in decisions and "| D-010 |" in decisions,
       "D-009/D-010 recorded in the decision log")
 for label, blob in (("AI_CONTEXT", ctx), ("AI_HANDOFF", hand), ("PROJECT_PROGRESS", prog)):
     check("nation-supremacy.pages.dev" in blob, f"{label} carries the current Pages address")
+
+# 13. Stage 1 closure (final Prompt, 2026-10-23) ------------------------------
+# The historical verdicts above stay asserted in Report 9; the continuity files
+# must now carry the closed state and the Stage 2 authorization.
+r13 = read(DOCS / "stage-1" / "13_stage_1_final_closure_and_stage_2_handoff.md")
+s2 = read(DOCS / "stage-2" / "00_stage_2_handoff.md")
+check("STAGE 1 CLOSED" in r13, "Report 13 records the closure decision")
+check("CF-01" in r13 and "CF-09" in r13, "Report 13 records the carry-forward backlog")
+check("owner-confirmed" in r13.lower(), "Report 13 records the deletions as owner-confirmed")
+check("Stage 2" in s2 and "OD-02" in s2, "Stage 2 handoff names the first task")
+check("| D-011 |" in decisions and "CLOSED" in decisions,
+      "D-011 records the closure in the decision log")
+for label, blob in (("AI_CONTEXT", ctx), ("AI_HANDOFF", hand), ("PROJECT_PROGRESS", prog)):
+    check("Stage 2" in blob, f"{label} records the Stage 2 authorization")
 
 print()
 print(f"{checks - len(failures)}/{checks} checks passed")
