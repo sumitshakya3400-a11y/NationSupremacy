@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nation Supremacy</title>
+<meta name="description" content="Nation Supremacy, a browser-based multiplayer nation strategy game in development. Technical feasibility preview, not the game.">
+<meta name="robots" content="noindex">
+<style>
+body{margin:0;padding:2.5rem 1.25rem;background:#0f1120;color:#e8ebf7;font:16px/1.6 system-ui,sans-serif}
+h1{margin:.2rem 0 1rem;font-size:clamp(2rem,7vw,3rem);line-height:1.05}
+p{margin:0 0 .8rem;max-width:40rem}
+.eyebrow{color:#7bd3b0;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase}
+.note{color:#a2aac6;font-size:.85rem}
+</style>
+</head>
+<body>
+<p class="eyebrow">Technical feasibility preview</p>
+<h1>Nation Supremacy</h1>
+<p>A browser-based multiplayer nation strategy game in development. This page proves the website is served from Cloudflare. It is not the game.</p>
+<p>One shared turn every two hours on fixed UTC boundaries: twelve a day.</p>
+<p>Turn slot <b id="slot">-</b> · next boundary <b id="next">-</b> · remaining <b id="left">-</b></p>
+<p class="note">No accounts, no player data, no gameplay. All stored data is synthetic.</p>
+<p class="note">Nation Supremacy · feasibility build · 2026-10-23</p>
+<script>
+(function(){
+  function pad(n){return String(n).padStart(2,"0")}
+  function utc(ms){var d=new Date(ms);return d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate())+" "+pad(d.getUTCHours())+":"+pad(d.getUTCMinutes())+"Z"}
+  function tick(){
+    var t=Date.now(),s=Math.floor(t/7200000),b=(s+1)*7200000,ms=Math.max(0,b-t);
+    document.getElementById("slot").textContent=s.toLocaleString("en-GB");
+    document.getElementById("next").textContent=utc(b);
+    document.getElementById("left").textContent=Math.floor(ms/3600000)+"h "+pad(Math.floor(ms%3600000/60000))+"m";
+  }
+  tick();setInterval(tick,30000);
+})();
+</script>
+</body>
+</html>

@@ -180,9 +180,15 @@ if missing:
     fail.append("dead relative links: " + "; ".join(missing[:10]))
 
 # 7. DECISIONS.md integrity --------------------------------------------------
+# Updated 2026-10-23 for Prompt 10.1. The original table asserted that D-005
+# stayed Provisional and that no D-007 existed — a guard written while nothing
+# was owner-approved. Two decisions now are (D-007, D-008) and D-005 is
+# superseded, so the expectation had to follow the documents. D-004 is still
+# Provisional and is asserted as such.
 want_status = {
     "D-001": "Confirmed", "D-002": "Confirmed", "D-003": "Confirmed",
-    "D-004": "Provisional", "D-005": "Provisional", "D-006": "Provisional",
+    "D-004": "Provisional", "D-005": "Superseded by D-008", "D-006": "Provisional",
+    "D-007": "Confirmed", "D-008": "Confirmed",
 }
 for did, expected in want_status.items():
     rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*" + re.escape(did) + r"\s*\|", ln)]
@@ -191,10 +197,12 @@ for did, expected in want_status.items():
         continue
     cells = [c.strip() for c in rows[0].strip().strip("|").split("|")]
     status = cells[4] if len(cells) > 4 else "(missing)"
-    if status != expected:
+    if not status.replace("*", "").strip().startswith(expected):
         fail.append(f"DECISIONS: {did} status is {status!r}, expected {expected}")
-if re.search(r"D-007", dec):
-    fail.append("DECISIONS: unexpected D-007 entry")
+if "Nation Supremacy" not in dec:
+    fail.append("DECISIONS: D-007 does not name Nation Supremacy")
+if "Supabase" not in dec:
+    fail.append("DECISIONS: D-008 does not record the Supabase direction")
 if 'Keep "Operations Points" as a provisional' not in dec:
     fail.append("DECISIONS: D-004 decision text altered")
 if "Treat Cloudflare Workers + D1 as initial candidates only" not in dec:

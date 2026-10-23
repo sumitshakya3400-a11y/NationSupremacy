@@ -220,3 +220,39 @@ The plan above was executed in the same pass. The measurement record is [Report 
 | GATE-18 | **CONDITIONAL** | Rows written/read per nation-turn are measured (6.01), giving a ~1,386-nation write ceiling, and per-invocation CPU is measured at 50/100/250/1,000 nations. | No 24-hour/12-turn run, no real quota exhaustion, no billing-scope verification, and no owner-approved capacity target. |
 
 **No gate was promoted.** The evidence moved several components from "likely" to "measured", and it produced one new negative finding (CPU at 1,000 nations), but each gate still has at least one unmet recorded criterion. Stage 1 remains **incomplete — conditionally ready**.
+
+---
+
+## 8. Re-assessment after Prompt 10.1 (2026-10-23)
+
+Two things changed after §7 was written, and one of §7's own statements was wrong.
+
+1. **The architecture question is settled, by the owner.** The owner selected **Cloudflare for the website and Supabase for the database/backend** (D-008), and **Nation Supremacy** as the official name (D-007). D-005 is superseded, not deleted. The gates below are therefore assessed against the chosen architecture, not against the D1 candidate.
+2. **The "live Cron Trigger" claim in §7 was wrong.** All nine observed invocations came from the temporary `*/5 * * * *` schedule; the product `0 */2 * * *` schedule never fired in that window. Report 11 §14.1 records the correction.
+
+### 8.1 What the Supabase test added
+
+A real turn engine now exists in the owner's Supabase project, isolated in schema `feasibility`, and a real page is deployed on Cloudflare. The evidence that bears directly on these gates:
+
+| Evidence | Gate it serves | Strength |
+|---|---|---|
+| `pg_cron` fired the product job at **10:00:00Z** on the boundary and recorded `succeeded` | GATE-16 | **Strong** — real scheduler, chosen platform, exact boundary. One boundary only |
+| Exactly-once held across duplicate and older slots; an injected failure rolled back completely and the retry applied exactly 1,000 | GATE-16 | **Strong** — but not under true concurrency |
+| RLS + grants denied every prohibited action (treasury update, resolver call, other-player read) | GATE-16 | **Strong at the database layer**; no browser/session test |
+| 1,000-nation slot resolved in 47–59 ms of database time; 291 bytes per nation-turn | GATE-18 | **Strong for the measured size** |
+| Website live at `nation-supremacy.nationsphere.workers.dev` with the correct brand | GATE-16 | **Strong** |
+| No provider-managed backups; no restore drill performed | GATE-16, GATE-18 | **Gap** — an owner-operated obligation, not a fee |
+
+### 8.2 Status after Prompt 10.1
+
+| Gate | Status | Why it is still conditional |
+|---|---|---|
+| **GATE-13** | **CONDITIONAL** | OD-02 (scope) is undecided, the DEF-003 condition is not owner-accepted, and V-2/CV-002 have not run. Architecture is no longer an open assumption — it is a recorded owner decision |
+| **GATE-16** | **CONDITIONAL** | The missing pieces are now specific: a 24-hour/12-boundary observation, a tested backup-and-restore procedure, e-mail (OD-07), and an auth test with real sessions. Every other essential component has evidence |
+| **GATE-18** | **CONDITIONAL** | Capacity is measured but no target is approved, the billing tier cannot be read through the connector, no quota-exhaustion run exists, and retention at 500 MB is unmodelled |
+
+**Stage 1 is still not complete: 17 pass, 3 conditional, 0 fail.** No gate moved to PASS because each still has an unmet recorded criterion; none moved to FAIL because nothing measured contradicts a requirement at an approved size.
+
+### 8.3 What this report's §6 should now say
+
+The original four next actions were partly right and partly answered: the architecture question is settled by D-008 rather than by measurement, and the capacity target is still the owner's to set. The live next action is **Report 11 §20** — observe twelve consecutive product boundaries on the Supabase job, then design the owner-run backup and restore drill.

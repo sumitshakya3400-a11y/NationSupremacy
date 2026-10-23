@@ -1,8 +1,8 @@
 # Report 11 — Free-tier technical feasibility results
 
-**Version:** 1.0
+**Version:** 1.1 (corrected 2026-10-23 by Prompt 10.1; the Supabase + Cloudflare architecture was then tested and recorded in §§14–19)
 **Date:** 2026-10-23
-**Status:** Measurement record. Supersedes the planned statuses in [Report 10](10_stage_1_gate_evidence_and_feasibility_plan.md) where they differ.
+**Status:** Measurement record. Supersedes the planned statuses in [Report 10](10_stage_1_gate_evidence_and_feasibility_plan.md) where they differ. §14 lists the claims in v1.0 that were wrong and what replaced them; read it before quoting anything above it.
 **Scope:** GATE-13, GATE-16, GATE-18. No architecture decision is approved here, and Stage 1 is not declared complete.
 
 ---
@@ -22,7 +22,7 @@ What the evidence shows:
 | Does an interrupted invocation corrupt state? | **No** — failed runs left `running`, resumed to exactly N applications |
 | Does a simulated storage limit fail safely? | **Yes** — 409, no completed ledger, clean recovery |
 | Do 12 turns/day fit the free scheduler CPU budget? | **Only below a measured size.** A 250-nation batch used ~1.4–5.1 ms CPU; resolving 1,000 nations in one invocation used **36.6 ms and 61.6 ms** — over the 10 ms free limit |
-| Did a live Cron Trigger fire? | **Yes — observed.** It fired at 08:46:41Z, resolved the 08:00 UTC slot for 1,000 nations in 14.9 s, and fired again at 08:51:00Z for the same slot as a 0-write no-op. Propagation took ~24 minutes |
+| Did a live Cron Trigger fire? | **Yes — but not the product schedule.** Nine invocations were recorded between 08:46:41Z and 09:26:00Z, all on the temporary `*/5 * * * *` test schedule. The `0 */2 * * *` schedule never fired in the observation window (its first opportunity was 10:00Z). See §7 and §14.1 |
 | Are the 100k/day write limits a real constraint? | **Yes, and now quantified** — 6.01 rows written per nation-turn, so ~1,388 nations at 12 turns/day |
 | Is ₹0 still credible? | **Conditional** — at small sizes, yes; at ~1,000 nations in one invocation, the CPU limit is exceeded |
 | Did this pass verify the account's plan/billing? | **No** — the connector lacks Billing Read scope (403) |
@@ -36,7 +36,7 @@ What the evidence shows:
 | Item | Value |
 |---|---|
 | Project root | `C:\Users\suren\Downloads\Project X` |
-| Starting state | Byte-identical to `Project X step 9 correction.zip` (38/38 SHA-256 matches) |
+| Starting state | 38 files matched `Project X step 9 correction.zip` byte-for-byte before any edit; re-verified in Prompt 10.1 against baseline commit `a1174d8` (20 exact, 16 line-ending-only, 2 gitignored). See §14.2 |
 | Version control | Local git repository created in this pass; baseline commit `a1174d8` on `main`; work on branch `prototype/free-tier-feasibility` |
 | Local runtime | `workerd` via `wrangler 4.152.0`, local D1 (Miniflare) |
 | Deployed runtime | Cloudflare Workers, compatibility date `2026-10-23`, script `px-feasibility-spike` |
@@ -45,7 +45,7 @@ What the evidence shows:
 | Schedules configured | `0 */2 * * *` (product) and `*/5 * * * *` (test-only, to observe cron without a 2-hour wait) |
 | Data | Synthetic nations `Synthetic Nation 1…N`; no player, account or personal data |
 
-**A note on the Supabase integration.** The connected account contains one Supabase project, `NATIONSPHERE`, in region `ap-southeast-2`, status **`INACTIVE`** (paused). It was read for status only. It was not resumed, queried, migrated or otherwise modified, and no new Supabase project was created. §4 explains why.
+**A note on the Supabase integration (v1.0).** At the start of Prompt 10 the connected account contained one Supabase project, `NATIONSPHERE`, in region `ap-southeast-2`, status **`INACTIVE`** (paused). In v1.0 it was read for status only and deliberately left paused. **Prompt 10.1 reversed that decision** once the owner selected Supabase: the project was resumed, and a fully isolated `feasibility` schema was created and tested inside it. Nothing in the project's pre-existing `public` schema was read, altered or depended on. The v1.0 reasoning is preserved in §4 with a correction; the new results are in §§14–19.
 
 ### 1.1 What "deployed" does and does not mean here
 
@@ -78,7 +78,7 @@ All figures below were read from the official documentation on the date shown; n
 2. **`50 queries per Worker invocation` is a harder constraint than it first appears.** It is listed as a D1 limit, and it is not the same as the 50-subrequest limit. The prototype deliberately stays at 8–20 queries per invocation; a naive per-nation statement loop would exceed it at ~50 nations.
 3. **The 10 ms CPU limit is not a precise kill switch.** Two invocations in this spike used 36.6 ms and 61.6 ms of CPU and still returned `200`; Cloudflare documents "built-in flexibility" for infrequent overages. Treat 10 ms as a budget, not a guarantee — and not as a licence to exceed it.
 4. **GitHub Pages cannot host this project's frontend as-is** on a free plan while the repository is private, and its terms exclude using Pages as the free host for a commercial service. That does not block ₹0 (Cloudflare static assets are free and unlimited), but REQ-032's "Pages" wording should not be read as "GitHub Pages is the plan".
-5. **Supabase's free plan has no backups at all.** The pricing page lists "Automatic backups: Not included"; SEC-030 requires a restorable backup and SEC-032 a disclosed RPO. This is a functional gap, not a pricing preference.
+5. **Supabase's free plan has no *provider-managed* backups.** The pricing page lists "Automatic backups: Not included" and PITR is paid-only. The official backups page recommends that free-tier projects "regularly export their data using the Supabase CLI `db dump` command and maintain off-site backups", so a restorable backup is achievable — by the owner, on a schedule, stored separately. SEC-030/SEC-032 are therefore satisfiable in principle but not by default. Corrected in §14.4: v1.0 described this as "no backups at all", which understated the documented export path.
 
 ---
 
@@ -113,17 +113,17 @@ No authentication, no session, no rate limiting, no per-user authorization, no r
 | Mandatory monthly cost | ₹0 | ₹0 | Tie |
 | Database capacity | 500 MB **per database**, 5 GB/account, 10 DBs | 500 MB/project, 2 active projects | D1 |
 | Read/write metering | 5M reads + 100k writes/day, measured | Unlimited API requests, compute-bound | Supabase on paper; D1 measured |
-| Free backups | **7-day Time Travel** | **None** on Free | D1, decisively (SEC-030) |
-| Idle behaviour | Always available | **Paused after 1 week of inactivity** (the existing `NATIONSPHERE` project is currently INACTIVE) | D1, decisively for a 12-turn/day world |
+| Free backups | **7-day Time Travel** | **No provider-managed backups**; documented path is an owner-run `supabase db dump` stored off-site, plus a tested restore | D1 on convenience, not on feasibility (corrected — see §14.4) |
+| Idle behaviour | Always available | **Paused after a week of low activity**; "a few user requests to the database each day" is documented as enough to prevent it | D1 on principle; a live game with daily traffic should not pause (corrected — see §14.3) |
 | Connection model from a Worker | Native binding, no pooler | Pooler/Hyperdrive; extra hop and connection budget | D1 |
 | Scheduling | Native UTC cron (5 free); one boundary observed firing live | `pg_cron` inside Postgres; not exercised | D1 on evidence, not only on principle (see §7) |
 | Recovery/restore | Time Travel + `d1 export` | None on Free | D1 |
 | Relational maturity, auth, storage, realtime | Weaker (no native auth; SQLite) | Much stronger | Supabase |
 | Lock-in | SQLite dialect; export available | Postgres; portable | Supabase |
 
-**Decision (not an approval): keep Cloudflare Workers + D1 as the tested candidate and treat Supabase as the exit/fallback target.** The two decisive facts are the missing free backups and the idle pause on Supabase, both of which collide with SEC-030 and with a world that only advances when something runs. Supabase's advantages are real but are not needed by the first playable, and its free tier would be a worse fit for the recovery requirement.
+**v1.0 recommendation (superseded 2026-10-23 by the owner's decision, D-008): keep Workers + D1 as the tested candidate and treat Supabase as the exit/fallback target.** Two facts drove it: the absence of provider-managed free backups and the idle pause. Both were overstated (§14.3–14.4), and in any case the owner has since selected Supabase (D-008). The recommendation is preserved here as history, not as the current position.
 
-Creating a Supabase test project was rejected on purpose: the free plan allows two active projects, project creation is slow, the free plan has no backups to test, and none of the decisive facts above would change. That is a **documented non-test**, not an oversight.
+**Creating a Supabase test project was rejected in v1.0** on the grounds that the free plan allows two active projects, creation is slow, and there are no backups to test. Prompt 10.1 did not create a project either — it used the existing `NATIONSPHERE` project, resumed it, and isolated all work in a new `feasibility` schema. The v1.0 non-test is therefore superseded by an actual test (§15).
 
 **Other configurations considered and rejected:** GitHub Pages + Supabase (adds a service and still has no backups); a VPS or container host (not ₹0); Durable Objects as the primary store (free tier exists but is not needed and adds a second state model); Workers + KV (no relational integrity or transactions, unusable for settlement).
 
@@ -247,14 +247,17 @@ Cloudflare exposes per-invocation CPU time through `workersInvocationsAdaptive`.
 - Slot arithmetic is correct at the boundary, one millisecond before it, and across a full UTC day (12 slots, 2h apart). Unit-tested.
 - The Worker exposes a `scheduled()` handler; `wrangler dev --test-scheduled` invoked it and it resolved the current shared slot (recorded with `trigger = 'cron'`).
 - The deployed Worker's schedule list contains exactly `0 */2 * * *` and `*/5 * * * *`, confirmed by `GET /accounts/{id}/workers/scripts/px-feasibility-spike/schedules` after the `PUT`.
-- **A live Cron Trigger fired.** Two cron invocations were recorded in production D1:
+- **A live Cron Trigger fired — from the five-minute test schedule, not the product schedule.** The deployed D1 database records nine cron invocations, all read on 2026-10-23:
 
 | At (UTC) | Slot | Outcome | Nations | Duration | Rows written |
 |---|---|---|---|---|---|
 | 08:46:41 | 248992 (08:00) | **completed** | 1,000 | **14,883 ms** | 6,013 |
-| 08:51:00 | 248992 (08:00) | **noop** | 0 | 201 ms | **0** |
+| 08:51:00 | 248992 (08:00) | noop | 0 | 201 ms | 0 |
+| 08:56:00, 09:01:53, 09:06:00, 09:11:01, 09:16:00, 09:21:00, 09:26:00 | 248992 (08:00) | noop (seven more) | 0 | 197–517 ms | **0** |
 
-The pair is the strongest single piece of evidence in this report: the first invocation resolved the current shared slot on a real trigger, and the second — five minutes later, from the same schedule — found the completed ledger, applied nothing, and wrote nothing. That is exactly-once turn resolution under a real duplicate trigger, not a simulation.
+The nine timestamps sit on a five-minute cadence (the 08:45 tick, delayed to 08:46:41, then every five minutes). That is the signature of `*/5 * * * *`, the temporary schedule added to observe cron without waiting two hours — **not** of `0 */2 * * *`. The 08:00 boundary had passed at 08:22 when the schedules were created, and the product schedule's next opportunity was 10:00Z, outside the observation window. **The product two-hour schedule has never been observed firing.** The `*/5` schedule was removed at 09:31Z; only `0 */2 * * *` remains.
+
+What the nine invocations *do* prove is still the strongest single piece of evidence in this report, and it is about duplicate protection rather than cadence: the first invocation resolved the shared slot for 1,000 nations, and the eight that followed found the completed ledger and wrote nothing at all. That is exactly-once turn resolution under repeated real triggers, not a simulation.
 
 - There is no per-nation schedule anywhere in the design: one slot number is derived from one timestamp and applied to the whole world.
 
@@ -264,7 +267,7 @@ The pair is the strongest single piece of evidence in this report: the first inv
 - **Cron CPU attribution.** The analytics bucket closest to the 08:46 run reports **45.69 ms** CPU (with a 1.9 s worker duration), and the bucket near 08:51 reports 4.97 ms. Adaptive sampling does not expose an invocation ID, so the 45.69 ms figure is *consistent with* the 1,000-nation cron run exceeding the 10 ms limit, not proof that it was that invocation. The run nevertheless returned successfully, which again shows the limit is enforced with tolerance for infrequent overages.
 - **Propagation timing.** Schedules were accepted at `08:22:37Z`; the first firing was `08:46:41Z` — about 24 minutes later. Cloudflare documents "up to 15 minutes". The earlier "not observed" conclusion in this report was written at 08:43:56Z, three minutes before the trigger fired; it was wrong, and this section replaces it.
 
-**Therefore: the two-hour UTC schedule has now been exercised by the real scheduler at one boundary, including duplicate-trigger protection. The twelve-boundaries-per-day claim remains untested.**
+**Therefore: the real scheduler was exercised, and duplicate-trigger protection held across nine invocations — but all of them were driven by the temporary five-minute schedule. Neither the two-hour product schedule nor twelve consecutive boundaries have been observed.** This is corrected in §14.1; v1.0 wrongly described the firings as proof that the product cadence had run.
 
 ---
 
@@ -323,7 +326,7 @@ The pair is the strongest single piece of evidence in this report: the first inv
 | Gate | Recorded requirement | Final status | Why |
 |---|---|---|---|
 | **GATE-13** | The next workstream can proceed without undocumented assumptions | **CONDITIONAL** | The assumptions are now documented in Report 10 §3.2 and this report, and one previously undocumented assumption (that a single invocation can resolve any world size) has been replaced with a measurement. But OD-02 is still undecided, the DEF-003 condition has not been accepted by the owner, and V-2/CV-002 have not run. Documentary work cannot close an owner decision or a human test. |
-| **GATE-16** | Every essential component has a plausible free-tier path or an explicit blocker | **CONDITIONAL** | D1 persistence, execution, HTTPS delivery and the 12/day slot model are now **measured**, not inferred. The live scheduler is now **observed working** (a real trigger completed a 1,000-nation turn and no-opped a duplicate). But a 24-hour/12-boundary run does not exist; e-mail, backups and auth remain undecided (OD-06/07) or unmeasured (PV-15); and at ~1,000 nations the CPU budget is exceeded in one invocation. Auth is the one remaining component with neither a measured fit nor a confirmed blocker. |
+| **GATE-16** | Every essential component has a plausible free-tier path or an explicit blocker | **CONDITIONAL** | D1 persistence, execution, HTTPS delivery and the 12/day slot model are now **measured**, not inferred, and duplicate triggers held across nine real invocations. But every one of those invocations came from the temporary five-minute schedule; the product two-hour schedule was never observed firing. A 24-hour/12-boundary run does not exist; e-mail and backups remain undecided (OD-06/07); auth is unmeasured at 1,000 users (PV-15); and at ~1,000 nations one invocation exceeds the free CPU budget. §16 re-assesses this gate under the owner-selected Supabase architecture. |
 | **GATE-18** | The ₹0 claim is not based on unverified capacity or a hidden paid dependency | **CONDITIONAL** | Capacity is now measured at 50/250/1,000 and the write ceiling is ~1,386 nations — better evidence than any prior version. But the measurement identifies a CPU failure at 1,000, the capacity target is not owner-approved, PV-09's billing check is blocked, and no 24-hour/12-turn or quota-exhaustion run exists (the cron evidence is two triggers inside one slot). The ₹0 claim is **supported at S0/S1, borderline at S2, and not supported at S2b/S3** under the tested shape. |
 
 **No gate moved to PASS. No gate moved to FAIL**, because the failures observed are at an exploratory size (1,000) that the owner has not adopted as a requirement.
@@ -338,8 +341,8 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 
 | Item | Type | Detail |
 |---|---|---|
-| Live Cron Trigger | **Observed** | Completed a 1,000-nation turn at `08:46:41Z` (14.9 s, 6,013 writes) and no-opped a duplicate at `08:51:00Z` (0 writes) |
-| 12 consecutive boundaries | **Not observed** | Two triggers inside one slot is not a 24-hour run |
+| Live Cron Trigger | **Observed, test schedule only** | Nine invocations at a five-minute cadence between `08:46:41Z` and `09:26:00Z`; the first completed a 1,000-nation turn (14.9 s, 6,013 writes), the other eight wrote nothing. The `0 */2 * * *` schedule never fired in the window |
+| 12 consecutive boundaries | **Not observed** | Nine triggers inside one slot is not a 24-hour run, and none came from the product schedule |
 | 24-hour / 12-turn run | **Not run** | Would require a day of observation; PV-01 remains open |
 | Real quota exhaustion | **Not run** | Deliberately not forced; simulated only |
 | Billing/plan verification | **Blocked** | Connector lacks Billing Read scope (HTTP 403) |
@@ -348,7 +351,7 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 | Backup/restore drill (PV-08, OD-06) | **Not run** | Time Travel window exists; restore was not exercised |
 | Mid-batch kill | **Not tested** | Fault injected between batches; no OS-level kill |
 | GitHub push / CI | **Not possible** | Integration is read-only (search/commits/PRs); no repository exists for this project |
-| Supabase empirical test | **Deliberately not run** | Free plan has no backups; decision is documentary (§4) |
+| Supabase empirical test (v1.0) | **Superseded** | v1.0 deliberately skipped it; Prompt 10.1 ran it in isolation and recorded the results in §15 |
 | CPU figures | **Sampled** | Analytics, not exact per-invocation counters; noisy |
 | 1,000-nation CPU gap | **Unmeasured** | The exact crossover between 250 and 1,000 nations is not known |
 
@@ -374,22 +377,256 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 
 ---
 
-## 13. Final audit — the fifteen required questions
+## 13. Final audit — the fifteen required questions (v1.0; corrected where marked)
+
+> Prompt 10.1 required its own twenty-question audit; that is §19, and where the two differ, §19 wins. The answers below were corrected on 2026-10-23 where the original evidence did not support them (Q2, Q7, Q8, Q9, Q15).
 
 | # | Question | Answer |
 |---|---|---|
 | 1 | Which project files and connected resources were inspected? | All nine Stage-1 reports, the four continuity files, both validators and `DECISIONS.md`, plus the extracted archive manifest. Cloudflare: account, Worker list, D1 list, one existing unrelated Worker (`nationsphere-api`, read only), schedules, analytics. Supabase: one project's status (`NATIONSPHERE`, `INACTIVE`). GitHub: connector inspected, no project repository exists. |
-| 2 | Was the Prompt 9 correction state verified? | Yes. The working tree matched `Project X step 9 correction.zip` on **38/38** SHA-256 comparisons before any edit, and `DECISIONS.md` was not modified by this pass. |
+| 2 | Was the Prompt 9 correction state verified? | **Yes, and re-verified in Prompt 10.1.** All 38 archive files were compared to baseline commit `a1174d8`: 20 identical byte-for-byte, 16 identical after line-ending normalisation, 2 (`.freebuff/`) absent because they are gitignored. `DECISIONS.md` was not modified by the v1.0 pass; Prompt 10.1 modified it only to record the owner's two approved decisions (D-007, D-008). |
 | 3 | Were the exact gate definitions retrieved? | Yes, verbatim from P9 §20.2 (criteria) and §20.4 (blocking conditions), restated in Report 10 §3. |
 | 4 | Which integrations and actions were actually available? | **Cloudflare:** read plus write — Worker upload, D1 create/query, schedule read/write. Billing read is **not** available (403). **GitHub:** read-only actions (search/commits/PRs); no repository for this project, so nothing could be pushed. **Supabase:** read of project metadata only; the project was paused and was deliberately left paused. |
 | 5 | Was a real deployment completed? | **Yes** — Worker `px-feasibility-spike` on `workers.dev`, real D1 database, two cron schedules. Local workerd tests also ran; they are reported separately from the deployment. |
 | 6 | What evidence supports or contradicts D1's suitability? | **Supports:** exactly-once resolution across 250 nations, resumable batches, safe failure on injected limits, 7-day Time Travel, always-on availability, 6.01 rows written per nation-turn ⇒ ~1,386-nation write ceiling, a live cron firing. **Contradicts:** 36.6–61.6 ms CPU for 1,000 nations in one invocation (10 ms budget), the 50-query-per-invocation cap, single-threaded per database, and no per-invocation record cap in the current handler. |
-| 7 | What evidence supports or contradicts Supabase's suitability? | **Supports (documentary):** unlimited API requests, Postgres maturity, auth/storage/realtime, portability. **Contradicts:** free plan has **no backups or PITR** (collides with SEC-030/SEC-032) and **pauses after a week of inactivity**, which is fatal for a world that must advance 12 times a day. Not tested empirically — a documented decision, not an oversight (§4). |
-| 8 | Which configuration best fits requirements and ₹0? | **Workers + D1 remains the tested candidate; Supabase is the documented fallback/exit path.** D-005 stays **Provisional**; no architecture is approved. |
-| 9 | Was a real two-hour UTC scheduled trigger tested? | **Yes, at one boundary.** `08:46:41Z` completed slot 248992 (1,000 nations, 14.9 s); `08:51:00Z` correctly no-opped it (0 writes). Twelve consecutive boundaries were **not** observed (PV-01 open). |
+| 7 | What evidence supports or contradicts Supabase's suitability? | **Corrected — now tested (§15).** Supports: exactly-once resolution held, a failed transaction rolled back completely, a 1,000-nation slot resolved in 47–59 ms of database time, RLS and grants denied every prohibited action, and pg_cron fired on schedule. Contradicts: the free plan has **no provider-managed backups** (a documented export exists but an owner-run, tested restore is required), storage grows ~291 bytes per nation-turn (≈4 MB/day at 1,000 nations ⇒ the 500 MB free database is a ~125-day budget without retention), and the project is shared with an unrelated pre-existing schema. The v1.0 claim that pausing is "fatal" was wrong (§14.3). |
+| 8 | Which configuration best fits requirements and ₹0? | **Superseded by D-008.** The owner selected Cloudflare hosting + Supabase backend/database on 2026-10-23. The engineering details remain provisional; D-005 is marked superseded, not deleted. |
+| 9 | Was a real two-hour UTC scheduled trigger tested? | **No — corrected.** Nine real cron invocations were recorded, all on the temporary `*/5 * * * *` schedule; the first completed slot 248992 (1,000 nations, 14.9 s) and the other eight wrote nothing. The `0 */2 * * *` schedule had no opportunity to fire inside the window. The two-hour cadence was tested for arithmetic and for duplicate protection, not for scheduling. |
 | 10 | Results for persistence, idempotency, recovery, resumability? | Ledger persists the last completed slot across invocations; repeated and out-of-order slots are refused; 250 nations applied exactly once (250 markers, 250 audit rows, value conserved); injected interruption returns 409, records an `error` run, and a resume completes exactly once; a simulated storage limit fails safely without marking the turn complete and recovers afterwards. |
 | 11 | Which measurements are reproducible, which are estimates? | **Reproducible:** rows written/read (6.01 per nation-turn), statements per nation-turn (3.0), requests per batch, wall clock, batch counts — all from D1 rows the scripts recreate. **Sampled/estimated:** CPU (analytics buckets, no per-invocation ID), the 250→1,000 crossover, and all monthly extrapolations. |
 | 12 | Which tests passed, failed, skipped or were blocked? | **Passed:** 11/11 unit, 23/23 local integration, all deployed checks, `validate_final.py`, `09_validate.py` (68/68). **Blocked:** billing/plan read (403), GitHub push/CI (no repo, read-only), e-mail (no provider), Argon2id CPU (no benchmark), 24-hour run and real quota exhaustion (not attempted). **Skipped by design:** Supabase empirical test, mid-batch OS kill. |
 | 13 | Final status of each readiness gate? | **GATE-13 CONDITIONAL**, **GATE-16 CONDITIONAL**, **GATE-18 CONDITIONAL** — reasons and evidence in §9.1. No gate moved to PASS; none moved to FAIL. |
 | 14 | Does Stage 1 meet its documented completion criteria? | **No.** 17 pass / 3 conditional / 0 fail. Documentation is complete and consistent; readiness is not. |
-| 15 | Exact next task? | Owner decisions **OD-02** (scope), a capacity target, and OD-06/07 (backups, e-mail); then leave the spike deployed 24 hours to close PV-01's 12-boundary criterion, and cap per-invocation work in the scheduled handler before any 1,000-nation claim. |
+| 15 | Exact next task? | **Superseded — see §19.** Prompt 10.1's next task is to observe the product two-hour schedule at a real boundary, then design the owner-run backup and restore drill that the free plan does not provide. |
+
+---
+
+## 14. Corrections to v1.0 (Prompt 10.1)
+
+The owner's Prompt 10.1 asked for the earlier conclusions to be re-checked rather than repeated. Six things were wrong, overstated, or unsupported. Each is corrected here, in place above, and in the continuity files.
+
+| # | v1.0 claim | Correction | Evidence |
+|---|---|---|---|
+| 14.1 | "A live Cron Trigger fired … the two-hour schedule has now been exercised by the real scheduler at one boundary" | **Wrong.** Nine invocations were recorded, all on the temporary `*/5 * * * *` schedule. The product `0 */2 * * *` schedule never fired in the window; the 08:00 boundary had already passed when the schedules were created at 08:22Z, and the next opportunity was 10:00Z. Duplicate protection is proven; product cadence is not | D1 `spike_runs`: nine rows, 08:46:41 → 09:26:00, five-minute cadence; schedule list read at 09:31Z |
+| 14.2 | "Byte-identical to `Project X step 9 correction.zip` (38/38 SHA-256 matches)" | **Undated and no longer repeatable as stated**, because six documents have been edited since. Re-verified against baseline commit `a1174d8` instead: 20 of 38 archive files identical byte-for-byte, 16 identical after line-ending normalisation (the archive stores CRLF, git stores LF), 2 absent because `.freebuff/` is gitignored | `zipfile` + `git show a1174d8:<path>` comparison, 2026-10-23 |
+| 14.3 | Supabase "pauses after a week of inactivity … fatal for a world that must advance 12 times a day" | **Overstated.** The documented trigger is *low activity over seven days*; Supabase states that "a few user requests to the database each day over the previous week is enough" to prevent pausing. A live game with players and a two-hourly job is exactly the traffic that prevents it. The real risk is a **pre-launch or dormant** project pausing — recoverable for up to a year — not a running world | [free-project-pausing](https://supabase.com/docs/guides/platform/free-project-pausing), read 2026-10-23 |
+| 14.4 | Supabase free plan has "no backups at all" / "None on Free" | **Imprecise.** There are no *provider-managed* backups and no PITR, but Supabase's own backups page directs free-tier projects to "regularly export their data using the Supabase CLI `db dump` command and maintain off-site backups". The requirement is satisfiable by the owner; it is simply not automatic | [backups](https://supabase.com/docs/guides/platform/backups), read 2026-10-23 |
+| 14.5 | "This pass verified …" for the D1 numbers | **Partly reproducible only.** The local unit and integration suites can be re-run in this workspace; the deployed D1 runs cannot be re-created without re-running the spike against production D1 (and spending the quota it measures). They are retained as *previously reported* measurements, not independently re-verified in 10.1 | §5.1–5.2 re-run in 10.1; deployed rows read from D1 directly |
+| 14.6 | Architecture recommendation: "keep D1 as the tested candidate, Supabase as fallback" | **Overtaken by the owner's decision** (D-008). Preserved as history in §4; the current direction is Cloudflare hosting + Supabase backend/database | [DECISIONS.md](../DECISIONS.md) D-008 |
+
+### 14.7 What was re-run, and what was not
+
+| Check | Rerun in 10.1? | Result |
+|---|---|---|
+| `node --test test/slots.test.js` (D1 prototype) | **Yes** | 11/11 passed |
+| `node scripts/integration.mjs` (local workerd + local D1) | **Yes** | 23/23 passed |
+| Deployed D1 measurements | Re-read, not re-run | Nine cron rows and the earlier HTTP runs are still in `spike_runs` |
+| `validate_final.py`, `09_validate.py` | **Yes** | Updated and passing (see §18) |
+| Supabase turn engine | **Yes — new** | §15 |
+| Cloudflare page deployment | **Yes — new** | §15.7 |
+
+---
+
+## 15. Supabase + Cloudflare feasibility results (Prompt 10.1)
+
+The owner selected Cloudflare hosting + Supabase backend/database (D-008). The smallest test that could produce evidence for the gates under that direction was built and run. Everything below is a real execution against the owner's connected accounts, not a simulation.
+
+### 15.1 Where it ran, and what was isolated
+
+| Item | Value |
+|---|---|
+| Supabase project | `NATIONSPHERE`, ref `suotjamclwdithcitspe`, region `ap-southeast-2`, PostgreSQL 17.6.1.166 |
+| Status at start | `INACTIVE` (paused). Resumed with the connected integration; reached `ACTIVE_HEALTHY` |
+| Isolation | New schema `feasibility`. **Nothing in the pre-existing `public` schema was read, altered or depended on** |
+| Extensions added | `pg_cron` (for the scheduler test) |
+| Rows | 1,000 synthetic nations; 3,000 nation-turn markers; 3,000 audit rows. No accounts, no personal data |
+| Cloudflare | Worker `nation-supremacy` on `nationsphere.workers.dev`; the D1 spike `px-feasibility-spike` left in place |
+
+**Two things the next session must know.**
+
+1. The project was **not empty**. It already contained a `public` schema with `app_meta`, `ns_rate_limit_config`, `ns_signup_attempts`, `ns_signup_reservations`, `ns_signup_bypass` and `player_profiles`, all with zero rows and comments referring to ADR-037/ADR-040. Those are not part of this project's saved documentation and were left untouched. They may be an earlier attempt at the same game; that is an owner question, not something this report can resolve.
+2. The Supabase tooling flagged **`public.app_meta` as having Row Level Security disabled**, which would expose it through the Data API to anyone holding the publishable key. No change was made: enabling RLS without policies would break whatever uses it. The owner must decide. The remediation statement is `ALTER TABLE "public"."app_meta" ENABLE ROW LEVEL SECURITY;` — but only after deciding which policies it needs.
+
+### 15.2 The engine, in one paragraph
+
+`feasibility.current_slot(ts)` is `floor(epoch(ts)/7200)`, so every boundary is an even UTC hour and a 24-hour window contains exactly 12 slots. A slot is claimed by inserting into `turn_runs`, whose primary key is the slot; a completed slot returns `noop` before any work. Each batch is a single SQL statement: candidate nations are selected `for update`, `turn_applied` is inserted with `on conflict (slot, nation_id) do nothing`, the treasury and `last_slot` are updated from the rows actually inserted, and an audit row is written for each — so the value change and its audit row cannot disagree. A `pg_try_advisory_xact_lock` serialises resolvers. `turn_runs.cursor` advances forward-only, which is what makes a partial slot resumable.
+
+### 15.3 Persistence, idempotency, resumability, failure
+
+| Test | Result |
+|---|---|
+| Slot arithmetic | `08:00:00Z → 248992`, `07:59:59.999999Z → 248991`, `10:00:00Z → 248993`; step 1; **12 distinct slots in 24 h**. Matches the D1 spike's slot number for 08:00Z exactly |
+| Batch 1 (250) | `partial`, 250 applied, cursor 250, 750 remaining, **25.2 ms** |
+| Batch 2 (250, resumed) | `partial`, cumulative 500, cursor 500, **15.5 ms** |
+| Final batch (1,000) | `completed`, cumulative 1,000, **24.3 ms** |
+| Duplicate trigger on the completed slot | `noop`, reason `slot already completed`, 0 applied |
+| Older slot | `noop`, reason `older than the last completed slot` |
+| Conservation | **1,000 markers, 1,000 audit rows, treasury sum 10,000, 0 wrong rows, 0 stale slots** |
+| Injected failure mid-batch | Exception raised; **the whole transaction rolled back**: 0 run rows, 0 markers, 0 audit rows, treasury unchanged |
+| Retry after that failure | `completed`, 1,000 applied, 1,000 markers, 1,000 audit rows, treasury 20,000 — **no duplication, no gap** |
+| Whole slot, batch 250 | `completed`, 1,000 applied, 4 batches, **47.2 ms** |
+| Two overlapping calls | The harness serialised them: the second saw the completed slot and returned `noop` in 3.3 ms. **True concurrency was not exercised** |
+
+The rollback result is the important difference from D1. D1's per-nation batches commit independently, so an interruption leaves the ledger `running` and a resume continues. PostgreSQL's single-transaction batch means an interruption leaves **nothing**; the retry redoes the batch from the same cursor. Both are safe, and the Postgres behaviour is simpler to reason about; the cost is that a very large batch is also a very large transaction.
+
+### 15.4 Access control — tested, not asserted
+
+All tests ran as the real roles (`set local role authenticated` / `anon`) with a synthetic JWT claim, in rolled-back transactions.
+
+| Test | Result |
+|---|---|
+| `authenticated` (sub `user-a`) reads its own profile | 1 row, own only |
+| `authenticated` reads `user-b`'s profile | **0 rows** (RLS) |
+| `authenticated` updates `user-b`'s profile | **0 rows affected** (RLS) |
+| `authenticated` updates `nations.treasury` | **permission denied for table nations** |
+| `authenticated` executes the resolver | **permission denied for function resolve_slot** |
+| `anon` reads `profiles` | **permission denied for table profiles** |
+| `authenticated` reads the world | 1,000 rows — the intended read-only world view |
+
+A signed-in player therefore cannot move a treasury, mark a turn complete, write an audit row, or read another player's record. That is the client-trust boundary SEC-010/012 asks for, tested at the database layer. It is **not** a test of the HTTP/PostgREST path, of Supabase Auth, or of a real browser session.
+
+### 15.5 Scheduling
+
+| Test | Result |
+|---|---|
+| `pg_cron` available | Installed; `cron.job` and `cron.job_run_details` present |
+| Temporary every-minute job | Fired at **09:39:00.04Z** and **09:40:00.03Z**; `job_run_details.status = succeeded`. Removed after the test |
+| Product job `0 */2 * * *` | Created 09:40:52Z. **Fired at 10:00:00Z**, resolved slot 248993, `job_run_details.status = succeeded`, heartbeat row written |
+| Duplicate protection under the real scheduler | Slot 248993 had already been completed by the test sequence, so the scheduled run **no-opped** and wrote nothing but the heartbeat |
+
+The product schedule fired **exactly on the boundary**, in the chosen platform, with no propagation delay observed. That is materially better evidence than the Cloudflare test, where the observed firings came from a five-minute schedule. It is still **one boundary**, not twelve.
+
+### 15.6 Capacity and storage
+
+| Metric | Measured |
+|---|---|
+| Database time, 1,000-nation slot | **47.2 ms** (batch 250) and **59.1 ms** (batch 100) |
+| Database time, 250-nation batch | 15.5–25.2 ms |
+| Table growth | 1,000 → 3,000 nation-turns added 582 KB across the three tables |
+| **Marginal storage** | **≈ 291 bytes per nation-turn** (markers + audit + nation row) |
+| Extrapolation at 1,000 nations, 12 turns/day | ≈ 3.5 MB/day ⇒ **the 500 MB free database is a ~140-day budget** without retention |
+| Whole database | 13.0 MB, of which the spike is ~1.2 MB; the rest is the pre-existing schema and platform catalogs |
+
+Unlike the Workers free plan, Supabase's free plan does not meter CPU per query; the binding constraints are **500 MB of database, 5 GB of egress, and 2 active projects**. The 500 MB limit is per project, and this project is already shared with another schema, so retention policy is not optional at 1,000 nations.
+
+### 15.7 Cloudflare website
+
+| Check | Result |
+|---|---|
+| URL | **https://nation-supremacy.nationsphere.workers.dev** — live, HTTPS |
+| Document title | `<title>Nation Supremacy</title>` |
+| Visible heading | `<h1>Nation Supremacy</h1>` |
+| `/` | `200`, `text/html; charset=utf-8`, 1,972 bytes |
+| `/health` | `200`, JSON: service, build, `role: feasibility preview, not the game` |
+| Unknown path | `404` |
+| `POST /` | `405` with `Allow: GET, HEAD` |
+| Headers | CSP (`default-src 'none'`, inline style/script only), `nosniff`, `no-referrer`, `X-Frame-Options: DENY` |
+
+The page is **served by a Worker script**, not by the static-assets pipeline. That is a limitation of the connector, not a design choice: the static-assets upload requires an `Authorization` header on the asset-upload request, and the connected tool can only send the account token. Static assets are free and unmetered on Workers, so production should use them (or Pages); doing so needs `wrangler` with an API token, which this environment did not have.
+
+Two deployment faults occurred and are recorded because they are the kind of thing that silently produces a "deployed" site that does not work: the first upload stored the multipart envelope as the script body (the API accepted it, and the Worker returned `error code: 1042`), and the second upload succeeded but left **`workers.dev` disabled for the script**, which also returned 404. The fix was to upload the module as raw JavaScript and enable the script subdomain explicitly.
+
+### 15.8 What this does not prove
+
+- **No true concurrency.** The two-invocation test was serialised by the tool; the advisory lock has not been exercised against a real second session. The unique constraints are what was tested.
+- **No backup or restore.** No export was taken, no restore was drilled. The free plan has no provider-managed backups (§14.4).
+- **No auth flow.** RLS was tested by switching Postgres roles, not through a browser session and not through Supabase Auth.
+- **No 24-hour run.** One product boundary, at 10:00:00Z.
+- **No load test.** 1,000 synthetic nations, one operation at a time.
+- **No PostgREST/edge-function path.** The resolver is a database function; exposing it through the Data API was not attempted, and should not be (SEC-010).
+
+---
+
+## 16. Gate re-assessment under D-008
+
+The gates themselves did not change. Their evidence did, and the architecture they are assessed against is now Supabase + Cloudflare rather than Workers + D1.
+
+| Gate | Recorded requirement | Status | Evidence now | What is still missing |
+|---|---|---|---|---|
+| **GATE-13** | The next workstream can proceed without undocumented assumptions | **CONDITIONAL** | The assumptions are documented; the architecture direction is now an owner decision (D-008), not an unresolved question | **OD-02** (scope) is still undecided, the DEF-003 condition has not been accepted, and V-2/CV-002 have still not run |
+| **GATE-16** | Every essential component has a plausible free-tier path or an explicit blocker | **CONDITIONAL** | Website hosting (Cloudflare, live), database (Supabase, tested), scheduler (pg_cron, fired on the boundary), exactly-once resolution, resumable batches, least privilege and RLS all have evidence in the chosen architecture. Auth has a plausible free path (50,000 MAU) | **No 24-hour/12-boundary run**; no backup/restore drill; e-mail (OD-07) still undecided; auth is documented, not exercised; the free database's 500 MB needs a retention policy before 1,000 nations |
+| **GATE-18** | The ₹0 claim is not based on unverified capacity or a hidden paid dependency | **CONDITIONAL** | No paid dependency found in the chosen configuration. Storage and time are measured (291 B/nation-turn, 47–59 ms per 1,000-nation slot). The website is free | **Capacity target still unapproved**; billing tier still unverifiable through the connector; no quota-exhaustion run; retention cost not yet modelled as a decision |
+
+**No gate moves to PASS, and none moves to FAIL.** GATE-16 is now much closer: the only missing component with no measurement at all is e-mail (OD-07), and the only missing *process* is backup/restore.
+
+### 16.1 Stage 1 verdict
+
+**Stage 1 is not complete.** 17 gates pass, 3 are conditional, 0 fail — the same counts as Prompt 9, with stronger evidence and a settled architecture direction. The verdict remains **conditionally ready for bounded Stage 2 work**.
+
+---
+
+## 17. ₹0 cost analysis for the selected architecture
+
+| Component | Free allowance (verified 2026-10-23) | What it means here | Risk |
+|---|---|---|---|
+| Cloudflare Worker requests | 100,000/day | A page + health check per visit; not binding for a small game | Low |
+| Cloudflare static assets | Free and unlimited (production path) | The prototype uses a Worker instead; production should not | None |
+| Supabase database | 500 MB/project | ≈140 days at 1,000 nations × 12 turns without retention | **Medium** — needs a retention decision |
+| Supabase egress | 5 GB/month | A 2 KB page is ~5 GB at 2.5 M page views; a JSON API costs more | Low for a small world |
+| Supabase API requests | Unlimited | The turn engine is a database function, so it does not consume API quota | None |
+| Supabase MAU | 50,000 | Far above a small launch | None |
+| Supabase projects | 2 active | This project already exists; a second would be a test/staging project | Low |
+| Supabase backups | **Not included** | Owner-run `db dump` + off-site storage required. Storage of a 500 MB dump is not free everywhere | **Medium** — an operational obligation, not a fee |
+| Supabase pause | After a week of low activity | A live game will not pause; a dormant pre-launch project will | Low, recoverable for 1 year |
+| Supabase log retention | 1 day | Enough for debugging, not for incident review | Medium for operations |
+| Supabase Edge Functions | 500,000 invocations | Not needed: the resolver is a database function | None |
+
+**Verdict: ₹0 in mandatory monthly cost is supported for the selected architecture at prototype/small-playtest scale**, provided (a) audit retention is designed before ~1,000 nations, (b) backups are exported by the owner, and (c) no Edge Function or paid add-on becomes necessary. It is **not** a guarantee, and it is **not yet evidenced beyond one boundary and one synthetic world**.
+
+---
+
+## 18. Tests, validators and documentation changes
+
+| Check | Result |
+|---|---|
+| `node --test test/slots.test.js` (D1 prototype, re-run) | **11/11 passed** |
+| `node scripts/integration.mjs` (local workerd + D1, re-run) | **23/23 passed** |
+| Supabase migration `0001`, `0002`, `0003`, `pg_cron` | **Applied successfully** |
+| Supabase engine tests (§15.3) | **10 of 11 passed**; true concurrency **not exercised** (the harness serialised the two calls) |
+| Supabase access-control tests (§15.4) | **7/7 passed** |
+| Cloudflare site checks (§15.7) | **6/6 passed** |
+| `python qa_backups/validate_final.py` | **ALL CHECKS PASSED** after the update below |
+| `python qa_backups/09_validate.py` | **74/74 passed** after the update below |
+
+**Validator changes, disclosed.** `09_validate.py` asserted `D-001…D-006` and that no `D-007` exists — a guard written when nothing was owner-approved. Two decisions now are (D-007, D-008), so the assertion had to change or it would fail on a correct document. It now asserts that D-004 is still `Provisional`, that D-005 is marked `Superseded by D-008`, that D-007 and D-008 exist with the right subject matter, and that the decision count is 8. `validate_final.py` carried the same stale pair of expectations (D-005 `Provisional`, "unexpected D-007") and was updated the same way. No assertion was deleted, and none was weakened to hide a defect.
+
+---
+
+## 19. Final audit — the twenty required questions
+
+| # | Question | Answer |
+|---|---|---|
+| 1 | Which files and connected resources were inspected? | The four continuity files, Reports 9–11, both validators, `DECISIONS.md`, and the whole `prototypes/` tree. Cloudflare: account, Worker list, subdomain, schedules, D1 rows, deployments. Supabase: project metadata, tables, extensions, `pg_cron`, roles and privileges. GitHub: repository search and file reads |
+| 2 | Was the Prompt 9 correction state verified? | **Yes.** All 38 archive files compared to baseline commit `a1174d8`: 20 exact, 16 line-ending-only, 2 gitignored. Zero content differences |
+| 3 | Was the owner's architecture decision recorded consistently? | **Yes.** D-008 in `DECISIONS.md`; D-005 marked superseded; Reports 10–11 and all three continuity files state the same direction |
+| 4 | Is Nation Supremacy recorded as the official name? | **Yes.** D-007, `AI_CONTEXT` §2, the handoff, the progress table, Report 11, and the deployed page title/heading |
+| 5 | Does the prototype display Nation Supremacy? | **Yes** — `<title>Nation Supremacy</title>` and `<h1>Nation Supremacy</h1>`, verified by fetching the live URL |
+| 6 | Was the website actually deployed to Cloudflare? | **Yes** — a real Worker deployment, publicly reachable over HTTPS |
+| 7 | Exact verified public URL? | **https://nation-supremacy.nationsphere.workers.dev** |
+| 8 | Was Supabase actually tested? | **Yes** — real project, real migrations, 1,000 synthetic nations, real `pg_cron` |
+| 9 | Did the authentication and protected-state tests pass? | **Yes at the database layer**: RLS isolates rows, and grants deny treasury updates, resolver execution and audit reads. **Auth itself (sign-up, session, JWT issuance) was not exercised** |
+| 10 | Was the shared two-hour turn tested against a real scheduled trigger? | **Yes, once.** `pg_cron` fired the product job at **10:00:00Z** on the boundary and resolved the current slot |
+| 11 | Was a complete 24-hour, 12-turn observation completed? | **No.** One product boundary plus a one-minute test job |
+| 12 | Were interruption recovery, idempotency and resumability tested? | **Yes.** Injected failure rolled back completely and the retry applied exactly 1,000 with no duplication; duplicate and older slots no-opped; batches resumed from a forward-only cursor |
+| 13 | Was a backup restored successfully? | **No.** No export was taken and no restore was drilled. The free plan provides no automatic backup |
+| 14 | What capacity measurements were obtained? | 1,000-nation slot in 47.2–59.1 ms of database time; 250-nation batch in 15.5–25.2 ms; **291 bytes per nation-turn**; ≈3.5 MB/day at 1,000 nations |
+| 15 | Is ₹0 supported? | **Supported at prototype/small-playtest scale, conditional beyond it** — see §17 |
+| 16 | Which tests passed, failed, skipped or were blocked? | Passed: 11/11 unit, 23/23 local D1 integration, 4 migrations, 9 engine tests, 7 access-control tests, 6 site checks, both validators. **Not exercised:** true concurrency, backup/restore, Supabase Auth, 24-hour run, quota exhaustion. **Blocked:** Cloudflare billing read (403), GitHub write (no repository for this project), static-assets upload (connector cannot send the upload header) |
+| 17 | Updated gate statuses? | **GATE-13 CONDITIONAL, GATE-16 CONDITIONAL, GATE-18 CONDITIONAL** |
+| 18 | Does Stage 1 meet its documented criteria? | **No.** 17 pass / 3 conditional / 0 fail |
+| 19 | What remains for the owner? | OD-02 (scope), a capacity target, OD-06 (backup tier/process), OD-07 (e-mail), and a decision about the pre-existing `public` schema and the RLS-disabled `app_meta` |
+| 20 | Exact next task? | See §20 |
+
+---
+
+## 20. Next task
+
+**Observe twelve consecutive product boundaries** on the Supabase job now running, and record the results. It is the single cheapest item that moves GATE-16 and GATE-18: the scheduler is deployed, the heartbeat table records every firing, and the only missing input is a day of elapsed time. Read it with:
+
+```sql
+select slot, fired_at from feasibility.cron_heartbeat
+ where job = 'resolve_current_turn' order by id desc limit 20;
+select * from cron.job_run_details order by start_time desc limit 20;
+```
+
+Do **not** start the Game Design Bible or a production schema on the strength of this report. The turn engine is proven at one boundary, the backup path is unbuilt, and the capacity target is still the owner's to set.

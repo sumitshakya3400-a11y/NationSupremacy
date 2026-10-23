@@ -1,0 +1,91 @@
+{
+  "date_utc": "2026-10-23",
+  "project": {
+    "name": "NATIONSPHERE",
+    "ref": "suotjamclwdithcitspe",
+    "region": "ap-southeast-2",
+    "postgres": "17.6.1.166",
+    "status_at_start": "INACTIVE (paused)",
+    "status_after_resume": "ACTIVE_HEALTHY",
+    "note": "This project already contained an unrelated public schema before this spike. Nothing in public was read, altered or depended on. All spike objects live in schema feasibility."
+  },
+  "schema": {
+    "tables": [
+      "feasibility.nations",
+      "feasibility.turn_runs",
+      "feasibility.turn_applied",
+      "feasibility.audit",
+      "feasibility.cron_heartbeat",
+      "feasibility.profiles"
+    ],
+    "functions": [
+      "feasibility.current_slot(timestamptz)",
+      "feasibility.resolve_turn(bigint, integer, text, bigint)",
+      "feasibility.resolve_slot(bigint, integer, integer)",
+      "feasibility.resolve_current_turn(integer)",
+      "feasibility.cron_tick(text)"
+    ],
+    "extensions_added": ["pg_cron"],
+    "migrations_applied": 4
+  },
+  "slot_arithmetic": {
+    "2026-10-23T08:00:00Z": 248992,
+    "2026-10-23T07:59:59.999999Z": 248991,
+    "2026-10-23T10:00:00Z": 248993,
+    "step_per_boundary": 1,
+    "distinct_slots_in_24h": 12,
+    "cross_check": "matches the D1 spike's slot 248992 for 08:00Z"
+  },
+  "turn_tests": [
+    { "test": "batch 1 of 250", "outcome": "partial", "applied_this_batch": 250, "cumulative": 250, "remaining": 750, "duration_ms": 25.155 },
+    { "test": "batch 2 of 250 (resume)", "outcome": "partial", "applied_this_batch": 250, "cumulative": 500, "remaining": 500, "duration_ms": 15.517 },
+    { "test": "final batch of 1000", "outcome": "completed", "applied_this_batch": 500, "cumulative": 1000, "remaining": 0, "duration_ms": 24.3 },
+    { "test": "duplicate trigger on the completed slot", "outcome": "noop", "reason": "slot already completed", "applied_this_batch": 0 },
+    { "test": "older slot", "outcome": "noop", "reason": "older than the last completed slot" },
+    { "test": "conservation", "markers": 1000, "audit_rows": 1000, "treasury_sum": 10000, "wrong_treasury_rows": 0, "stale_slot_rows": 0 },
+    { "test": "injected failure at nation 100", "outcome": "exception, transaction rolled back", "run_rows_after": 0, "markers_after": 0, "audit_rows_after": 0, "treasury_unchanged": true },
+    { "test": "retry after the failed transaction", "outcome": "completed", "nations_applied": 1000, "markers": 1000, "audit_rows": 1000, "treasury_sum": 20000 },
+    { "test": "full slot, batch 250", "outcome": "completed", "nations_applied": 1000, "batches": 4, "duration_ms": 47.182 },
+    { "test": "two overlapping invocations", "outcome": "serialised by the harness; caller_b saw the completed slot and returned noop", "concurrency": "not exercised in parallel" }
+  ],
+  "access_control": [
+    { "role": "authenticated (sub=user-a)", "action": "select own profile", "result": "1 row, own only" },
+    { "role": "authenticated (sub=user-a)", "action": "select user-b profile", "result": "0 rows" },
+    { "role": "authenticated (sub=user-a)", "action": "update user-b profile", "result": "0 rows affected" },
+    { "role": "authenticated", "action": "update feasibility.nations.treasury", "result": "permission denied for table nations" },
+    { "role": "authenticated", "action": "execute feasibility.resolve_slot", "result": "permission denied for function resolve_slot" },
+    { "role": "anon", "action": "select feasibility.profiles", "result": "permission denied for table profiles" },
+    { "role": "authenticated", "action": "select feasibility.nations", "result": "1000 rows (world read allowed)" }
+  ],
+  "scheduler": {
+    "extension": "pg_cron",
+    "minute_test_job": "feasibility-minute-heartbeat (* * * * *)",
+    "minute_test_result": "2 rows written at 09:39:00.04Z and 09:40:00.03Z; cron.job_run_details status succeeded",
+    "minute_test_removed": true,
+    "product_job": "nation-supremacy-turn (0 */2 * * *)",
+    "product_job_created_at_utc": "2026-10-23T09:40:52Z",
+    "product_job_first_firing": {
+      "fired_at_utc": "2026-10-23T10:00:00Z",
+      "slot": 248993,
+      "job_run_status": "succeeded",
+      "outcome": "noop (slot already completed by the test sequence)",
+      "boundary_alignment": "exactly on the even UTC hour"
+    },
+    "product_job_boundaries_observed": 1
+  },
+  "storage": {
+    "measurements": [
+      { "nation_turns": 1000, "nations_bytes": 253952, "turn_applied_bytes": 155648, "audit_bytes": 180224 },
+      { "nation_turns": 3000, "nations_bytes": 368640, "turn_applied_bytes": 376832, "audit_bytes": 425984 }
+    ],
+    "marginal_bytes_per_nation_turn": 291,
+    "database_total_bytes": 13626515,
+    "free_plan_database_limit_bytes": 524288000,
+    "note": "The 500 MB limit is per project, so the game shares it with whatever else the project holds."
+  },
+  "timing": {
+    "1000_nations_full_slot_ms": [47.182, 59.121],
+    "batches_of_250_ms": [25.155, 15.517],
+    "basis": "server-side clock_timestamp around the function body; not network time"
+  }
+}

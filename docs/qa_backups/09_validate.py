@@ -10,7 +10,10 @@ Checks (document QA only, no game code):
      assert. Corrected 2026-10-23 — the assertion already expected 18.)
   4. Inherited register counts observed in the owning reports.
   5. Local Markdown links resolve.
-  6. DECISIONS.md still holds D-001..D-006 with D-004/D-005 Provisional.
+  6. DECISIONS.md holds D-001..D-008: D-004 still Provisional, D-005
+     Superseded by D-008, D-007/D-008 the owner-approved name and provider
+     direction. (Updated 2026-10-23 for Prompt 10.1: the old guard asserted
+     that no D-007 existed, which was correct only while nothing was approved.)
   7. No production code outside docs/qa_backups and the authorised spike
      directory prototypes/ (document-QA scripts allowed). Scoped 2026-10-23
      when Prompt 10 introduced the feasibility prototype; the intent (no game
@@ -139,7 +142,7 @@ check(len(r_ids) == 21, "R-01..R-21 (21)", str(len(r_ids)))
 check(len(fo) == 27, "FO-001..027 (27)", str(len(fo)))
 check(len(v_ids) == 10, "V-1..V-10 (10)", str(len(v_ids)))
 check(len(cv) == 6, "CV-001..006 (6)", str(len(cv)))
-check(len(d_ids) == 6, "D-001..D-006 (6)", str(len(d_ids)))
+check(len(d_ids) == 8, "D-001..D-008 (8)", str(len(d_ids)))
 check(
     len(f_ids) == 28 and "F-007" not in f_ids and "F-028" not in f_ids and "F-003b" in f_ids,
     "F register 28 rows; F-007/F-028 unassigned; F-003b present",
@@ -161,11 +164,18 @@ check(not missing, "All local Markdown links resolve", str(missing[:8]))
 
 # 6. Decision log ------------------------------------------------------------
 decisions = read(DOCS / "DECISIONS.md")
-check("| D-004 |" in decisions and "Provisional" in decisions, "D-004 present and Provisional")
-check("| D-005 |" in decisions and "Provisional" in decisions, "D-005 present and Provisional")
+d004_row = next((ln for ln in decisions.splitlines() if ln.startswith("| D-004 |")), "")
+check("| D-004 |" in decisions and "Provisional" in d004_row, "D-004 present and Provisional")
+check("| D-005 |" in decisions and "Superseded by D-008" in decisions,
+      "D-005 present and marked superseded, not deleted")
 check("Operations Points" in decisions and "Cloudflare Workers + D1" in decisions,
       "D-004/D-005 decision text intact")
-check("| D-007 |" not in decisions, "No unapproved decision was added")
+d007_row = next((ln for ln in decisions.splitlines() if ln.startswith("| D-007 |")), "")
+d008_row = next((ln for ln in decisions.splitlines() if ln.startswith("| D-008 |")), "")
+check("Nation Supremacy" in d007_row and "Confirmed" in d007_row,
+      "D-007 records Nation Supremacy as the confirmed public name")
+check("Supabase" in d008_row and "Cloudflare" in d008_row and "Confirmed" in d008_row,
+      "D-008 records the Cloudflare + Supabase direction as confirmed")
 
 # 7. No production code outside the document set and authorised prototype -----
 allowed_suffixes = {".py"}
@@ -226,6 +236,18 @@ check(re.search(r"no production (game )?code", report, re.IGNORECASE) is not Non
 check("not a guarantee" in report.lower() or "no guarantee" in report.lower(),
       "Report avoids an unlimited-free guarantee")
 check(report.count("Conditionally ready") >= 1, "Report states the readiness verdict")
+
+# 11. Prompt 10.1 state ------------------------------------------------------
+r11 = read(DOCS / "stage-1" / "11_free_tier_feasibility_results.md")
+check("Nation Supremacy" in r11 and "nation-supremacy.nationsphere.workers.dev" in r11,
+      "Report 11 records the official name and the deployed URL")
+check("## 14. Corrections to v1.0" in r11 and "## 15. Supabase" in r11,
+      "Report 11 carries the correction register and the Supabase results")
+check("10:00:00Z" in r11 and "pg_cron" in r11,
+      "Report 11 records the product pg_cron boundary firing")
+check("Superseded by D-008" in decisions, "D-005 supersession is recorded")
+check("Nation Supremacy" in ctx and "Supabase" in ctx,
+      "AI_CONTEXT carries the official name and the selected backend")
 
 print()
 print(f"{checks - len(failures)}/{checks} checks passed")
