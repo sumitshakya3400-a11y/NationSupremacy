@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "px-feasibility-spike",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-23",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "px-feasibility-spike",
+      // Placeholder: local development does not use the remote id. The deployed
+      // spike is uploaded with the real binding; replace this before `wrangler deploy`.
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ],
+  "triggers": {
+    // The product cadence: one shared turn at every even UTC hour (12/day).
+    "crons": ["0 */2 * * *"]
+  },
+  "vars": {
+    // Test routes are on locally; the deployed spike sets the token as a secret.
+    "ALLOW_SPIKE": "1"
+  }
+}

@@ -1,0 +1,62 @@
+[dev] 
+ ⛅️ wrangler 4.152.0
+────────────────────
+[dev] Your Worker has access to the following bindings:
+[dev] Binding                                     Resource                  Mode
+[dev] env.DB (px-feasibility-spike)               D1 Database               local
+[dev] env.ALLOW_SPIKE ("1")                       Environment Variable      local
+[dev] env.SPIKE_TOKEN ("(hidden)")                Environment Variable      local
+[dev] 
+[dev] ⎔ Starting local server...
+[dev] [wrangler:info] Ready on http://127.0.0.1:8787
+[dev] [wrangler:info] GET /health 200 OK (1354ms)
+PASS  worker boots and serves /health  — slot 248992
+PASS  health advertises the 12/day product cadence  — 0 */2 * * *
+[dev] [wrangler:info] GET / 200 OK (4ms)
+PASS  browser page is served as HTML  — HTTP 200
+[dev] [wrangler:info] POST /api/spike/init 403 Forbidden (4ms)
+PASS  spike routes reject a request with no token  — HTTP 403
+[dev] [wrangler:info] POST /api/spike/init 200 OK (52ms)
+PASS  schema initialises (idempotent DDL)  — HTTP 200
+[dev] [wrangler:info] POST /api/spike/init 200 OK (12ms)
+PASS  schema initialisation is repeatable
+[dev] [wrangler:info] POST /api/spike/seed 200 OK (20ms)
+PASS  synthetic dataset seeds  — N=250
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (149ms)
+PASS  one invocation resolves the whole world  — outcome=completed applied=250 batches=3
+PASS  completed run reports rows written and db size  — rows_written=1507 rows_read=1506 requests=16 statements=763
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (15ms)
+PASS  a repeated trigger for the same slot is a no-op  — reason=slot already completed
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (58ms)
+PASS  a small batch stops early and reports remaining work  — applied=50 remaining=200
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (63ms)
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (56ms)
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (57ms)
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (67ms)
+[dev] [wrangler:info] GET /api/spike/report 200 OK (41ms)
+PASS  resumed invocations finish the slot exactly once  — applied=250 markers=250 audit_rows=250
+PASS  value is conserved and matches the deterministic rule  — delta_sum=3250 expected=3250
+[dev] [wrangler:info] POST /api/spike/resolve 409 Conflict (85ms)
+PASS  an injected interruption fails the invocation  — HTTP 409
+[dev] [wrangler:info] GET /api/status 200 OK (20ms)
+PASS  the failure is recorded, not hidden  — error
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (124ms)
+[dev] [wrangler:info] GET /api/spike/report 200 OK (40ms)
+PASS  the interrupted slot resumes forward-only to exactly 250 applications  — applied=250 audit=250
+[dev] [wrangler:info] POST /api/spike/resolve 409 Conflict (59ms)
+PASS  a simulated storage limit fails safely  — HTTP 409
+[dev] [wrangler:info] GET /api/spike/report 200 OK (43ms)
+PASS  a failed run does not mark the turn completed  — ledger=running
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (112ms)
+PASS  the world recovers after the limit clears  — completed
+[dev] [wrangler:info] POST /api/spike/resolve 200 OK (15ms)
+PASS  an older slot is refused as forward-only  — reason=slot is older than the last completed slot
+[dev] [wrangler:info] GET /api/status 200 OK (19ms)
+PASS  the world remembers the last completed slot  — last=248975 expected=248975
+[dev] [wrangler:info] POST /api/spike/seed 200 OK (16ms)
+PASS  the scheduled handler is reachable through the runtime  — HTTP 200
+[dev] [wrangler:info] GET /__scheduled 200 OK (73ms)
+[dev] [wrangler:info] GET /api/status 200 OK (49ms)
+PASS  a scheduled invocation resolves the current shared slot  — slot 248992 completed
+
+23/23 integration checks passed

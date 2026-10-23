@@ -1,0 +1,123 @@
+{
+  "environment": {
+    "provider": "Cloudflare",
+    "worker": "px-feasibility-spike",
+    "url": "https://px-feasibility-spike.nationsphere.workers.dev",
+    "database": "px-feasibility-spike (D1, APAC)",
+    "date": "2026-10-23",
+    "deployed_at": "2026-10-23T08:22:18Z",
+    "compatibility_date": "2026-10-23",
+    "schedules": ["0 */2 * * *", "*/5 * * * *"],
+    "data": "synthetic only"
+  },
+  "notes": [
+    "duration_ms is measured inside the Worker with Date.now() around the resolveTurn call and therefore includes D1 round trips.",
+    "rows_read / rows_written are the sum of D1 meta values returned to the Worker.",
+    "CPU figures are Cloudflare's workersInvocationsAdaptive analytics (sampled); they are not read by the Worker and are not exact per-invocation counters.",
+    "No Cron Trigger invocation was observed during the measurement window (see the report)."
+  ],
+  "measurements": [
+    {
+      "id": "D1",
+      "scenario": "250 nations, whole slot, batch 250",
+      "slot": 248991,
+      "outcome": "completed",
+      "applied": 250,
+      "batches": 1,
+      "duration_ms": 2635,
+      "rows_read": 1505,
+      "rows_written": 1505,
+      "requests": 11,
+      "statements": 760,
+      "db_size_after": 102400
+    },
+    {
+      "id": "D2",
+      "scenario": "repeat of the same slot (duplicate trigger)",
+      "slot": 248991,
+      "outcome": "noop",
+      "duration_ms": 51,
+      "rows_read": 1,
+      "rows_written": 0,
+      "requests": 1
+    },
+    {
+      "id": "D3",
+      "scenario": "1000 nations, whole slot, batch 250",
+      "slot": 248992,
+      "outcome": "completed",
+      "applied": 1000,
+      "batches": 4,
+      "duration_ms": 5632,
+      "rows_read": 6008,
+      "rows_written": 6008,
+      "requests": 20,
+      "statements": 3016,
+      "db_size_after": 249856
+    },
+    {
+      "id": "D4",
+      "scenario": "1000 nations, one batch of 50",
+      "slot": 248980,
+      "outcome": "partial",
+      "applied": 50,
+      "remaining": 950,
+      "duration_ms": 1481,
+      "rows_written": 302,
+      "requests": 8,
+      "statements": 157
+    },
+    {
+      "id": "D5",
+      "scenario": "1000 nations, one batch of 100",
+      "slot": 248981,
+      "outcome": "partial",
+      "applied": 100,
+      "remaining": 900,
+      "duration_ms": 1672,
+      "rows_written": 602,
+      "requests": 8,
+      "statements": 307
+    },
+    {
+      "id": "D6",
+      "scenario": "1000 nations, one batch of 250",
+      "slot": 248982,
+      "outcome": "partial",
+      "applied": 250,
+      "remaining": 750,
+      "duration_ms": 2354,
+      "rows_written": 1502,
+      "requests": 8,
+      "statements": 757
+    },
+    {
+      "id": "D7",
+      "scenario": "1000 nations, whole slot (repeat, for CPU)",
+      "slot": 248960,
+      "outcome": "completed",
+      "applied": 1000,
+      "batches": 4,
+      "duration_ms": 6358,
+      "rows_read": 6008,
+      "rows_written": 6008,
+      "requests": 20,
+      "statements": 3016
+    }
+  ],
+  "cpu_analytics_sampled": [
+    {"at": "2026-10-23T08:33:02Z", "requests": 1, "scenario": "one batch of 50", "cpu_ms": 6.71},
+    {"at": "2026-10-23T08:34:15Z", "requests": 1, "scenario": "one batch of 100", "cpu_ms": 20.10},
+    {"at": "2026-10-23T08:35:28Z", "requests": 1, "scenario": "one batch of 250", "cpu_ms": 11.16},
+    {"at": "2026-10-23T08:41:34Z", "requests": 1, "scenario": "1000 nations in one invocation", "cpu_ms": 61.63, "duration_s": 0.822},
+    {"at": "2026-10-23T08:26:29Z", "requests": 1, "scenario": "1000 nations in one invocation (earlier attempt)", "cpu_ms": 36.57, "duration_s": 0.727},
+    {"at": "2026-10-23T08:38:09Z-08:38:36Z", "requests": 17, "scenario": "20 x one batch of 100 (range)", "cpu_ms_range": [1.27, 5.11], "median_ms": 3.53},
+    {"at": "2026-10-23T08:39:38Z-08:39:47Z", "requests": 10, "scenario": "10 x one batch of 250 (range)", "cpu_ms_range": [1.40, 4.68], "median_ms": 3.39}
+  ],
+  "cron_observation": {
+    "schedules_set_at": "2026-10-23T08:22:37Z",
+    "window_checked_until": "2026-10-23T08:43Z",
+    "invocations_observed": 0,
+    "status": "not observed"
+  }
+}

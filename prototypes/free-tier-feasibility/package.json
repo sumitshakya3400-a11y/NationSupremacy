@@ -1,0 +1,18 @@
+{
+  "name": "px-free-tier-feasibility",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Project X Stage 1 readiness spike: shared 2h UTC turns, D1 idempotency and resumable batches. Synthetic data only.",
+  "scripts": {
+    "dev": "wrangler dev --port 8787",
+    "dev:scheduled": "wrangler dev --port 8787 --test-scheduled",
+    "deploy": "wrangler deploy",
+    "test": "node --test test/",
+    "test:integration": "node scripts/integration.mjs",
+    "schema:local": "wrangler d1 execute px-feasibility-spike --local --file=./schema/0001_init.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.152.0"
+  }
+}

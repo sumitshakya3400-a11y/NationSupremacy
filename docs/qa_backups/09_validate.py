@@ -11,7 +11,10 @@ Checks (document QA only, no game code):
   4. Inherited register counts observed in the owning reports.
   5. Local Markdown links resolve.
   6. DECISIONS.md still holds D-001..D-006 with D-004/D-005 Provisional.
-  7. No production code outside docs/qa_backups (document-QA scripts allowed).
+  7. No production code outside docs/qa_backups and the authorised spike
+     directory prototypes/ (document-QA scripts allowed). Scoped 2026-10-23
+     when Prompt 10 introduced the feasibility prototype; the intent (no game
+     or production code in the project) is unchanged.
   8. Continuity files agree on Prompt 9 / Stage 1 / zero-cost / readiness.
   9. Correction-pass assertions: P8 §15.4 says twelve stage-A requirements,
      A8 states the SEC-031 subset, TH-011 separates prevention from residual,
@@ -164,18 +167,21 @@ check("Operations Points" in decisions and "Cloudflare Workers + D1" in decision
       "D-004/D-005 decision text intact")
 check("| D-007 |" not in decisions, "No unapproved decision was added")
 
-# 7. No production code ------------------------------------------------------
+# 7. No production code outside the document set and authorised prototype -----
 allowed_suffixes = {".py"}
 code_suffixes = {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".go", ".rs", ".java", ".cs", ".php", ".rb"}
+EXEMPT_PARTS = {"prototypes", "node_modules", "dist", ".wrangler"}
 offenders = []
 for path in ROOT.rglob("*"):
     if not path.is_file() or ".git" in path.parts:
+        continue
+    if set(path.parts) & EXEMPT_PARTS:
         continue
     if path.suffix.lower() in code_suffixes:
         offenders.append(str(path.relative_to(ROOT)))
     if path.suffix.lower() in allowed_suffixes and "qa_backups" not in path.parts:
         offenders.append(str(path.relative_to(ROOT)))
-check(not offenders, "No production code outside docs/qa_backups", str(offenders))
+check(not offenders, "No production code outside docs/qa_backups and prototypes/", str(offenders))
 
 # 8. Continuity agreement ----------------------------------------------------
 ctx = read(DOCS / "AI_CONTEXT.md")

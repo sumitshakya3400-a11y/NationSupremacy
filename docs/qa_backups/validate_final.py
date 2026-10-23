@@ -11,6 +11,13 @@ executed-sequence state, and the valid checks were retained unchanged.
 It validates documents only. It is not a game test, not a security test, and
 not evidence that any proposed control works.
 
+Scope note (2026-10-23, Prompt 10): the "no production code" assertion used to
+mean "no code exists anywhere in the project". Prompt 10 authorises a bounded,
+labelled feasibility spike, so the assertion now means what it was for: no code
+in the research deliverables or at the project root. Only
+`prototypes/` (with its dependencies and build output) is exempt, and the
+prototype contains no gameplay code.
+
 Run from anywhere: paths resolve relative to this file.
 """
 
@@ -193,9 +200,17 @@ if 'Keep "Operations Points" as a provisional' not in dec:
 if "Treat Cloudflare Workers + D1 as initial candidates only" not in dec:
     fail.append("DECISIONS: D-005 decision text altered")
 
-# 8. No production code ------------------------------------------------------
+# 8. No production code outside the authorised prototype --------------------
+# Prompt 10 permits exactly one isolated spike directory. Code anywhere else
+# (docs/, project root, future game directories) still fails this check.
+EXEMPT_PARTS = {"prototypes", "node_modules", "dist", ".git", ".wrangler"}
 files = [p for p in glob.glob(str(ROOT / "**" / "*"), recursive=True) if ".git" not in Path(p).parts and Path(p).is_file()]
-prodlike = [f for f in files if f.lower().endswith((".ts", ".js", ".tsx", ".jsx", ".cs", ".go", ".rb", ".php", ".java", ".c", ".cpp"))]
+prodlike = [
+    f
+    for f in files
+    if f.lower().endswith((".ts", ".js", ".tsx", ".jsx", ".cs", ".go", ".rb", ".php", ".java", ".c", ".cpp"))
+    and not (set(Path(f).parts) & EXEMPT_PARTS)
+]
 if prodlike:
     fail.append("production-code-like files present: " + "; ".join(prodlike[:10]))
 py_out = [f for f in files if f.endswith(".py") and "qa_backups" not in Path(f).parts]
