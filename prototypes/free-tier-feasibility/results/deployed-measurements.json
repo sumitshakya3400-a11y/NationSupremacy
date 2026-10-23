@@ -14,7 +14,7 @@
     "duration_ms is measured inside the Worker with Date.now() around the resolveTurn call and therefore includes D1 round trips.",
     "rows_read / rows_written are the sum of D1 meta values returned to the Worker.",
     "CPU figures are Cloudflare's workersInvocationsAdaptive analytics (sampled); they are not read by the Worker and are not exact per-invocation counters.",
-    "No Cron Trigger invocation was observed during the measurement window (see the report)."
+    "A live Cron Trigger fired at 08:46:41Z (completed 1,000 nations) and again at 08:51:00Z (no-op duplicate). No 24-hour/12-boundary run was observed."
   ],
   "measurements": [
     {
@@ -116,8 +116,13 @@
   ],
   "cron_observation": {
     "schedules_set_at": "2026-10-23T08:22:37Z",
-    "window_checked_until": "2026-10-23T08:43Z",
-    "invocations_observed": 0,
-    "status": "not observed"
+    "first_trigger_at": "2026-10-23T08:46:41Z",
+    "propagation_minutes": 24,
+    "invocations": [
+      {"at": "2026-10-23T08:46:41Z", "slot": 248992, "outcome": "completed", "nations": 1000, "duration_ms": 14883, "rows_written": 6013},
+      {"at": "2026-10-23T08:51:00Z", "slot": 248992, "outcome": "noop", "nations": 0, "duration_ms": 201, "rows_written": 0}
+    ],
+    "status": "observed; 24-hour run not observed",
+    "cpu_note": "Nearest analytics bucket (08:45:59Z) reports 45.69 ms CPU, but adaptive sampling does not expose an invocation id; attribution is indicative only."
   }
 }

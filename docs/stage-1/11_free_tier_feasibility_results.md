@@ -22,7 +22,7 @@ What the evidence shows:
 | Does an interrupted invocation corrupt state? | **No** — failed runs left `running`, resumed to exactly N applications |
 | Does a simulated storage limit fail safely? | **Yes** — 409, no completed ledger, clean recovery |
 | Do 12 turns/day fit the free scheduler CPU budget? | **Only below a measured size.** A 250-nation batch used ~1.4–5.1 ms CPU; resolving 1,000 nations in one invocation used **36.6 ms and 61.6 ms** — over the 10 ms free limit |
-| Did a live Cron Trigger fire? | **Not observed.** Schedules were accepted by the API, but no cron invocation appeared in 23 minutes of observation. Unproven |
+| Did a live Cron Trigger fire? | **Yes — observed.** It fired at 08:46:41Z, resolved the 08:00 UTC slot for 1,000 nations in 14.9 s, and fired again at 08:51:00Z for the same slot as a 0-write no-op. Propagation took ~24 minutes |
 | Are the 100k/day write limits a real constraint? | **Yes, and now quantified** — 6.01 rows written per nation-turn, so ~1,388 nations at 12 turns/day |
 | Is ₹0 still credible? | **Conditional** — at small sizes, yes; at ~1,000 nations in one invocation, the CPU limit is exceeded |
 | Did this pass verify the account's plan/billing? | **No** — the connector lacks Billing Read scope (403) |
@@ -51,7 +51,7 @@ What the evidence shows:
 
 - The Worker is **really deployed** and publicly reachable over HTTPS. `/health` and `/api/status` are read-only; mutating routes require a token that is stored as a Worker secret, not in the repository.
 - The D1 database is **really Cloudflare D1**, not a SQLite stand-in.
-- The **Cron Trigger is configured but was not observed firing**. Local scheduled-handler execution is proven (`/__scheduled` in `wrangler dev`); a live trigger is not.
+- The **Cron Trigger is configured and was observed firing**: once to complete a 1,000-nation turn (08:46:41Z) and once to no-op as a duplicate (08:51:00Z). What is still not observed is a **full 24-hour, 12-boundary run**.
 - The measurements are **not** a load test against a production world. They are single synthetic turns at 50, 250 and 1,000 nations, run once or a few times each.
 
 ---
@@ -197,6 +197,10 @@ All runs below are real requests to the deployed Worker against real D1. `durati
 | D5 | 1,000 nations, one batch of 100 | partial | 100 | 1,672 ms | 1,503 | 602 | 8 | 114,688 |
 | D6 | 1,000 nations, one batch of 250 | partial | 250 | 2,354 ms | 2,253 | 1,502 | 8 | 159,744 |
 | D7 | 1,000 nations again, whole slot | completed | 1,000 | 6,358 ms | 6,008 | 6,008 | 20 | 249,856 |
+| D8 | **Live Cron Trigger**, 1,000 nations, no batch cap | completed | 1,000 | **14,883 ms** | n/r | 6,013 | n/r | 249,856 |
+| D9 | **Live Cron Trigger**, same slot 5 min later | **noop** | 0 | 201 ms | n/r | **0** | n/r | 249,856 |
+
+The cron rows were not instrumented with request counts (`n/r`): the Worker records duration and rows, not D1 request counts, for scheduled runs. D8's 6,013 writes vs D7's 6,008 is fixed overhead from the ledger/measurement rows on a fresh slot.
 
 Reading the table:
 
@@ -243,17 +247,24 @@ Cloudflare exposes per-invocation CPU time through `workersInvocationsAdaptive`.
 - Slot arithmetic is correct at the boundary, one millisecond before it, and across a full UTC day (12 slots, 2h apart). Unit-tested.
 - The Worker exposes a `scheduled()` handler; `wrangler dev --test-scheduled` invoked it and it resolved the current shared slot (recorded with `trigger = 'cron'`).
 - The deployed Worker's schedule list contains exactly `0 */2 * * *` and `*/5 * * * *`, confirmed by `GET /accounts/{id}/workers/scripts/px-feasibility-spike/schedules` after the `PUT`.
+- **A live Cron Trigger fired.** Two cron invocations were recorded in production D1:
+
+| At (UTC) | Slot | Outcome | Nations | Duration | Rows written |
+|---|---|---|---|---|---|
+| 08:46:41 | 248992 (08:00) | **completed** | 1,000 | **14,883 ms** | 6,013 |
+| 08:51:00 | 248992 (08:00) | **noop** | 0 | 201 ms | **0** |
+
+The pair is the strongest single piece of evidence in this report: the first invocation resolved the current shared slot on a real trigger, and the second — five minutes later, from the same schedule — found the completed ledger, applied nothing, and wrote nothing. That is exactly-once turn resolution under a real duplicate trigger, not a simulation.
+
 - There is no per-nation schedule anywhere in the design: one slot number is derived from one timestamp and applied to the whole world.
 
-### 7.2 What is not proven — and this is the important part
+### 7.2 What is still not proven
 
-**No live Cron Trigger invocation was observed.** The schedules were accepted at `08:22:37Z`; the deployed Worker was polled repeatedly until `08:46Z` (23 minutes) and its `spike_runs` table contained no `trigger = 'cron'` row. Cloudflare documents propagation of "up to 15 minutes", so this is beyond the documented window. The cause was not determined from the available API surface.
+- **A 24-hour run.** Only two triggers were observed, both inside the same 2-hour slot. Twelve completed boundaries in a row, with no miss, is still PV-01's open criterion.
+- **Cron CPU attribution.** The analytics bucket closest to the 08:46 run reports **45.69 ms** CPU (with a 1.9 s worker duration), and the bucket near 08:51 reports 4.97 ms. Adaptive sampling does not expose an invocation ID, so the 45.69 ms figure is *consistent with* the 1,000-nation cron run exceeding the 10 ms limit, not proof that it was that invocation. The run nevertheless returned successfully, which again shows the limit is enforced with tolerance for infrequent overages.
+- **Propagation timing.** Schedules were accepted at `08:22:37Z`; the first firing was `08:46:41Z` — about 24 minutes later. Cloudflare documents "up to 15 minutes". The earlier "not observed" conclusion in this report was written at 08:43:56Z, three minutes before the trigger fired; it was wrong, and this section replaces it.
 
-Possible explanations, none verified: the API-only upload path does not fully register triggers until a dashboard or Wrangler deployment; the account's free plan has a restriction the connector cannot see; the triggers propagated later than the observation window.
-
-**Therefore: the two-hour UTC schedule has been tested against the actual target runtime only in the local workerd sense, not against a deployed trigger.** The deployed schedule is configured but unverified. This is exactly the distinction the brief demanded, and it is the single largest remaining gap in GATE-16/18.
-
-**Owner action to close it:** open the Cloudflare dashboard → Workers & Pages → `px-feasibility-spike` → Settings → Triggers, confirm the two cron expressions, and wait for a boundary; or redeploy from Wrangler (`wrangler deploy`) and observe `spike_runs` at the next even UTC hour. If the trigger then fires, the evidence is one real scheduled turn, not twelve.
+**Therefore: the two-hour UTC schedule has now been exercised by the real scheduler at one boundary, including duplicate-trigger protection. The twelve-boundaries-per-day claim remains untested.**
 
 ---
 
@@ -312,8 +323,8 @@ Possible explanations, none verified: the API-only upload path does not fully re
 | Gate | Recorded requirement | Final status | Why |
 |---|---|---|---|
 | **GATE-13** | The next workstream can proceed without undocumented assumptions | **CONDITIONAL** | The assumptions are now documented in Report 10 §3.2 and this report, and one previously undocumented assumption (that a single invocation can resolve any world size) has been replaced with a measurement. But OD-02 is still undecided, the DEF-003 condition has not been accepted by the owner, and V-2/CV-002 have not run. Documentary work cannot close an owner decision or a human test. |
-| **GATE-16** | Every essential component has a plausible free-tier path or an explicit blocker | **CONDITIONAL** | D1 persistence, execution, HTTPS delivery and the 12/day slot model are now **measured**, not inferred. But a live cron trigger was not observed; e-mail, backups and auth remain undecided (OD-06/07) or unmeasured (PV-15); and at ~1,000 nations the CPU budget is exceeded in one invocation. Several genuine blockers exist, which the gate allows, but two components (scheduler, auth) have neither a fit nor a confirmed blocker. |
-| **GATE-18** | The ₹0 claim is not based on unverified capacity or a hidden paid dependency | **CONDITIONAL** | Capacity is now measured at 50/250/1,000 and the write ceiling is ~1,386 nations — better evidence than any prior version. But the measurement identifies a CPU failure at 1,000, the capacity target is not owner-approved, PV-09's billing check is blocked, and no 24-hour/12-turn or quota-exhaustion run exists. The ₹0 claim is **supported at S0/S1, borderline at S2, and not supported at S2b/S3** under the tested shape. |
+| **GATE-16** | Every essential component has a plausible free-tier path or an explicit blocker | **CONDITIONAL** | D1 persistence, execution, HTTPS delivery and the 12/day slot model are now **measured**, not inferred. The live scheduler is now **observed working** (a real trigger completed a 1,000-nation turn and no-opped a duplicate). But a 24-hour/12-boundary run does not exist; e-mail, backups and auth remain undecided (OD-06/07) or unmeasured (PV-15); and at ~1,000 nations the CPU budget is exceeded in one invocation. Auth is the one remaining component with neither a measured fit nor a confirmed blocker. |
+| **GATE-18** | The ₹0 claim is not based on unverified capacity or a hidden paid dependency | **CONDITIONAL** | Capacity is now measured at 50/250/1,000 and the write ceiling is ~1,386 nations — better evidence than any prior version. But the measurement identifies a CPU failure at 1,000, the capacity target is not owner-approved, PV-09's billing check is blocked, and no 24-hour/12-turn or quota-exhaustion run exists (the cron evidence is two triggers inside one slot). The ₹0 claim is **supported at S0/S1, borderline at S2, and not supported at S2b/S3** under the tested shape. |
 
 **No gate moved to PASS. No gate moved to FAIL**, because the failures observed are at an exploratory size (1,000) that the owner has not adopted as a requirement.
 
@@ -327,7 +338,8 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 
 | Item | Type | Detail |
 |---|---|---|
-| Live Cron Trigger | **Not observed** | Schedules configured `08:22:37Z`; zero invocations by `08:46Z`; local scheduled path works |
+| Live Cron Trigger | **Observed** | Completed a 1,000-nation turn at `08:46:41Z` (14.9 s, 6,013 writes) and no-opped a duplicate at `08:51:00Z` (0 writes) |
+| 12 consecutive boundaries | **Not observed** | Two triggers inside one slot is not a 24-hour run |
 | 24-hour / 12-turn run | **Not run** | Would require a day of observation; PV-01 remains open |
 | Real quota exhaustion | **Not run** | Deliberately not forced; simulated only |
 | Billing/plan verification | **Blocked** | Connector lacks Billing Read scope (HTTP 403) |
@@ -356,6 +368,6 @@ The deliverables are complete through Reports 10–11, but **Stage 1 readiness i
 ## 12. Recommended next step
 
 1. **Owner:** decide OD-02 (scope), accept or reject the DEF-003 assumptions, and set a capacity target (or approve the exploratory sizes). Those are the only ways GATE-13 moves.
-2. **Owner:** confirm the cron trigger in the dashboard and observe one boundary, or authorize a Wrangler deploy; that closes the largest GATE-16 gap cheaply.
+2. **Owner/next session:** leave the Worker deployed for 24 hours and read `spike_runs`, or accept that PV-01's 12-boundary criterion stays open; the trigger itself is now proven.
 3. **Engineering (next Stage 2 spike):** fix the scheduled handler's missing per-invocation cap, then measure the 250→1,000 CPU crossover and a continuation mechanism if 1,000 is a real target.
 4. **Do not** start the Game Design Bible or a production schema on the strength of this report. The architecture decision (D-005) stays **Provisional**.
