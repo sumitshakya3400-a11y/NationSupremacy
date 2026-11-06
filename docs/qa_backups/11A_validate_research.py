@@ -69,10 +69,12 @@ HISTORICAL_REQ_MAX = 703
 # its number, so later work cannot retroactively fail the 11A check.
 KNOWN_LATER_MAX = 763
 KNOWN_PROMPT_OWNER = re.compile(r"^(?:(?:0[2-9]|1[0-5])[ABC]?|all)$")
-# REQ-704..REQ-763 are 11B's, except the two conditional rows that name the
-# downstream prompt which must resolve them (12 and 14). Any other owner in the
-# block is a misattribution.
-LATER_BLOCK_OWNERS = {"11B", "12", "14"}
+# REQ-704..REQ-763 are 11B's, except two conditional rows whose decision is
+# explicitly downstream: REQ-748 belongs to Prompt 12 and REQ-752 to Prompt 14.
+# Any other owner in the block, including 12/14 on the wrong row, is a
+# misattribution.
+LATER_BLOCK_DEFAULT_OWNER = "11B"
+LATER_BLOCK_OWNER_BY_NUMBER = {748: "12", 752: "14"}
 
 GAMES = [
     "Politics & War",
@@ -141,19 +143,23 @@ class Result:
 
 
 def read(path: Path) -> str:
+    """Read a UTF-8 document, replacing undecodable bytes."""
     return path.read_text(encoding="utf-8", errors="replace")
 
 
 def id_numbers(text: str, prefix: str) -> list[int]:
+    """Sorted unique numeric suffixes for an ID prefix."""
     return sorted({int(n) for n in re.findall(rf"\b{re.escape(prefix)}-(\d+)\b", text)})
 
 
 def table_rows(text: str, first_cell_re: str) -> list[str]:
+    """Lines whose first table cell matches the pattern."""
     pat = re.compile(rf"^\|\s*(?:\*\*)?{first_cell_re}")
     return [ln for ln in text.splitlines() if pat.match(ln)]
 
 
 def section(text: str, heading_re: str, stop_re: str) -> str:
+    """Text of one heading section, up to the next heading."""
     m = re.search(heading_re, text, flags=re.M)
     if not m:
         return ""
@@ -191,12 +197,14 @@ def rows_with_heading(text: str, first_cell_re: str) -> list[tuple[str, str]]:
 # --- checks ---------------------------------------------------------------
 
 def c01(_docs: dict[str, str]) -> Result:
+    """Check that the main report and both registers exist."""
     missing = [p.name for p in FILES.values() if not p.exists()]
     return Result(1, "canonical research document and both registers exist",
                   not missing, "all three files present" if not missing else f"missing: {missing}")
 
 
 def c02(d: dict[str, str]) -> Result:
+    """Check that sections 12-15 cover all four Prompt 11 domains."""
     m = d["main"]
     need = [r"^## 12\.", r"^## 13\.", r"^## 14\.", r"^## 15\."]
     ok, det = True, []
@@ -210,6 +218,7 @@ def c02(d: dict[str, str]) -> Result:
 
 
 def c03(d: dict[str, str]) -> Result:
+    """Check that Politics & War has the deepest game-specific coverage."""
     c = d["comparator"]
     pw = [n for n in id_numbers(c, "11A-BM") if n <= 22]
     others = {
@@ -230,12 +239,14 @@ def c03(d: dict[str, str]) -> Result:
 
 
 def c04(d: dict[str, str]) -> Result:
+    """Check that at least five comparator games are named."""
     found = [g for g in GAMES if re.search(re.escape(g), d["main"], flags=re.I)]
     return Result(4, "at least five games researched", len(found) >= 5,
                   f"{len(found)} of {len(GAMES)} named: " + ", ".join(found))
 
 
 def c05(d: dict[str, str]) -> Result:
+    """Check that two additional games carry a selection rationale."""
     m = d["main"]
     sec = section(m, r"^## 11\. ", r"\n## 12\. ")
     ok = bool(re.search(r"Call of War", sec)) and bool(re.search(r"Tribal Wars", sec))
@@ -245,6 +256,7 @@ def c05(d: dict[str, str]) -> Result:
 
 
 def c06(d: dict[str, str]) -> Result:
+    """Check that every source row declares an ownership class."""
     c = d["comparator"]
     pairs = rows_with_heading(c, r"`11A-RS-\d+`")
     kinds = ("OFFICIAL", "COMMUNITY", "THIRD-PARTY", "PLAYER-AUTHORED")
@@ -263,6 +275,7 @@ def c06(d: dict[str, str]) -> Result:
 
 
 def c07(d: dict[str, str]) -> Result:
+    """Check that every source row carries a currency token."""
     c = d["comparator"]
     rows = [ln for ln, _ in rows_with_heading(c, r"`11A-RS-\d+`")]
     bad = [ln[:60] for ln in rows
@@ -275,6 +288,7 @@ def c07(d: dict[str, str]) -> Result:
 
 
 def c08(d: dict[str, str]) -> Result:
+    """Check that every benchmark mechanic cites a source row."""
     c = d["comparator"]
     body = bm_entries(c)
     # Traceability, not a field named "Source": every mechanic must point at the
@@ -288,6 +302,7 @@ def c08(d: dict[str, str]) -> Result:
 
 
 def c09(d: dict[str, str]) -> Result:
+    """Check that every source row has a URL or a recorded gap."""
     c = d["comparator"]
     rows = [ln for ln, _ in rows_with_heading(c, r"`11A-RS-\d+`")]
     # A row is located if it gives a full URL or the documented `…/path` shorthand for
@@ -302,6 +317,7 @@ def c09(d: dict[str, str]) -> Result:
 
 
 def c10(d: dict[str, str]) -> Result:
+    """Check that every source row records an access date."""
     c = d["comparator"]
     rows = table_rows(c, r"`11A-RS-\d+`")
     bad = [ln[:70] for ln in rows
@@ -312,6 +328,7 @@ def c10(d: dict[str, str]) -> Result:
 
 
 def c11(d: dict[str, str]) -> Result:
+    """Check that every mechanic entry carries a confidence grade."""
     c = d["comparator"]
     body = bm_entries(c)
     missing = [re.match(r"#{4,6} (11A-BM-\d+)", e).group(1)
@@ -323,6 +340,7 @@ def c11(d: dict[str, str]) -> Result:
 
 
 def c12(d: dict[str, str]) -> Result:
+    """Check that observations are labelled separately from recommendations."""
     c, m = d["comparator"], d["main"]
     observed = len(re.findall(r"\*\*OBSERVED", c))
     interp = len(re.findall(r"\*\*INTERPRETATION", c)) + len(re.findall(r"INTERPRETATION\.", c))
@@ -335,6 +353,7 @@ def c12(d: dict[str, str]) -> Result:
 
 
 def c13(d: dict[str, str]) -> Result:
+    """Check that the comparative research matrix is complete."""
     m = d["main"]
     sec = section(m, r"^## 19\. ", r"\n## 20\. ")
     rows = [ln for ln in sec.splitlines() if re.match(r"^\| \*\*(?:Politics|NationStates|Supremacy|Travian|eRepublik|Call of War|Tribal)", ln)
@@ -346,6 +365,7 @@ def c13(d: dict[str, str]) -> Result:
 
 
 def c14(d: dict[str, str]) -> Result:
+    """Check that all four design areas evaluate alternatives."""
     m = d["main"]
     sec = section(m, r"^## 20\. ", r"\n## 21\. ")
     subs = re.findall(r"^### 20\.\d ", sec, flags=re.M)
@@ -357,6 +377,7 @@ def c14(d: dict[str, str]) -> Result:
 
 
 def c15(d: dict[str, str]) -> Result:
+    """Check that all four design areas record a recommended direction."""
     m = d["main"]
     blocks = re.findall(r"\| \*\*Recommended direction\*\* \|", m)
     prim = re.findall(r"^### 21\.[2-5] ", m, flags=re.M)
@@ -366,6 +387,7 @@ def c15(d: dict[str, str]) -> Result:
 
 
 def c16(d: dict[str, str]) -> Result:
+    """Check the cross-system integration matrix and its field split."""
     r = d["registers"]
     # The matrix is deliberately split into two tables (fields 1-7 and fields 8-15),
     # so every ID appears twice. Cardinality is measured on the unique ID set.
@@ -379,6 +401,7 @@ def c16(d: dict[str, str]) -> Result:
 
 
 def c17(d: dict[str, str]) -> Result:
+    """Check that B-02 through B-10 each have their own subsection."""
     m = d["main"]
     sec = section(m, r"^## 17\. ", r"\n## 18\. ")
     need = ["B-02", "B-03", "B-04", "B-05", "B-06", "B-07", "B-08", "B-09", "B-10"]
@@ -388,6 +411,7 @@ def c17(d: dict[str, str]) -> Result:
 
 
 def c18(d: dict[str, str]) -> Result:
+    """Check the anti-exploit register and its ten required fields."""
     r = d["registers"]
     rows = [ln for ln in r.splitlines() if re.match(r"^\| `11A-RK-\d+` \|", ln)]
     header_ok = "Detection approach" in r and "False-positive risk" in r and "acceptance test" in r.lower()
@@ -398,6 +422,7 @@ def c18(d: dict[str, str]) -> Result:
 
 
 def c19(d: dict[str, str]) -> Result:
+    """Check that peaceful progression is analysed."""
     m = d["main"]
     sec = section(m, r"^## 16\. ", r"\n## 17\. ")
     rows = [ln for ln in sec.splitlines() if re.match(r"^\| \d+ \| \*\*", ln)]
@@ -408,6 +433,7 @@ def c19(d: dict[str, str]) -> Result:
 
 
 def c20(d: dict[str, str]) -> Result:
+    """Check that the D-014 compliance section is present."""
     m = d["main"]
     sec = section(m, r"^## 31\. ", r"\n## 32\. ")
     ok = "D-014" in sec and len(sec) > 1200
@@ -416,6 +442,7 @@ def c20(d: dict[str, str]) -> Result:
 
 
 def c21(d: dict[str, str]) -> Result:
+    """Check that the Prompt 11B handoff is complete."""
     m = d["main"]
     sec = section(m, r"^## 25\. ", r"\n## 26\. ")
     need = ["11B", "candidate requirement", "must decide", "inherits unchanged"]
@@ -425,6 +452,7 @@ def c21(d: dict[str, str]) -> Result:
 
 
 def c22(d: dict[str, str]) -> Result:
+    """Check that the Prompt 11C handoff is complete and honest."""
     m = d["main"]
     sec = section(m, r"^## 26\. ", r"\n## 27\. ")
     ok = len(sec) > 1500 and "not started" in sec and "Designed, not executed" in sec
@@ -433,6 +461,7 @@ def c22(d: dict[str, str]) -> Result:
 
 
 def c23(d: dict[str, str]) -> Result:
+    """Check that Prompt 12-15 dependencies are documented."""
     m = d["main"]
     sec = section(m, r"^## 27\. ", r"\n## 28\. ")
     subs = re.findall(r"^### 27\.\d ", sec, flags=re.M)
@@ -441,6 +470,7 @@ def c23(d: dict[str, str]) -> Result:
 
 
 def c24(d: dict[str, str]) -> Result:
+    """Check that no fixed mechanic or owner decision is silently changed."""
     m = d["main"]
     # Only the 11A deliverables are scanned. The requirements and decision
     # registers are C29 inputs; their own wording ("superseded by DD-033",
@@ -461,6 +491,7 @@ def c24(d: dict[str, str]) -> Result:
 
 
 def c25(d: dict[str, str]) -> Result:
+    """Check that no gameplay implementation or release is claimed."""
     hits = []
     for name in DELIVERABLE_KEYS:
         text = d.get(name, "")
@@ -481,7 +512,8 @@ def c25(d: dict[str, str]) -> Result:
 def c26(d: dict[str, str]) -> Result:
     """All relative Markdown links in the three deliverables resolve."""
     bad = []
-    for name, path in FILES.items():
+    for name in DELIVERABLE_KEYS:
+        path = FILES[name]
         if not path.exists():
             continue
         text = d[name]
@@ -615,12 +647,12 @@ def c29(d: dict[str, str]) -> Result:
         number = int(rid[4:])
         if number <= KNOWN_LATER_MAX:
             # The 11B block is a recorded fact: REQ-704..REQ-763 are 11B's,
-            # except the two rows whose decision is explicitly downstream
-            # (REQ-748 -> Prompt 12, REQ-752 -> Prompt 14). Any other owner in
-            # this block is a misattribution.
-            if owner not in LATER_BLOCK_OWNERS:
-                problems.append(f"{rid} is attributed to {owner!r}, expected one of "
-                                f"{sorted(LATER_BLOCK_OWNERS)}")
+            # except REQ-748 -> Prompt 12 and REQ-752 -> Prompt 14. The expected
+            # owner is tied to the row number, so a stray 12/14 elsewhere in the
+            # block is a misattribution just like any other wrong owner.
+            expected_owner = LATER_BLOCK_OWNER_BY_NUMBER.get(number, LATER_BLOCK_DEFAULT_OWNER)
+            if owner != expected_owner:
+                problems.append(f"{rid} is attributed to {owner!r}, expected {expected_owner!r}")
         elif owner == "11A":
             problems.append(f"{rid} is attributed to 11A, which allocates no global requirement")
         elif not KNOWN_PROMPT_OWNER.match(owner):
@@ -668,6 +700,7 @@ CHECKS = [
 
 
 def run_all(docs: dict[str, str]) -> list[Result]:
+    """Run every check against the supplied document map."""
     return [f(docs) for f in CHECKS]
 
 
@@ -680,6 +713,7 @@ def self_test() -> int:
     seeded = 0
 
     def expect(name, docs, want_fail_prefix):
+        """Seed a defect and confirm the expected check fails."""
         nonlocal defects, seeded
         seeded += 1
         fails = [r.check for r in run_all(docs) if not r.ok]
@@ -690,6 +724,7 @@ def self_test() -> int:
             defects += 1
 
     def expect_ok(name, docs, want_check):
+        """Confirm the expected check still accepts a legitimate case."""
         nonlocal defects, seeded
         seeded += 1
         result = {r.check: r for r in run_all(docs)}[want_check]
@@ -759,6 +794,17 @@ def self_test() -> int:
     expect("requirement attributed to the wrong prompt", d, 29)
 
     d = dict(base)
+    lines = d["requirements"].splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("| REQ-710 |"):
+            cells = line.split("|")
+            cells[7] = " 12 "
+            lines[i] = "|".join(cells)
+            break
+    d["requirements"] = "\n".join(lines)
+    expect("conditional owner assigned to the wrong block row", d, 29)
+
+    d = dict(base)
     d["requirements"] += "\n| REQ-703 | duplicated boundary row | x | Provisional | x | x | 10B | x | x |\n"
     expect("duplicated requirement ID", d, 29)
 
@@ -771,6 +817,7 @@ def self_test() -> int:
 
 
 def main() -> int:
+    """Parse arguments, run the checks and return the exit code."""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--verbose", action="store_true")
     ap.add_argument("--self-test", action="store_true")

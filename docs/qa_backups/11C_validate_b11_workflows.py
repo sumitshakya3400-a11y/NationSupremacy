@@ -102,6 +102,7 @@ BANNED_CLAIM_PATTERNS = [
 
 
 def read(path: Path) -> str:
+    """Read a UTF-8 document, returning an empty string on failure."""
     try:
         return path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError):
@@ -126,6 +127,7 @@ def table_rows(text: str, ncols: int, first_pat: str) -> list[list[str]]:
 
 
 def record_map(rows: list[list[str]]) -> tuple[dict[str, list[str]], list[str]]:
+    """Map the first cell of each row to its cells, reporting duplicates."""
     mapping: dict[str, list[str]] = {}
     dupes: list[str] = []
     for cells in rows:
@@ -213,6 +215,7 @@ class Model:
     class_ranges: list[tuple[str, int, int]] = field(default_factory=list)
 
     def rebuild(self) -> None:
+        """Re-derive every parsed view from the current document text."""
         rb, reg, main = self.rulebook, self.register, self.main
         self.wep = set(re.findall(r"WEP-(\d{3})\b", rb) and [f"WEP-{x}" for x in set(re.findall(r"WEP-(\d{3})\b", rb))])
         self.fids = {}
@@ -261,6 +264,7 @@ class Model:
 
 
 def load() -> Model:
+    """Load every source document into a Model."""
     m = Model(
         main=read(MAIN), rulebook=read(RULEBOOK), register=read(REGISTER),
         requirements=read(REQUIREMENTS), decisions=read(DECISIONS), ddreg=read(DD_REGISTER),
@@ -330,10 +334,12 @@ def section(text: str, head: str, nxt: str) -> str:
 
 
 def ids_in(text: str, pat: str) -> list[str]:
+    """All identifier matches for a pattern."""
     return re.findall(pat, text)
 
 
 def check_01(m: Model) -> tuple[bool, str]:
+    """Check the header declares Prompt 11C and design-only status."""
     if "Prompt 11C" not in m.main[:4000]:
         return False, "header does not declare Stage 2, Prompt 11C"
     if "design only" not in m.main[:4000].lower():
@@ -342,6 +348,7 @@ def check_01(m: Model) -> tuple[bool, str]:
 
 
 def check_02(m: Model) -> tuple[bool, str]:
+    """Check sections 0-34 are present once and in order."""
     want = list(range(0, 35))
     if m.sections != want:
         missing = [n for n in want if n not in m.sections]
@@ -352,6 +359,7 @@ def check_02(m: Model) -> tuple[bool, str]:
 
 
 def check_03(m: Model) -> tuple[bool, str]:
+    """Check the 25 journeys exist with all 17 required fields."""
     want = [f"WJ-{n:03d}" for n in range(1, 26)]
     missing = [w for w in want if w not in m.journeys]
     if missing:
@@ -362,6 +370,7 @@ def check_03(m: Model) -> tuple[bool, str]:
 
 
 def check_04(m: Model) -> tuple[bool, str]:
+    """Check the 50 workflows exist with all 14 required fields."""
     want = [f"WWF-{n:03d}" for n in range(1, 51)]
     missing = [w for w in want if w not in m.workflows]
     if missing:
@@ -372,6 +381,7 @@ def check_04(m: Model) -> tuple[bool, str]:
 
 
 def check_05(m: Model) -> tuple[bool, str]:
+    """Check the 84 edge cases and 30 threats are column-complete."""
     want_e = [f"WEE-{n:03d}" for n in range(1, 85)]
     want_t = [f"WTS-{n:03d}" for n in range(1, 31)]
     miss_e = [x for x in want_e if x not in m.edge]
@@ -384,6 +394,7 @@ def check_05(m: Model) -> tuple[bool, str]:
 
 
 def check_06(m: Model) -> tuple[bool, str]:
+    """Check the 272 acceptance tests carry a result and a status."""
     want = [f"WTA-{n:03d}" for n in range(1, 273)]
     missing = [w for w in want if w not in m.tests]
     no_expected = [k for k, c in m.tests.items() if len(c) < 8 or not c[7]]
@@ -394,6 +405,7 @@ def check_06(m: Model) -> tuple[bool, str]:
 
 
 def check_07(m: Model) -> tuple[bool, str]:
+    """Check every workflow uses the 14 schema labels in order."""
     bad = []
     for wid, fields in m.workflows.items():
         labels = list(fields)
@@ -405,6 +417,7 @@ def check_07(m: Model) -> tuple[bool, str]:
 
 
 def check_08(m: Model) -> tuple[bool, str]:
+    """Check identifiers are duplicate-free and every range contiguous."""
     problems = []
     for label, wanted, got in (
         ("WJ", range(1, 26), set(m.journeys)), ("WWF", range(1, 51), set(m.workflows)),
@@ -424,6 +437,7 @@ def check_08(m: Model) -> tuple[bool, str]:
 
 
 def check_09(m: Model) -> tuple[bool, str]:
+    """Check class ranges tile the test set and match declared counts."""
     declared = {}
     for cells in table_rows(m.main, 5, r"[A-P]"):
         declared[cells[0]] = (cells[2], int(cells[3]))
@@ -452,6 +466,7 @@ def check_09(m: Model) -> tuple[bool, str]:
 
 
 def check_10(m: Model) -> tuple[bool, str]:
+    """Check every test is Design COMPLETE and Execution NOT RUN."""
     bad_status = {c[12] for _, c in m.tests.items() if c[12] not in ("NOT RUN", "PASS", "FAIL", "BLOCKED", "N/A")}
     claimed_pass = [k for k, c in m.tests.items() if c[12].upper() == "PASS"]
     not_run = [k for k, c in m.tests.items() if c[12] != "NOT RUN"]
@@ -465,6 +480,7 @@ def check_10(m: Model) -> tuple[bool, str]:
 
 
 def _known(m: Model, token: str) -> bool:
+    """True when an identifier token resolves to a real record."""
     if token.startswith("WEP-"):
         return token in m.wep
     if token.startswith("F-WEP-"):
@@ -519,6 +535,7 @@ PATTERNS = [
 
 
 def check_11(m: Model) -> tuple[bool, str]:
+    """Check every identifier used in the document resolves."""
     unresolved: list[str] = []
     for pat, _label in PATTERNS:
         for mm in re.finditer(pat, m.main):
@@ -535,6 +552,7 @@ def check_11(m: Model) -> tuple[bool, str]:
 
 
 def check_12(m: Model) -> tuple[bool, str]:
+    """Check the state machines and their owned transition rows."""
     machines = re.findall(r"### 12\.(\d+)", m.main)
     if len(machines) < 10:
         return False, f"only {len(machines)} state-machine subsections; 12 machines required"
@@ -562,6 +580,7 @@ def check_12(m: Model) -> tuple[bool, str]:
 
 
 def check_13(m: Model) -> tuple[bool, str]:
+    """Check all 60 requirements appear in the forward ledger."""
     want = [f"REQ-{n}" for n in range(704, 764)]
     missing = [w for w in want if w not in m.forward]
     bad_rules = []
@@ -577,6 +596,7 @@ def check_13(m: Model) -> tuple[bool, str]:
 
 
 def check_14(m: Model) -> tuple[bool, str]:
+    """Check formula classes recomputed from register field 20."""
     if len(m.fids) != 50:
         return False, f"register parsed {len(m.fids)} formulas, expected 50"
     structural = [k for k, v in m.fids.items() if v == "Structural"]
@@ -600,6 +620,7 @@ def check_14(m: Model) -> tuple[bool, str]:
 
 
 def check_15(m: Model) -> tuple[bool, str]:
+    """Check all 40 WPF codes map to a workflow and a test."""
     want = [f"WPF-{n:02d}" for n in range(1, 41)]
     missing = [w for w in want if w not in m.forward or True]
     wpf_window = section(m.main, "19", "20")
@@ -616,6 +637,7 @@ def check_15(m: Model) -> tuple[bool, str]:
 
 
 def check_16(m: Model) -> tuple[bool, str]:
+    """Check all 50 WPA events and the audit operation classes."""
     want = {f"WPA-{n:02d}" for n in range(1, 51)}
     window = m.main[m.main.find("## 12."):m.main.find("## 23.")]
     found = {tok.strip("`") for tok in re.findall(r"`WPA-\d{2}`", window)}
@@ -632,6 +654,7 @@ def check_16(m: Model) -> tuple[bool, str]:
 
 
 def check_17(m: Model) -> tuple[bool, str]:
+    """Check the ownership matrix grants B-11 no external write."""
     rows = table_rows(section(m.main, "14", "15"), 6, r".+")
     owned = [c for c in rows if c[1].startswith("B-") or c[1].startswith("**B-11**")]
     bad = []
@@ -648,6 +671,7 @@ def check_17(m: Model) -> tuple[bool, str]:
 
 
 def check_18(m: Model) -> tuple[bool, str]:
+    """Check the 17 WPC contracts and that no 18th exists."""
     want = [f"WPC-{n:02d}" for n in range(1, 18)]
     missing = [w for w in want if w not in m.integrations]
     bad = [k for k, c in m.integrations.items() if not c[1] or not c[2]]
@@ -662,6 +686,7 @@ def check_18(m: Model) -> tuple[bool, str]:
 
 
 def check_19(m: Model) -> tuple[bool, str]:
+    """Check WEG-01 is registered and cited where it is used."""
     gaps = {c[0].strip("`") for c in table_rows(section(m.main, "26", "27"), 6, r"WEG-\d{2}")}
     if "WEG-01" not in gaps:
         return False, "gap WEG-01 (the missing authorization code) is not registered"
@@ -672,6 +697,7 @@ def check_19(m: Model) -> tuple[bool, str]:
 
 
 def check_20(m: Model) -> tuple[bool, str]:
+    """Check provisional formulas are never called settled."""
     bad = []
     for fid in PROVISIONAL_FORMULAS:
         for sent in re.split(r"(?<=[.;])\s+", m.main):
@@ -691,6 +717,7 @@ def check_20(m: Model) -> tuple[bool, str]:
 
 
 def check_21(m: Model) -> tuple[bool, str]:
+    """Check the closed catalogues and the OBJ-ALL pairing rule."""
     counts = {
         "event classes": (r"exactly four event classes|four event classes", 4),
         "triggers": (r"five triggers|permitted triggers are", 5),
@@ -713,6 +740,7 @@ def check_21(m: Model) -> tuple[bool, str]:
 
 
 def check_22(m: Model) -> tuple[bool, str]:
+    """Check exactly the six approved reward classes appear."""
     classes = re.findall(r"`(RECOGNITION|RECORD|AUTHORSHIP|COSMETIC|TITLE|MATERIAL|PRESTIGE|POINTS|CURRENCY|BOOST|SKIN)`", m.main)
     allowed = {"RECOGNITION", "RECORD", "AUTHORSHIP", "COSMETIC", "TITLE", "MATERIAL"}
     extra = sorted({c for c in classes} - allowed)
@@ -748,6 +776,7 @@ def check_23(m: Model) -> tuple[bool, str]:
 
 
 def check_24(m: Model) -> tuple[bool, str]:
+    """Check the retired formula is only ever mentioned negatively."""
     mentions = [s for s in re.split(r"(?<=[.;])\s+", m.main) if RETIRED_FORMULA in s]
     if not mentions:
         return False, "the retired formula is never mentioned, so the prohibition is untested"
@@ -764,6 +793,7 @@ def check_24(m: Model) -> tuple[bool, str]:
 
 
 def check_25(m: Model) -> tuple[bool, str]:
+    """Check all 24 manipulation scenarios map to a threat."""
     start = m.main.find("**17.2 Coverage")
     end = m.main.find("## 18.")
     window = m.main[start:end]
@@ -788,6 +818,7 @@ def check_25(m: Model) -> tuple[bool, str]:
 
 
 def check_26(m: Model) -> tuple[bool, str]:
+    """Check every reward workflow declares an idempotency key."""
     reward_wfs = [k for k, f in m.workflows.items()
                   if re.search(r"reward|grant|claim|entitlement", f.get("ID and purpose", ""), flags=re.I)]
     bad = []
@@ -803,6 +834,7 @@ def check_26(m: Model) -> tuple[bool, str]:
 
 
 def check_27(m: Model) -> tuple[bool, str]:
+    """Check no owner-reserved decision is presented as resolved."""
     problems = []
     bad_claim = re.compile(r"\b(?:are|is|been|being|gets|get)\s+(?:now\s+|already\s+)?"
                            r"(?:resolved|closed|approved|decided)\b", re.I)
@@ -828,6 +860,7 @@ def check_27(m: Model) -> tuple[bool, str]:
 
 
 def check_28(m: Model) -> tuple[bool, str]:
+    """Check no implementation or runtime claim appears."""
     body = m.main
     hits = []
     for pat in BANNED_CLAIM_PATTERNS:
@@ -843,6 +876,7 @@ def check_28(m: Model) -> tuple[bool, str]:
 
 
 def check_29(m: Model) -> tuple[bool, str]:
+    """Check gate statuses, evidence and the recomputed tally."""
     want = [f"P11C-{n:02d}" for n in range(1, 21)]
     missing = [w for w in want if w not in m.gates]
     bad_status = []
@@ -870,6 +904,7 @@ def check_29(m: Model) -> tuple[bool, str]:
 
 
 def check_30(m: Model) -> tuple[bool, str]:
+    """Check journeys use only states the twelve machines permit."""
     event_states = {"QUALIFIED", "SCHEDULED", "ANNOUNCED", "ACTIVE", "CLOSED", "COMPLETED",
                     "EXPIRED", "CANCELLED", "VOIDED"}
     obj_states = {"AVAILABLE", "DISMISSED", "ACCEPTED", "IN_PROGRESS", "TIER_REACHED",
@@ -910,6 +945,7 @@ def check_30(m: Model) -> tuple[bool, str]:
 
 
 def check_31(m: Model) -> tuple[bool, str]:
+    """Check the link validator runs and reports no unresolved link."""
     try:
         proc = subprocess.run([sys.executable, str(LINKS)], capture_output=True, text=True,
                               encoding="utf-8", errors="replace", timeout=600)
@@ -953,6 +989,11 @@ def check_33(m: Model) -> tuple[bool, str]:
     cannot catch a stale document. This check compares the model to the rows.
     """
     problems: list[str] = []
+    if continuity_problems is None or declared_next_prompt is None:
+        return False, f"status_rules could not be imported: {_STATUS_IMPORT_ERROR}"
+    roadmap_key = "stage-2/01_stage_2_prompt_roadmap.md"
+    if roadmap_key not in m.status_docs:
+        return False, f"status document missing: {roadmap_key}"
     if "11C" not in COMPLETED_SUBPROMPTS:
         problems.append("11C is not in COMPLETED_SUBPROMPTS")
     for required in ("10A", "10B", "10C", "11A", "11B"):
@@ -999,9 +1040,11 @@ def check_34(m: Model) -> tuple[bool, str]:
     status = cells[5].replace("**", "").strip()
     if continuity_problems is None:
         return False, f"status_rules could not be imported: {_STATUS_IMPORT_ERROR}"
+    roadmap_key = "stage-2/01_stage_2_prompt_roadmap.md"
+    if roadmap_key not in m.status_docs:
+        return False, f"status document missing: {roadmap_key}"
     defects = continuity_problems(m.status_docs)
-    defects += [f"roadmap: {x}" for x in subprompt_status_problems(
-        m.status_docs["stage-2/01_stage_2_prompt_roadmap.md"])]
+    defects += [f"roadmap: {x}" for x in subprompt_status_problems(m.status_docs[roadmap_key])]
     if status == "PASS" and defects:
         return False, (f"P11C-18 is PASS but {len(defects)} active synchronization "
                        f"defect(s) remain: {defects[:2]}")
@@ -1021,6 +1064,7 @@ CHECKS: list = []
 
 
 def _register() -> None:
+    """Build the registry mapping check IDs to their executors."""
     defs = [
         ("11C-01", "header declares Prompt 11C and design-only status", check_01),
         ("11C-02", "sections 0-34 present in order without duplication", check_02),
@@ -1094,20 +1138,37 @@ TBL_HEAD = "| Field | Content |" + chr(10) + "|---|---|" + chr(10)
 
 
 def _edit(m: Model, old: str, new: str, count: int = 1) -> bool:
+    """Apply one in-place edit to the model text, for a fixture."""
     if old not in m.main:
         return False
     m.main = m.main.replace(old, new, count)
     return True
 
 
-def f_pos_01(m: Model) -> bool: return True
-def f_pos_02(m: Model) -> bool: return True
-def f_pos_03(m: Model) -> bool: return True
-def f_pos_04(m: Model) -> bool: return True
-def f_pos_05(m: Model) -> bool: return True
-def f_pos_06(m: Model) -> bool: return True
-def f_pos_07(m: Model) -> bool: return True
-def f_pos_08(m: Model) -> bool: return True
+def f_pos_01(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_02(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_03(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_04(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_05(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_06(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_07(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
+def f_pos_08(m: Model) -> bool:
+    """Positive fixture stub: leave the model unchanged."""
+    return True
 
 
 def f_neg_01(m: Model) -> bool:
@@ -1294,6 +1355,7 @@ FIXTURES = [
 
 
 def run_checks(m: Model, verbose: bool) -> tuple[list[tuple[str, bool, str]], int]:
+    """Run the registered checks and return their results and failures."""
     results = []
     failed = 0
     by_id = {c.cid: c for c in CHECKS}
@@ -1308,6 +1370,7 @@ def run_checks(m: Model, verbose: bool) -> tuple[list[tuple[str, bool, str]], in
 
 
 def check_by_id(m: Model, cid: str) -> tuple[bool, str]:
+    """Run one check by its 11C-NN identifier."""
     for c in CHECKS:
         if c.cid == cid:
             return c.fn(m)
@@ -1315,6 +1378,7 @@ def check_by_id(m: Model, cid: str) -> tuple[bool, str]:
 
 
 def run_fixtures(base: Model, verbose: bool) -> tuple[int, int, int, int, list[str]]:
+    """Run the positive and negative fixture sets."""
     pos_ok = pos_total = neg_ok = neg_total = 0
     notes: list[str] = []
     for fx in FIXTURES:
@@ -1343,6 +1407,7 @@ def run_fixtures(base: Model, verbose: bool) -> tuple[int, int, int, int, list[s
 
 
 def main(argv: list[str]) -> int:
+    """Parse arguments, run checks or fixtures, and return the exit code."""
     ap = argparse.ArgumentParser(add_help=True)
     ap.add_argument("--verbose", action="store_true")
     ap.add_argument("--self-test", action="store_true")

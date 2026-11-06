@@ -190,6 +190,36 @@ NEXT_TASK_PREFIX = re.compile(
 )
 
 
+def _mask_labelled_parentheticals(line: str) -> str:
+    """Blank bracketed records whose opening clause labels them as history.
+
+    A label at the start of a parenthetical scopes to that whole record, the
+    same way a line-opening label scopes to its line. The handoff's
+    "(Historical, superseded: … Prompt 11C is authorized but has not started.)"
+    record is historical even though the label is not at the line start.
+    """
+    masked = line
+    start = line.find("(")
+    while start != -1:
+        depth = 0
+        end = -1
+        for index in range(start, len(line)):
+            if line[index] == "(":
+                depth += 1
+            elif line[index] == ")":
+                depth -= 1
+                if depth == 0:
+                    end = index
+                    break
+        if end == -1:
+            break
+        first = re.split(r"(?<=[.;])\s+", line[start + 1:end], maxsplit=1)[0]
+        if HISTORICAL_MARKER.search(first):
+            masked = masked[:start] + " " * (end - start + 1) + masked[end + 1:]
+        start = line.find("(", end + 1)
+    return masked
+
+
 def status_clauses(text: str) -> list[str]:
     """Split into sentence-ish clauses so one sub-prompt's claim cannot leak.
 
@@ -198,7 +228,7 @@ def status_clauses(text: str) -> list[str]:
     """
     clauses: list[str] = []
     for line in text.splitlines():
-        line = line.strip()
+        line = _mask_labelled_parentheticals(line).strip()
         if not line:
             continue
         clauses.extend(part.strip() for part in re.split(r"(?<=[.;])\s+", line) if part.strip())
@@ -222,10 +252,15 @@ def subprompt_status_problems(
     # status block ("superseded by the 11B status above: … 11C is next") was
     # reported even though the record is explicitly historical.
     for line in text.splitlines():
-        if HISTORICAL_MARKER.search(line):
+        # Mask a labelled bracket first: its label scopes to the bracket, not to
+        # the rest of the line. Only then may a marker that opens the remaining
+        # record label the whole record. A marker elsewhere on the line exempts
+        # only its own clause, so a live claim in a later clause is reported.
+        line = _mask_labelled_parentheticals(line)
+        if HISTORICAL_LINE_MARKER.match(line):
             continue
         for clause in (part.strip() for part in re.split(r"(?<=[.;])\s+", line.strip())):
-            if not clause:
+            if not clause or HISTORICAL_MARKER.search(clause):
                 continue
             for match in SUBPROMPT.finditer(clause):
                 if match.group(1) not in completed:
@@ -279,14 +314,32 @@ OWNER_RESERVED_APPROVED = re.compile(
     re.IGNORECASE,
 )
 NEGATION_WORDS = {
-    "no", "not", "never", "without", "neither", "nor", "none", "cannot",
+    "no", "not", "nothing", "never", "without", "neither", "nor", "none", "cannot",
     "prohibit", "prohibited", "forbid", "forbidden", "unapproved", "unresolved",
     "outstanding", "pending", "open",
 }
 
+# A marker that opens the line/record labels the whole record (the 11A
+# "superseded by …" status block). Markdown emphasis, quote and bracket markers
+# may precede it.
+HISTORICAL_LINE_MARKER = re.compile(
+    r"^[\s>*_`\[\]()]*(" + HISTORICAL_MARKER.pattern + r")", re.IGNORECASE
+)
 
-def _negated(clause: str) -> bool:
-    tokens = {t.strip(".,;:()*`").lower() for t in clause.split()}
+CONTRAST = re.compile(r"\b(?:but|however|yet|although|though|whereas)\b|[.;]", re.IGNORECASE)
+
+
+def _negation_applies(clause: str, match: re.Match[str]) -> bool:
+    """True when a negation governs this specific claim, not merely the clause.
+
+    Only the segment between the last contrast/sentence boundary and the match
+    can suppress it. This keeps a mixed clause honest: "Nothing is implemented,
+    but the event system is implemented" still reports the positive half.
+    """
+    prefix = clause[max(0, match.start() - 120):match.start()]
+    parts = CONTRAST.split(prefix)
+    lead = parts[-1] if parts else prefix
+    tokens = {t.strip(".,;:()*`").lower() for t in (lead + " " + match.group(0)).split()}
     return bool(tokens & NEGATION_WORDS)
 
 
@@ -348,15 +401,25 @@ def continuity_problems(
             problems.append(f"{name}: completed sub-prompt presented as live: {excerpt}")
 
         for clause in status_clauses(text):
-            if HISTORICAL_MARKER.search(clause) or _negated(clause):
+            if HISTORICAL_MARKER.search(clause):
                 continue
             low = clause.lower()
-            if ("11c" in low or "b-11" in low or "prompt 11" in low) and IMPLEMENTED_CLAIM.search(clause):
-                problems.append(f"{name}: specification presented as implementation: {clause[:150]}")
-            if OWNER_RESERVED_APPROVED.search(clause):
+            if "11c" in low or "b-11" in low or "prompt 11" in low:
+                for match in IMPLEMENTED_CLAIM.finditer(clause):
+                    if _negation_applies(clause, match):
+                        continue
+                    problems.append(f"{name}: specification presented as implementation: {clause[:150]}")
+                    break
+            for match in OWNER_RESERVED_APPROVED.finditer(clause):
+                if _negation_applies(clause, match):
+                    continue
                 problems.append(f"{name}: owner-reserved decision presented as settled: {clause[:150]}")
-            if PROMPT_14_DONE.search(clause):
+                break
+            for match in PROMPT_14_DONE.finditer(clause):
+                if _negation_applies(clause, match):
+                    continue
                 problems.append(f"{name}: Prompt 14 presented as begun or complete: {clause[:150]}")
+                break
 
     seen: set[str] = set()
     unique: list[str] = []

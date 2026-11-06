@@ -639,8 +639,11 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C16]", "REQ-535")
 
     def test_49_req591_deferral_removed_fails(self):
+        # 2026-11-06 (Prompt 11C-C1): REQ-591 is now Provisional (10B supplied
+        # the B-10 rule), so mutating it to "Provisional" was a no-op. The test
+        # must move it to a status the C16 rule rejects.
         self.set_row_cell(
-            "stage-2/03_requirements_traceability.md", "REQ-591", 3, "**Provisional**"
+            "stage-2/03_requirements_traceability.md", "REQ-591", 3, "**Approved**"
         )
         self.assert_failure(run_checks(self.root), "[C16]", "REQ-591")
 
@@ -676,8 +679,9 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C17]", "D-135")
 
     def test_54_missing_decision_fails(self):
+        # 2026-11-06 (Prompt 11C-C1): the register now runs to D-162.
         self.delete_row("DECISIONS.md", "D-138")
-        self.assert_failure(run_checks(self.root), "[C17]", "D-001..D-142")
+        self.assert_failure(run_checks(self.root), "[C17]", "D-001..D-162")
 
     def test_55_dd_tally_regression_fails(self):
         self.modify(
@@ -707,7 +711,10 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C18]", "specification-level qualifier")
 
     def test_59_next_prompt_changed_fails(self):
-        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 10B", "stage_2_next_prompt: 09")
+        # 2026-11-06 (Prompt 11C-C1): the live prompt advanced to 12, so the
+        # fixture must mutate the current literal; a stale target silently
+        # disables the test (the D-10 hazard).
+        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 12", "stage_2_next_prompt: 09")
         self.assert_failure(run_checks(self.root), "[C18]", "stage_2_next_prompt")
 
     # ------------------------------------------------------------------

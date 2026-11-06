@@ -523,6 +523,22 @@ class ContinuityAgreementTests(unittest.TestCase):
                   "level and is not implemented.")
         self.assertEqual(continuity_problems({"PROJECT_PROGRESS.md": honest}), [])
 
+    def test_negation_only_exempts_the_claim_it_governs(self) -> None:
+        negative = "No B-11 control is implemented."
+        self.assertEqual(continuity_problems({"PROJECT_PROGRESS.md": negative}), [])
+        mixed = "No B-11 control is implemented, but the event layer is implemented."
+        problems = continuity_problems({"PROJECT_PROGRESS.md": mixed})
+        self.assertTrue(any("implementation" in p for p in problems), problems)
+
+    def test_history_marker_only_exempts_its_own_clause(self) -> None:
+        line = "The old plan is superseded. Prompt 11C has not started."
+        problems = continuity_problems({"roadmap.md": line})
+        self.assertTrue(any("11C" in p for p in problems), problems)
+        bracketed = ("(Historical, superseded: Prompt 11B was next.) "
+                     "Prompt 11C has not started.")
+        problems = continuity_problems({"roadmap.md": bracketed})
+        self.assertTrue(any("11C" in p for p in problems), problems)
+
     def test_owner_reserved_decision_cannot_be_reported_as_approved(self) -> None:
         docs = {"AI_HANDOFF.md": "UD-040 is approved and closed by this pass."}
         problems = continuity_problems(docs)

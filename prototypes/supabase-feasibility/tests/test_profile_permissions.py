@@ -48,24 +48,90 @@ REQUIRED_CASES = [
 
 
 def read_all_migrations() -> dict[str, str]:
+    """Read every migration keyed by filename, in application order."""
     return {p.name: p.read_text(encoding="utf-8") for p in sorted(MIGRATIONS.glob("*.sql"))}
 
 
+WRITE_PRIVILEGES = {"insert", "update", "delete", "truncate"}
+
+
+def _split_privileges(priv_text: str) -> list[str]:
+    """Split a GRANT/REVOKE privilege list on commas outside parentheses."""
+    return [p.strip() for p in re.split(r",(?![^()]*\))", priv_text) if p.strip()]
+
+
+def _table_wide_write(priv_text: str) -> set[str]:
+    """Write privileges this list grants across the whole table.
+
+    `update (display_name)` is column-scoped, so it is deliberately excluded;
+    `select, insert, update` and `all` include table-wide write privileges.
+    """
+    out: set[str] = set()
+    for priv in _split_privileges(priv_text):
+        if "(" in priv:
+            continue
+        head = priv.strip().lower()
+        if head in ("all", "all privileges"):
+            out |= WRITE_PRIVILEGES
+        elif head in WRITE_PRIVILEGES:
+            out.add(head)
+    return out
+
+
+def _roles(role_text: str) -> set[str]:
+    """Normalise a GRANT/REVOKE role list."""
+    return {r.strip().strip('"').lower() for r in role_text.split(",") if r.strip()}
+
+
+def final_profile_write_state(docs: dict[str, str]) -> dict[str, set[str]]:
+    """Replay GRANT/REVOKE on `feasibility.profiles` in migration order.
+
+    A grant earlier in the chain does not fail the lint if a later migration
+    revokes it; the check reports the *final* state. Column grants never mark a
+    table-wide write.
+    """
+    state: dict[str, set[str]] = {}
+    for name in sorted(docs):
+        sql = re.sub(r"--[^\n]*", "", docs[name])
+        for statement in sql.split(";"):
+            text = " ".join(statement.split())
+            match = re.match(
+                r"(?is)^(grant|revoke)\s+(.+?)\s+on\s+(?:table\s+)?"
+                r"(?:feasibility\.)?profiles\s+(?:to|from)\s+(.+)$",
+                text,
+            )
+            if not match:
+                continue
+            action, priv_text, role_text = match.group(1).lower(), match.group(2), match.group(3)
+            roles = _roles(role_text)
+            if action == "grant":
+                writes = _table_wide_write(priv_text)
+                for role in roles:
+                    state.setdefault(role, set()).update(writes)
+            else:
+                privs = _split_privileges(priv_text)
+                if any(p.strip().lower() in ("all", "all privileges") for p in privs):
+                    for role in roles:
+                        state.setdefault(role, set()).clear()
+                else:
+                    removed = {re.sub(r"\(.*\)", "", p).strip().lower() for p in privs}
+                    for role in roles:
+                        state.setdefault(role, set()).difference_update(removed)
+    return state
+
+
 def lint() -> list[tuple[str, bool, str]]:
+    """Statically check that no migration leaves a table-wide profile write."""
     docs = read_all_migrations()
-    joined = "\n".join(docs.values())
     corrective = docs.get("0005_profile_column_privileges.sql", "")
     schema = docs.get("0001_schema.sql", "")
     results: list[tuple[str, bool, str]] = []
 
-    table_wide = [
-        name for name, text in docs.items()
-        if re.search(r"grant\s+(?:all|update|insert)\b[^;]*\bon\s+(?:table\s+)?feasibility\.profiles",
-                     text, re.I)
-        and not re.search(r"revoke\s+(?:all|update|insert)\b[^;]*\bfeasibility\.profiles", text, re.I)
-    ]
+    final_writes = final_profile_write_state(docs)
+    offending = {role: sorted(privs) for role, privs in final_writes.items() if privs}
     results.append(("no migration leaves a table-wide write grant on profiles",
-                    not table_wide, f"offending files: {table_wide}" if table_wide else "none"))
+                    not offending,
+                    f"final write state: {offending}" if offending else "none"))
 
     results.append((
         "0005 revokes table-wide UPDATE before granting a column",
@@ -118,8 +184,18 @@ def lint() -> list[tuple[str, bool, str]]:
         "the corrective migration targets the feasibility schema",
         "feasibility.profiles" in corrective and "public.profiles" not in corrective,
         "schema matches 0001"))
-    del joined
     return results
+
+
+def _strip_psql_meta_commands(sql: str) -> str:
+    """Remove client-only psql commands (`\\set`, `\\echo`, …) before execution.
+
+    The connecting driver speaks the PostgreSQL wire protocol, not psql's
+    meta-language; sending `\\set` or `\\echo` to the server raises a syntax
+    error. Only backslash-command lines are removed; every SQL statement and
+    the fail-fast `raise exception` assertions are kept.
+    """
+    return "\n".join(line for line in sql.splitlines() if not line.lstrip().startswith("\\"))
 
 
 def integration() -> tuple[str, str]:
@@ -138,12 +214,24 @@ def integration() -> tuple[str, str]:
         return "BLOCKED", "neither psycopg nor psycopg2 is installed"
     if not SQL_TEST.exists():
         return "BLOCKED", "the SQL test file is missing"
-    sql = SQL_TEST.read_text(encoding="utf-8")
+    sql = _strip_psql_meta_commands(SQL_TEST.read_text(encoding="utf-8"))
     try:
         conn = driver.connect(url)
     except Exception as exc:  # connection refused, bad credentials, no network
         return "BLOCKED", f"could not connect: {exc}"
     try:
+        with conn.cursor() as cur:
+            # The test begins with `set role authenticated`; prove the
+            # connecting role may do that before blaming the SQL.
+            cur.execute("select current_user")
+            user = cur.fetchone()[0]
+            cur.execute("select coalesce(rolsuper, false) from pg_roles where rolname = current_user")
+            row = cur.fetchone()
+            superuser = bool(row[0]) if row else False
+            cur.execute("select pg_has_role(current_user, 'authenticated', 'MEMBER')")
+            member = bool(cur.fetchone()[0])
+        if not (superuser or member):
+            return "BLOCKED", f"role {user!r} cannot SET ROLE authenticated"
         with conn.cursor() as cur:
             cur.execute(sql)
         conn.rollback()
@@ -156,6 +244,7 @@ def integration() -> tuple[str, str]:
 
 
 def main(argv: list[str]) -> int:
+    """Run the lint, optionally the integration test, and return the exit code."""
     ap = argparse.ArgumentParser(add_help=True)
     ap.add_argument("--integration", action="store_true",
                     help="also attempt the live-database test")

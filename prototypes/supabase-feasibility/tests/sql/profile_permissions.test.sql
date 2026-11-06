@@ -136,19 +136,32 @@ select set_config('request.jwt.claims', '', true);
 
 -- 7. Authorized server operation: the turn resolver may still move money, and
 --    it moves it on nations (its own subsystem), not through a profile row.
+--    The resolver is batch-bounded, so keep calling it while the result is
+--    partial and the target treasury has not increased; a failure reports the
+--    final resolver result, not just the unlucky first call.
 do $$
-declare before_value bigint;
-declare after_value bigint;
+declare
+  before_value bigint;
+  after_value bigint;
+  result jsonb;
+  guard integer := 0;
 begin
   select treasury into before_value from feasibility.nations where id = 900001;
-  perform feasibility.resolve_turn(910001, 250);
-  select treasury into after_value from feasibility.nations where id = 900001;
+  loop
+    result := feasibility.resolve_turn(910001, 1);
+    guard := guard + 1;
+    select treasury into after_value from feasibility.nations where id = 900001;
+    exit when after_value > before_value or coalesce(result->>'outcome', '') <> 'partial';
+    if guard >= 1000 then
+      raise exception 'FAIL the resolver stayed partial after % batches; final result %', guard, result;
+    end if;
+  end loop;
   if after_value <= before_value then
-    raise exception 'FAIL the server resolver did not credit the nation (% -> %)',
-      before_value, after_value;
+    raise exception 'FAIL the server resolver did not credit the nation (% -> %); final result %',
+      before_value, after_value, result;
   end if;
-  raise notice 'PASS 7/7 authorized server operation still credits nations.treasury (% -> %)',
-    before_value, after_value;
+  raise notice 'PASS 7/7 authorized server operation still credits nations.treasury (% -> %; final result %)',
+    before_value, after_value, result;
 end $$;
 
 drop function if exists feasibility.test_write_profile_treasury(text, bigint);

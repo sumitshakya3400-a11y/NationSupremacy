@@ -33,16 +33,25 @@ revoke all on table feasibility.profiles from public, anon;
 -- The trigger fires for every role, including a SECURITY DEFINER function or a
 -- future widened grant. A legitimate financial write belongs to the subsystem
 -- that owns the value (nations.treasury is written by the turn resolver); it
--- must not be smuggled through a profile row. The setting is a deliberate,
--- session-scoped opt-in for a documented migration or test, not a runtime path.
+-- must not be smuggled through a profile row.
+--
+-- The bypass requires **both** the session setting and a trusted migration/test
+-- role in `session_user` and `current_user`. The setting alone is not
+-- authorization: any role can set a custom GUC, so a client that sets it from
+-- inside `authenticated` still fails the role test. Checking `session_user`
+-- also blocks a SECURITY DEFINER function owned by a trusted role from being
+-- used as an escalation path by an untrusted caller.
 create or replace function feasibility.profiles_guard_server_columns()
 returns trigger
 language plpgsql
-security definer
 set search_path = feasibility, pg_temp
 as $$
+declare
+  trusted_roles constant text[] := array['postgres', 'service_role', 'supabase_admin'];
 begin
-  if coalesce(current_setting('feasibility.allow_profile_server_write', true), '') = 'on' then
+  if coalesce(current_setting('feasibility.allow_profile_server_write', true), '') = 'on'
+     and session_user = any(trusted_roles)
+     and current_user = any(trusted_roles) then
     return new;
   end if;
 

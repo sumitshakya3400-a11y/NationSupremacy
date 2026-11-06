@@ -59,6 +59,7 @@ fail: list[str] = []
 
 
 def rd(path: Path) -> str:
+    """Read a UTF-8 document, replacing undecodable bytes."""
     return path.read_text(encoding="utf-8", errors="replace")
 
 
@@ -129,8 +130,9 @@ def _self_test() -> int:
     return 0 if bad == 0 else 1
 
 
+_selftest_rc = 0
 if "--self-test" in sys.argv:
-    sys.exit(_self_test())
+    _selftest_rc = _self_test()
 
 
 # --- Stage 2 reference guards (2026-10-28 cross-document reconciliation) ---
@@ -297,8 +299,8 @@ if "--self-test" in sys.argv:
           f"-> {(clean_header or ['no problems'])[0]}")
     bad += 0 if not clean_header else 1
     total = len(fixtures) + 1
-    if bad:
-        print(f"SELF-TEST: {bad} of {total} guards failed")
+    if _selftest_rc or bad:
+        print(f"SELF-TEST: combined failure (rule cases rc={_selftest_rc}, fixture failures={bad})")
         raise SystemExit(2)
     print(f"SELF-TEST: {total}/{total} guards detect their defect")
     raise SystemExit(0)
@@ -412,6 +414,7 @@ if not re.search(r"conditionally ready", r9, re.I):
 
 # 5. ID registers ------------------------------------------------------------
 def ids(text: str, prefix: str) -> set[str]:
+    """Numeric identifier suffixes for a prefix."""
     return {v for v in re.findall(prefix + r"-(.{3})", text) if v.isdigit()}
 
 
@@ -433,6 +436,7 @@ if w != [chr(c) for c in range(65, 83)]:
 
 # 6. Relative links resolve --------------------------------------------------
 def links(text: str) -> list[str]:
+    """Relative Markdown link targets in a document."""
     out = []
     for m in re.finditer(r"\]\(([^)\s#]+)", text):
         link = m.group(1)
@@ -605,6 +609,7 @@ STATUS_KEYS = [
 
 
 def status_block(text: str) -> dict[str, str]:
+    """Parsed key/value pairs from the single STATUS block."""
     blocks = re.findall(r"<!-- STATUS:BEGIN -->(.*?)<!-- STATUS:END -->", text, re.S)
     if len(blocks) != 1:
         fail.append(f"STATUS blocks found: {len(blocks)} (expected 1)")
@@ -718,6 +723,7 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
         fail.append("Stage 2 progress log does not record Prompts 03–05 and 06A/06B")
 
     def log_status(prompt):
+        """Status cell for a prompt row in the progress log."""
         for line in lg.splitlines():
             if line.startswith(f"| {prompt} |"):
                 cells = [c.strip() for c in line.strip().strip("|").split("|")]
@@ -1026,6 +1032,7 @@ if ur_doc.exists():
                "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044",
                "UD-045", "UD-046", "UD-047", "UD-048", "UD-049", "UD-050", "UD-051"]
     def _ud_status(row: str) -> str:
+        """Status cell for an unresolved-decision row."""
         cells = [c.strip() for c in row.strip().strip("|").split("|")]
         return cells[8] if len(cells) >= 9 else ""
 
