@@ -19,6 +19,9 @@ migrations/0001_schema.sql          isolated `feasibility` schema, tables, RLS p
 migrations/0002_functions.sql       slot arithmetic + batched, idempotent turn resolver
 migrations/0003_grants_and_rls.sql  least-privilege grants, RLS locks
 migrations/0004_schedule.sql        the single pg_cron schedule (0 */2 * * *)
+migrations/0005_profile_column_privileges.sql  column-level profile writes + guard trigger
+tests/test_profile_permissions.py   migration lint (executable) and integration runner
+tests/sql/profile_permissions.test.sql  the seven permission/RLS cases
 results/nation-supremacy-project.json   what this run measured
 ```
 
@@ -31,7 +34,7 @@ results/nation-supremacy-project.json   what this run measured
 | A nation-turn cannot be applied twice | `(slot, nation_id)` primary key on `turn_applied` |
 | A batch is all-or-nothing | one SQL statement per batch; a raised error rolls the batch back |
 | Long worlds can be resumed | `turn_runs.cursor` advances forward-only; `resolve_slot` loops batches |
-| Clients cannot move money or complete turns | `revoke execute` on the resolver; `select` only on `nations` |
+| Clients cannot move money or complete turns | `revoke execute` on the resolver; `select` only on `nations`; from 0005, update is granted on `profiles.display_name` only and a guard trigger rejects any change to `profiles.treasury` |
 | Players cannot read each other's rows | RLS policy on `feasibility.profiles` keyed to the JWT `sub` |
 | Cron can drive it | `pg_cron` job `0 */2 * * *` calling `resolve_current_turn()` |
 | The page is served by Cloudflare | Pages project `nation-supremacy`, production URL above |
@@ -46,6 +49,7 @@ psql "$DATABASE_URL" -f migrations/0001_schema.sql
 psql "$DATABASE_URL" -f migrations/0002_functions.sql
 psql "$DATABASE_URL" -f migrations/0003_grants_and_rls.sql
 psql "$DATABASE_URL" -f migrations/0004_schedule.sql
+psql "$DATABASE_URL" -f migrations/0005_profile_column_privileges.sql
 ```
 
 Every statement is `if not exists` / `create or replace` (the schedule is

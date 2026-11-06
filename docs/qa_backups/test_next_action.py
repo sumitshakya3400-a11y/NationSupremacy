@@ -23,6 +23,11 @@ sys.dont_write_bytecode = True  # keep the repo free of __pycache__
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from status_rules import (  # noqa: E402
+    CURRENT_PROMPT,
+    PROMPT_ACCEPTANCE,
+    COMPLETED_SUBPROMPTS,
+    NEXT_PROMPT,
+    continuity_problems,
     status_next_prompt,
     stale_next_actions,
     subprompt_status_problems,
@@ -428,12 +433,119 @@ class SubPromptStatusTests(unittest.TestCase):
                      "Prompt 11B - B-11 foundations is the next intended task** "
                      "and has not started.")
         self.assertEqual(len(subprompt_status_problems(stale_11b)), 1)
-        live = ("**Prompt 11B - the B-11 specification is complete; "
-                "Prompt 11C - B-11 workflows and acceptance is the next intended task** "
-                "and has not started.")
-        self.assertEqual(subprompt_status_problems(live), [])
-        # 11C is not complete: naming it as live must not be flagged.
-        self.assertEqual(subprompt_status_problems("Prompt 11C is the next intended task."), [])
+        # 2026-11-06 (Prompt 11C-C1): 11C now completes the Prompt 11 family, so
+        # the sentence that was correct on 2026-11-05 is stale and must be caught.
+        now_stale_11c = ("**Prompt 11B - the B-11 specification is complete; "
+                         "Prompt 11C - B-11 workflows and acceptance is the next intended task** "
+                         "and has not started.")
+        self.assertEqual(len(subprompt_status_problems(now_stale_11c)), 1)
+        self.assertEqual(len(subprompt_status_problems("Prompt 11C is the next intended task.")), 1)
+        # The current true statement must pass, and the prompt-level "next" claim
+        # in the same sentence must not be attributed back to 11C.
+        current = ("**Prompt 11C is complete at the specification/documentation level "
+                   "and its acceptance verdict is PARTIAL; Prompt 12 is next and has not started.**")
+        self.assertEqual(subprompt_status_problems(current), [])
+
+class ContinuityAgreementTests(unittest.TestCase):
+    """Prompt 11C-C1: status documents must not contradict each other.
+
+    The 11C audit found a roadmap that still said 11C had not started after the
+    status blocks said it was complete, and a status model that still named the
+    finished prompt as current. These tests pin both directions: a consistent
+    record passes, and each contradiction is rejected for its own reason.
+    """
+
+    def status_block(self, prompt: str) -> str:
+        return (
+            "<!-- STATUS:BEGIN -->\n"
+            f"stage_2_next_prompt: {prompt}\n"
+            "<!-- STATUS:END -->\n"
+        )
+
+    def test_11c_is_recorded_complete_and_specification_only(self) -> None:
+        self.assertIn("11C", COMPLETED_SUBPROMPTS)
+        self.assertIn("11B", COMPLETED_SUBPROMPTS)
+        self.assertIn("10C", COMPLETED_SUBPROMPTS)
+        record = ("**Prompt 11C is complete at the specification/documentation level; "
+                  "its acceptance verdict is PARTIAL; Prompt 12 is next and has not started.**")
+        self.assertEqual(continuity_problems({"record": record}), [])
+
+    def test_11c_acceptance_is_tracked_separately_from_completion(self) -> None:
+        self.assertEqual(PROMPT_ACCEPTANCE.get("11C"), "PARTIAL")
+        self.assertEqual(PROMPT_ACCEPTANCE.get("11B"), None)
+        # Completion and acceptance are different facts: the record that says
+        # "complete at the specification level" must not be rewritten into an
+        # acceptance claim, and the acceptance map must still say PARTIAL.
+        complete_only = ("**Prompt 11C is complete at the specification/documentation level; "
+                         "its acceptance verdict is PARTIAL.**")
+        self.assertEqual(continuity_problems({"record": complete_only}), [])
+        self.assertNotEqual(PROMPT_ACCEPTANCE["11C"], "ACCEPTED")
+
+    def test_next_scheduled_prompt_is_12(self) -> None:
+        self.assertEqual(NEXT_PROMPT, "12")
+        self.assertEqual(CURRENT_PROMPT, "12")
+        docs = {
+            "AI_CONTEXT.md": self.status_block("12"),
+            "AI_HANDOFF.md": self.status_block("12"),
+            "PROJECT_PROGRESS.md": self.status_block("12"),
+        }
+        self.assertEqual(continuity_problems(docs), [])
+
+    def test_prompt_14_remains_unstarted(self) -> None:
+        started = "Prompt 14 is complete."
+        self.assertEqual(len(continuity_problems({"roadmap": started})), 1)
+        negated = "Prompt 14 has not started; numerical calibration remains outstanding."
+        self.assertEqual(continuity_problems({"roadmap": negated}), [])
+
+    def test_roadmap_cannot_say_11c_has_not_started(self) -> None:
+        docs = {
+            "stage-2/01_stage_2_prompt_roadmap.md": "Prompt 11C has not started.",
+            "PROJECT_PROGRESS.md": "Prompt 11C is complete at the specification/documentation level.",
+        }
+        problems = continuity_problems(docs)
+        self.assertTrue(any("01_stage_2_prompt_roadmap" in p for p in problems), problems)
+        self.assertFalse(any(p.startswith("PROJECT_PROGRESS") for p in problems), problems)
+
+    def test_two_status_files_cannot_disagree_on_the_live_prompt(self) -> None:
+        docs = {
+            "AI_CONTEXT.md": self.status_block("11C"),
+            "PROJECT_PROGRESS.md": self.status_block("12"),
+        }
+        problems = continuity_problems(docs)
+        self.assertTrue(any("11C" in p and "expected '12'" in p for p in problems), problems)
+        self.assertTrue(any("disagree" in p for p in problems), problems)
+
+    def test_specification_complete_is_not_runtime_implemented(self) -> None:
+        docs = {"PROJECT_PROGRESS.md": "The B-11 workflow layer is fully implemented and released."}
+        problems = continuity_problems(docs)
+        self.assertTrue(any("implementation" in p for p in problems), problems)
+        honest = ("The B-11 workflow layer is specified at the specification/documentation "
+                  "level and is not implemented.")
+        self.assertEqual(continuity_problems({"PROJECT_PROGRESS.md": honest}), [])
+
+    def test_negation_only_exempts_the_claim_it_governs(self) -> None:
+        negative = "No B-11 control is implemented."
+        self.assertEqual(continuity_problems({"PROJECT_PROGRESS.md": negative}), [])
+        mixed = "No B-11 control is implemented, but the event layer is implemented."
+        problems = continuity_problems({"PROJECT_PROGRESS.md": mixed})
+        self.assertTrue(any("implementation" in p for p in problems), problems)
+
+    def test_history_marker_only_exempts_its_own_clause(self) -> None:
+        line = "The old plan is superseded. Prompt 11C has not started."
+        problems = continuity_problems({"roadmap.md": line})
+        self.assertTrue(any("11C" in p for p in problems), problems)
+        bracketed = ("(Historical, superseded: Prompt 11B was next.) "
+                     "Prompt 11C has not started.")
+        problems = continuity_problems({"roadmap.md": bracketed})
+        self.assertTrue(any("11C" in p for p in problems), problems)
+
+    def test_owner_reserved_decision_cannot_be_reported_as_approved(self) -> None:
+        docs = {"AI_HANDOFF.md": "UD-040 is approved and closed by this pass."}
+        problems = continuity_problems(docs)
+        self.assertTrue(any("owner-reserved" in p for p in problems), problems)
+        still_open = "UD-040, UD-050 and UD-051 remain Open and owner-reserved."
+        self.assertEqual(continuity_problems({"AI_HANDOFF.md": still_open}), [])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

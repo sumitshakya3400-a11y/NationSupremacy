@@ -44,8 +44,14 @@ sys.dont_write_bytecode = True
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+# The status model is a sibling helper; importing it makes the 11C completion
+# check a membership test instead of a substring search over its source text.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from status_rules import COMPLETED_SUBPROMPTS  # noqa: E402
+
 
 def section(text: str, start: str, end: str | None) -> str:
+    """Text between two markers, or to the end when no end marker is given."""
     i = text.index(start)
     if end is None:
         return text[i:]
@@ -54,10 +60,12 @@ def section(text: str, start: str, end: str | None) -> str:
 
 
 def cells(line: str) -> list[str]:
+    """Cells of a Markdown table row, stripped."""
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
 def table_rows(block: str, prefix: str) -> list[list[str]]:
+    """Table rows whose first cell starts with the prefix."""
     rows = []
     for line in block.splitlines():
         if not line.startswith("|"):
@@ -69,14 +77,17 @@ def table_rows(block: str, prefix: str) -> list[list[str]]:
 
 
 def contiguous(prefix: str, count: int, width: int = 2) -> list[str]:
+    """IDs of the form PREFIX-01..count, zero-padded."""
     return [f"{prefix}-{i:0{width}d}" for i in range(1, count + 1)]
 
 
 def contiguous_flat(prefix: str, count: int, width: int = 2) -> list[str]:
+    """IDs of the form PREFIX01..count, zero-padded."""
     return [f"{prefix}{i:0{width}d}" for i in range(1, count + 1)]
 
 
 def handoff_ids() -> list[str]:
+    """The 36 WFH handoff identifiers, A1..F6."""
     return [f"WFH-{letter}{n}" for letter in "ABCDEF" for n in range(1, 7)]
 
 
@@ -149,10 +160,12 @@ OWNER_RESERVED = [f"UD-{n:03d}" for n in range(40, 50)]
 
 
 def validate(docs: Path) -> tuple[list[str], int]:
+    """Run the structural checks and return the problems and check count."""
     problems: list[str] = []
     checks = 0
 
     def check(ok: bool, category: str, message: str) -> None:
+        """Record one check, appending the message when it fails."""
         nonlocal checks
         checks += 1
         if not ok:
@@ -231,6 +244,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
     summary = section(rulebook, "### 27.1", "### 27.2")
 
     def summary_row(family: str) -> str:
+        """The summary-table row for a family's first member."""
         return next((l for l in summary.splitlines() if l.startswith(f"| `{family}-01`")), "")
 
     wcr = family_rows["WCR"]
@@ -666,22 +680,26 @@ def validate(docs: Path) -> tuple[list[str], int]:
     ledger: list[tuple[str, str, int]] = []
 
     def op_accept(action_id: str, cost: int) -> None:
+        """Reserve an operation's cost and record the hold."""
         nonlocal reserved
         reserved += cost
         ledger.append(("HELD", action_id, cost))
 
     def op_release(action_id: str, cost: int) -> None:
+        """Release a reserved operation cost."""
         nonlocal reserved
         reserved -= cost
         ledger.append(("RELEASED", action_id, cost))
 
     def op_consume(action_id: str, cost: int) -> None:
+        """Consume a reserved cost from the held and available balance."""
         nonlocal reserved, op_balance
         reserved -= cost
         op_balance -= cost
         ledger.append(("CONSUMED", action_id, cost))
 
     def op_regenerate(turn_id: str) -> int:
+        """Grant one point up to the cap once per turn."""
         nonlocal op_balance
         if turn_id in regenerated:
             return regenerated[turn_id]
@@ -958,7 +976,11 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-04 (Prompt 10C): the live prompt advanced to 11 when 10C closed.
     # 2026-11-04 (Prompt 11A): Prompt 11 then split, and 11A research closed, so
     # the live sub-prompt is 11B. The 10-family completion facts are unchanged.
-    check('CURRENT_SUBPROMPT = "11C"' in status_rules, "10-continuity", "status_rules.py does not set 11C as the current sub-prompt")
+    # 2026-11-06 (Prompt 11C-C1): 11C closed the Prompt 11 family, so the live
+    # prompt is 12. The value is advanced here rather than in a duplicated
+    # constant, so the two surfaces cannot drift apart.
+    check('CURRENT_SUBPROMPT = "12"' in status_rules, "10-continuity", "status_rules.py does not set 12 as the current prompt")
+    check("11C" in COMPLETED_SUBPROMPTS, "10-continuity", "status_rules.py does not list 11C as completed")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 
@@ -966,6 +988,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
 
 
 def main(argv: list[str]) -> int:
+    """Run the validator and return the exit code."""
     docs = Path(argv[1]).resolve() if len(argv) > 1 else Path(__file__).resolve().parents[1]
     problems, checks = validate(docs)
     print(f"10B Warfare validator - {docs}")
