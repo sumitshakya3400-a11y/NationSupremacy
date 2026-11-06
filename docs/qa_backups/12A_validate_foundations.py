@@ -703,23 +703,46 @@ def _plain(cell: str) -> str:
     return re.sub(r"[*`]", "", cell).strip()
 
 
+BAND_RE = re.compile(r"\b(Low|Medium|High|Critical)\s+(\d{1,2})\b")
+LIKELIHOOD_RE = re.compile(r"\bL[1-5]\b")
+IMPACT_RE = re.compile(r"\bI[1-5]\b")
+
+
+def _band_value(cell: str) -> bool:
+    """A band cell names a band word and a score on the 1–25 ordinal scale.
+
+    Row-level overrides are legitimate: the register uses e.g. "High 16
+    Critical band" and "Critical 10, elevated by breadth", where the word and
+    the score deliberately diverge from §5.1's nominal ranges. The check
+    therefore requires a band word with an in-range score, not range agreement.
+    """
+    for match in BAND_RE.finditer(_plain(cell)):
+        if 1 <= int(match.group(2)) <= 25:
+            return True
+    return False
+
+
 def check_24(m: Model) -> tuple[bool, str]:
     """Threat rows: three halves aligned, class and ordinal assessment present."""
     d, c, r = sorted(m.rk_def), sorted(m.rk_ctl), sorted(m.rk_res)
     if not (d == c == r):
         return False, f"half-set mismatch: def {len(d)}, ctl {len(c)}, res {len(r)}"
-    short = [n for n in d if len(m.rk_ctl[n]) < 5 or len(m.rk_res[n]) < 2]
+    # 5.4 puts the residual in column 8; a row truncated before it ends on the
+    # outstanding decision and must not have that cell read as the residual.
+    short = [n for n in d if len(m.rk_ctl[n]) < 5 or len(m.rk_res[n]) < 8]
     if short:
         return False, f"short threat rows: {short[:4]}"
     bad_class = [n for n in d
                  if not any(_plain(m.rk_ctl[n][1]).upper().startswith(k) for k in RISK_CLASSES)]
-    no_basis = [n for n in d if "L" not in m.rk_ctl[n][2] or "I" not in m.rk_ctl[n][3]]
-    no_band = [n for n in d if not re.search(r"\d", m.rk_ctl[n][4])]
-    no_res = [n for n in d if len(_plain(m.rk_res[n][-1])) < 3]
-    if bad_class or no_basis or no_band or no_res:
-        return False, (f"bad class {bad_class[:4]}; no basis {no_basis[:4]}; "
-                       f"no band {no_band[:4]}; no residual {no_res[:4]}")
-    return True, (f"{len(d)} threat rows with evidence class, likelihood and impact basis, "
+    no_lik = [n for n in d if not LIKELIHOOD_RE.search(_plain(m.rk_ctl[n][2]))]
+    no_imp = [n for n in d if not IMPACT_RE.search(_plain(m.rk_ctl[n][3]))]
+    bad_band = [n for n in d if not _band_value(m.rk_ctl[n][4])]
+    no_res = [n for n in d if len(_plain(m.rk_res[n][7])) < 3]
+    if bad_class or no_lik or no_imp or bad_band or no_res:
+        return False, (f"bad class {bad_class[:4]}; no L token {no_lik[:4]}; "
+                       f"no I token {no_imp[:4]}; bad band {bad_band[:4]}; "
+                       f"no residual {no_res[:4]}")
+    return True, (f"{len(d)} threat rows with evidence class, explicit L and I scores, "
                   "a risk band and a stated residual")
 
 
@@ -1054,6 +1077,7 @@ class Fixture:
     expect: bool
     mutate: object
     desc: str
+    reason: str = ""
 
 
 def _drop_line(text: str, needle: str) -> str:
@@ -1104,12 +1128,11 @@ def fx_duplicate_requirement(model):
 
 
 def fx_no_verification_intent(model):
-    """Fixture: remove a requirement's verification approach."""
-    old = ("| `12A-CR-044` | Key custody is what separates a keyed MAC from a "
-           "brute-forceable digest over a small identifier space |")
-    new = ("| `12A-CR-044` | Key custody | `12A-RS-092` | D-036 | Strongly positive "
-           "| Positive | The secret is separated, owned and rotated |  |")
-    model.src["registers"] = _sub(model.src["registers"], old, new)
+    """Fixture: remove a requirement's verification approach, keeping its rationale."""
+    model.src["registers"] = _sub(
+        model.src["registers"],
+        "| Custody review; rotation-plan existence check |",
+        "|  |")
     model.rebuild()
     return model
 
@@ -1256,6 +1279,46 @@ def fx_illegal_gate_result(model):
     return model
 
 
+def fx_missing_likelihood_token(model):
+    """Fixture: a likelihood cell carries prose instead of an L1–L5 score."""
+    model.src["registers"] = _sub(
+        model.src["registers"],
+        "| L2 — needs deliberate scripting near a boundary | I4 |",
+        "| Likely — needs deliberate scripting near a boundary | I4 |")
+    model.rebuild()
+    return model
+
+
+def fx_band_without_score(model):
+    """Fixture: a risk band names the band but carries no ordinal score."""
+    model.src["registers"] = _sub(
+        model.src["registers"],
+        "| I4 | High 8 | `CR-008` |",
+        "| I4 | High | `CR-008` |")
+    model.rebuild()
+    return model
+
+
+def fx_band_out_of_range(model):
+    """Fixture: a risk band score falls outside the 1–25 ordinal scale."""
+    model.src["registers"] = _sub(
+        model.src["registers"],
+        "| I4 | High 8 | `CR-008` |",
+        "| I4 | High 99 | `CR-008` |")
+    model.rebuild()
+    return model
+
+
+def fx_missing_residual_column(model):
+    """Fixture: truncate a 5.4 row before its residual-risk column."""
+    model.src["registers"] = _sub(
+        model.src["registers"],
+        "| None | **Zero by design** — and unproven until a build exists |",
+        "| None |")
+    model.rebuild()
+    return model
+
+
 FIXTURES: list = [
     Fixture("12A-P01", "12A-02", True, lambda m: m, "source ids resolve contiguously"),
     Fixture("12A-P02", "12A-05", True, lambda m: m, "every cited source resolves"),
@@ -1267,31 +1330,57 @@ FIXTURES: list = [
     Fixture("12A-P08", "12A-26", True, lambda m: m, "source-of-truth table complete"),
     Fixture("12A-P09", "12A-30", True, lambda m: m, "gate register well formed"),
     Fixture("12A-P10", "12A-35", True, lambda m: m, "classification model consistent"),
-    Fixture("12A-N01", "12A-02", False, fx_missing_source, "a research source row is deleted"),
-    Fixture("12A-N02", "12A-05", False, fx_dangling_source_ref, "a claim cites a nonexistent source"),
-    Fixture("12A-N03", "12A-09", False, fx_duplicate_requirement, "a requirement id is duplicated"),
-    Fixture("12A-N04", "12A-10", False, fx_no_verification_intent, "a requirement has no verification"),
-    Fixture("12A-N05", "12A-12", False, fx_unsupported_approval, "a candidate is marked Approved"),
-    Fixture("12A-N06", "12A-22", False, fx_owner_row_closed, "an owner-reserved row is closed"),
-    Fixture("12A-N07", "12A-23", False, fx_missing_dependency_half, "a dependency half is removed"),
-    Fixture("12A-N08", "12A-19", False, fx_duplicate_decision, "a design position id is duplicated"),
+    Fixture("12A-N01", "12A-02", False, fx_missing_source,
+            "a research source row is deleted", "gaps"),
+    Fixture("12A-N02", "12A-05", False, fx_dangling_source_ref,
+            "a claim cites a nonexistent source", "cited but absent"),
+    Fixture("12A-N03", "12A-09", False, fx_duplicate_requirement,
+            "a requirement id is duplicated", "duplicate"),
+    Fixture("12A-N04", "12A-10", False, fx_no_verification_intent,
+            "a requirement has no verification", "verification"),
+    Fixture("12A-N05", "12A-12", False, fx_unsupported_approval,
+            "a candidate is marked Approved", "bad status"),
+    Fixture("12A-N06", "12A-22", False, fx_owner_row_closed,
+            "an owner-reserved row is closed", "not open"),
+    Fixture("12A-N07", "12A-23", False, fx_missing_dependency_half,
+            "a dependency half is removed", "half-row mismatch"),
+    Fixture("12A-N08", "12A-19", False, fx_duplicate_decision,
+            "a design position id is duplicated", "duplicates"),
     Fixture("12A-N09", "12A-35", False, fx_contradictory_classification,
-            "a category loses its axis assignment"),
-    Fixture("12A-N10", "12A-33", False, fx_legal_overreach, "an unsupported legal conclusion"),
-    Fixture("12A-N11", "12A-06", False, fx_untraceable_assertion, "a benchmark cites no source"),
-    Fixture("12A-N12", "12A-30", False, fx_illegal_gate_status, "a gate uses an illegal status"),
-    Fixture("12A-N13", "12A-33", False, fx_implementation_claim, "an implementation claim appears"),
-    Fixture("12A-N14", "12A-16", False, fx_totals_drift, "a declared total drifts"),
+            "a category loses its axis assignment", "axis value"),
+    Fixture("12A-N10", "12A-33", False, fx_legal_overreach,
+            "an unsupported legal conclusion", "legal"),
+    Fixture("12A-N11", "12A-06", False, fx_untraceable_assertion,
+            "a benchmark cites no source", "uncited"),
+    Fixture("12A-N12", "12A-30", False, fx_illegal_gate_status,
+            "a gate uses an illegal status", "illegal status"),
+    Fixture("12A-N13", "12A-33", False, fx_implementation_claim,
+            "an implementation claim appears", "implementation"),
+    Fixture("12A-N14", "12A-16", False, fx_totals_drift,
+            "a declared total drifts", "totals table disagrees"),
     Fixture("12A-N15", "12A-20", False, fx_protected_decision_changed,
-            "a protected decision is superseded"),
+            "a protected decision is superseded", "superseded"),
     Fixture("12A-N16", "12A-33", False, fx_implementation_claim_after_negation,
-            "an unrelated negation must not suppress a real implementation claim"),
+            "an unrelated negation must not suppress a real implementation claim",
+            "implementation"),
     Fixture("12A-N17", "12A-33", False, fx_staging_only_implementation_claim,
-            "an implementation claim qualified only by scope is still a claim"),
+            "an implementation claim qualified only by scope is still a claim",
+            "implementation"),
     Fixture("12A-N18", "12A-33", False, fx_cross_cell_negation,
-            "a negation in another table cell must not suppress the claim"),
+            "a negation in another table cell must not suppress the claim",
+            "implementation"),
     Fixture("12A-N19", "12A-30", False, fx_illegal_gate_result,
-            "an illegal Result cell is not rescued by a legal token elsewhere"),
+            "an illegal Result cell is not rescued by a legal token elsewhere",
+            "illegal status"),
+    Fixture("12A-N20", "12A-24", False, fx_missing_likelihood_token,
+            "a likelihood cell has no L1–L5 token", "no L token"),
+    Fixture("12A-N21", "12A-24", False, fx_band_without_score,
+            "a risk band has no ordinal score", "bad band"),
+    Fixture("12A-N22", "12A-24", False, fx_band_out_of_range,
+            "a risk band score is outside 1–25", "bad band"),
+    Fixture("12A-N23", "12A-24", False, fx_missing_residual_column,
+            "a threat row is truncated before the residual column",
+            "short threat rows"),
 ]
 
 
@@ -1332,6 +1421,11 @@ def run_fixtures(model, verbose):
             continue
         ok, detail = by_id[fx.cid].fn(mutated)
         good = (ok == fx.expect)
+        wrong_reason = ""
+        if good and not fx.expect and fx.reason and fx.reason.lower() not in str(detail).lower():
+            good = False
+            wrong_reason = (f"; rejected for the wrong reason — expected "
+                            f"{fx.reason!r} in {str(detail)[:90]!r}")
         if fx.expect:
             pos_n += 1
             pos_ok += 1 if good else 0
@@ -1342,7 +1436,7 @@ def run_fixtures(model, verbose):
             want = "accepted" if fx.expect else "rejected"
             got = "accepted" if ok else "rejected"
             problems.append(f"{fx.fid} ({fx.cid}) expected {want}, got {got} "
-                            f"({fx.desc})")
+                            f"({fx.desc}){wrong_reason}")
         if verbose or not good:
             want = "accepted" if fx.expect else "rejected"
             print(f"[{'OK ' if good else 'BAD'}] {fx.fid} {fx.cid} expected to {want} "

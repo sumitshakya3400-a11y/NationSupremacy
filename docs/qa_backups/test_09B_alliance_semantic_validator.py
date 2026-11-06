@@ -707,7 +707,7 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C18]", "specification-level qualifier")
 
     def test_59_next_prompt_changed_fails(self):
-        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 10B", "stage_2_next_prompt: 09")
+        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 12B", "stage_2_next_prompt: 09")
         self.assert_failure(run_checks(self.root), "[C18]", "stage_2_next_prompt")
 
     # ------------------------------------------------------------------

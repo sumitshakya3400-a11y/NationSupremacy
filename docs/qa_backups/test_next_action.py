@@ -31,6 +31,17 @@ from status_rules import (  # noqa: E402
 DOCS = Path(__file__).resolve().parents[1]
 
 
+def continuity_problems(texts: dict[str, str]) -> list[str]:
+    """Return stale next-action or completed-sub-prompt claims across documents."""
+    problems: list[str] = []
+    for name, text in texts.items():
+        for snippet in stale_next_actions(text):
+            problems.append(f"{name}: stale next action :: {snippet}")
+        for snippet in subprompt_status_problems(text):
+            problems.append(f"{name}: completed sub-prompt still live :: {snippet}")
+    return problems
+
+
 class StaleNextActionTests(unittest.TestCase):
     def test_current_field_naming_prompt_01_is_rejected(self) -> None:
         text = "**Next action:** Stage 2, Prompt 01 — structure and traceability.\n"
@@ -91,10 +102,15 @@ class StaleNextActionTests(unittest.TestCase):
                 if path.name in status_files:
                     # 2026-11-04 (Prompt 10C): 10C closed, so the live prompt was 11.
                     # 2026-11-04 (Prompt 11A): Prompt 11 split and 11A research
-                    # closed, so the live sub-prompt is 11B.
+                    # closed, so the live sub-prompt was 11B.
                     # 2026-11-06 (Prompt 11C): the 11C companion closed the whole
-                    # Prompt 11 family at the design level, so the live prompt is 12.
-                    self.assertEqual(status_next_prompt(text), "12")
+                    # Prompt 11 family at the design level, so the live prompt was 12.
+                    # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt
+                    # is now 12B.
+                    self.assertEqual(status_next_prompt(text), "12B")
+        texts = {p.name: p.read_text(encoding="utf-8", errors="replace")
+                 for p in files if p.name in status_files}
+        self.assertEqual(continuity_problems(texts), [])
 
 
 class CurrentStateConsistencyTests(unittest.TestCase):

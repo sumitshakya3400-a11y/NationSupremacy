@@ -523,9 +523,10 @@ class AllianceValidatorTests(unittest.TestCase):
         def mutate(root: Path) -> None:
             path = root / "AI_CONTEXT.md"
             text = read(path)
-            # 2026-11-04: 10C is complete and Prompt 11 is the registered next
-            # prompt, so disagreement is a STATUS block pointing elsewhere.
-            write(path, text.replace("stage_2_next_prompt: 11", "stage_2_next_prompt: 09C"))
+            # 2026-11-07 (Prompt 12A review remediation): 12A is complete and
+            # 12B is the registered next sub-prompt, so disagreement is a
+            # STATUS block pointing elsewhere.
+            write(path, text.replace("stage_2_next_prompt: 12B", "stage_2_next_prompt: 09C"))
 
         self.assert_fails("neg40", mutate)
 

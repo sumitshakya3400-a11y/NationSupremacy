@@ -174,9 +174,10 @@ class HandoffTests(unittest.TestCase):
         # 11A/11B/11C with 11A research complete on 2026-11-05, so the live
         # sub-prompt recorded in every STATUS block is 11C.
         # 2026-11-06 (Prompt 11C): the 11C workflow/acceptance companion closed the
-        # Prompt 11 family at the design level, so every STATUS block now records 12.
+        # Prompt 11 family at the design level, so every STATUS block recorded 12.
+        # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt is 12B.
         for path in (DOCS / "AI_CONTEXT.md", DOCS / "AI_HANDOFF.md", DOCS / "PROJECT_PROGRESS.md"):
-            self.assertRegex(read(path), r"stage_2_next_prompt:\s*12\b", path.name)
+            self.assertRegex(read(path), r"stage_2_next_prompt:\s*12B\b", path.name)
         progress = read(DOCS / "PROJECT_PROGRESS.md")
         self.assertRegex(progress, r"\| 04 \| Economy[^\n]*\| \*\*Complete\*\*")
         self.assertRegex(progress, r"\| 05 \| Cities[^\n]*\| \*\*Complete\*\*")

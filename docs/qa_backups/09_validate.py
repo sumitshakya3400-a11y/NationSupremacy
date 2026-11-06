@@ -404,8 +404,8 @@ if blocks:
     else:
         failures.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     checks_ref[0] += 1
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12")
+    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12B":
+        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12B")
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -565,8 +565,14 @@ check("**ACCEPTED" in log_status("09")
       "progress log row 09 records Phase 09B accepted, 09C complete, 10A complete and 10B complete", log_status("09"))
 check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
-      and "Prompt 11 next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 11 next", log_status("10"))
+      and "Prompt 12B next" in log_status("10"),
+      "progress log row 10 records 10B complete, 10C complete and Prompt 12B next", log_status("10"))
+# 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
+# pending count, so a row that silently regresses to "Pending" or to 12A-live
+# fails here even though the count of bare Pending rows is unchanged.
+check("12A complete at the research/design-foundations level" in log_status("12")
+      and "12B next and not started" in log_status("12"),
+      "progress log row 12 records 12A complete and 12B next", log_status("12"))
 
 # 15f. The *current* next action (2026-10-23 micro-correction) ----------------
 # Section 14 proves Prompt 02 is mentioned somewhere. This section proves no

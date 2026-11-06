@@ -1365,8 +1365,9 @@ def run_checks(base_dir: Path | None = None, reviews: list[str] | None = None) -
     # 2026-11-05 (Prompt 11A): Prompt 11 is split, so 11A/11B/11C are valid values.
     # 2026-11-06 (Prompt 11C): the 11C companion closed Prompt 11 at the design
     # level, so 12 is the live prompt and 10/11 remain valid history.
-    if not re.search(r"^stage_2_next_prompt:\s*(?:10[ABC]?|11[ABC]?|12)\s*$", text["ai_context"], re.M):
-        failures.append("[C18] AI_CONTEXT does not set stage_2_next_prompt: 10/10A/10B/10C/11/11A/11B/11C/12")
+    # 2026-11-07 (Prompt 12A review remediation): 12A closed, so 12B is live.
+    if not re.search(r"^stage_2_next_prompt:\s*(?:10[ABC]?|11[ABC]?|12B?)\s*$", text["ai_context"], re.M):
+        failures.append("[C18] AI_CONTEXT does not set stage_2_next_prompt: 10/10A/10B/10C/11/11A/11B/11C/12/12B")
     current_state_files = {
         "AI_CONTEXT": text["ai_context"],
         "AI_HANDOFF": text["ai_handoff"],

@@ -81,7 +81,7 @@ BLOCKQUOTE = (
     "allocated: **`REQ-763` remains the frontier and `REQ-764` is reserved for Prompt 12B**. The "
     "independent validator [`docs/qa_backups/12A_validate_foundations.py`]"
     "({QA}12A_validate_foundations.py) passes **35/35** checks with **10/10** positive and "
-    "**19/19** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
+    "**23/23** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
     "0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. B-12's canonical rulebook path "
     "**`stage-2/20_fair_play_and_player_protection.md` is reserved, not created** (D-163/DD-211). "
     "**No new B-12 fair-play rule, penalty, duration, permission, moderation workflow or schema "
