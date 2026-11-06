@@ -958,7 +958,11 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-04 (Prompt 10C): the live prompt advanced to 11 when 10C closed.
     # 2026-11-04 (Prompt 11A): Prompt 11 then split, and 11A research closed, so
     # the live sub-prompt is 11B. The 10-family completion facts are unchanged.
-    check('CURRENT_SUBPROMPT = "11C"' in status_rules, "10-continuity", "status_rules.py does not set 11C as the current sub-prompt")
+    # 2026-11-06 (Prompt 11C-C1): 11C closed the Prompt 11 family, so the live
+    # prompt is 12. The value is advanced here rather than in a duplicated
+    # constant, so the two surfaces cannot drift apart.
+    check('CURRENT_SUBPROMPT = "12"' in status_rules, "10-continuity", "status_rules.py does not set 12 as the current prompt")
+    check('"11C"' in status_rules, "10-continuity", "status_rules.py does not list 11C as completed")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 

@@ -46,7 +46,33 @@ MAIN = RESEARCH / "11A_world_events_objectives_rankings_progression_research.md"
 COMPARATOR = RESEARCH / "11A_comparator_sources_and_benchmarks.md"
 REGISTERS = RESEARCH / "11A_integration_and_risk_registers.md"
 
-FILES = {"main": MAIN, "comparator": COMPARATOR, "registers": REGISTERS}
+# Project registers C29 reads. They are inputs to the historical-allocation
+# check, not 11A deliverables, but they are listed here so the self-test can
+# seed a defect into an in-memory copy instead of editing the live register.
+REQUIREMENTS = DOCS / "stage-2" / "03_requirements_traceability.md"
+DECISIONS = DOCS / "DECISIONS.md"
+
+FILES = {"main": MAIN, "comparator": COMPARATOR, "registers": REGISTERS,
+         "requirements": REQUIREMENTS, "decisions": DECISIONS}
+
+# The documents 11A actually owns. C24 and C25 scan these only; the project
+# registers are inputs to C29 and carry other prompts' legitimate history.
+DELIVERABLE_KEYS = ("main", "comparator", "registers")
+
+# The last global requirement that existed when Prompt 11A closed (2026-11-05).
+# 11A allocated none of its own; 11B later allocated REQ-704..REQ-763 lawfully.
+# A later prompt that allocates outside its sanctioned range is a failure, which
+# is what makes this a boundary check rather than a maximum check.
+HISTORICAL_REQ_MAX = 703
+# The recorded 11B allocation and the highest ID it covers. Anything above this
+# may be a future legitimate allocation and is judged on its owner token, not on
+# its number, so later work cannot retroactively fail the 11A check.
+KNOWN_LATER_MAX = 763
+KNOWN_PROMPT_OWNER = re.compile(r"^(?:(?:0[2-9]|1[0-5])[ABC]?|all)$")
+# REQ-704..REQ-763 are 11B's, except the two conditional rows that name the
+# downstream prompt which must resolve them (12 and 14). Any other owner in the
+# block is a misattribution.
+LATER_BLOCK_OWNERS = {"11B", "12", "14"}
 
 GAMES = [
     "Politics & War",
@@ -416,7 +442,10 @@ def c23(d: dict[str, str]) -> Result:
 
 def c24(d: dict[str, str]) -> Result:
     m = d["main"]
-    all_text = "".join(d.values())
+    # Only the 11A deliverables are scanned. The requirements and decision
+    # registers are C29 inputs; their own wording ("superseded by DD-033",
+    # "D-021 …") is correct in context and must not be read as an 11A claim.
+    all_text = "".join(d[key] for key in DELIVERABLE_KEYS if key in d)
     bad = []
     for pat in GATE_FALSEHOODS:
         bad += re.findall(pat, all_text)
@@ -433,7 +462,8 @@ def c24(d: dict[str, str]) -> Result:
 
 def c25(d: dict[str, str]) -> Result:
     hits = []
-    for name, text in d.items():
+    for name in DELIVERABLE_KEYS:
+        text = d.get(name, "")
         for pat in IMPLEMENTATION_CLAIMS:
             for mm in re.finditer(pat, text):
                 lead = text[max(0, mm.start() - 60):mm.start()]
@@ -526,14 +556,92 @@ def c28(d: dict[str, str]) -> Result:
 
 
 def c29(d: dict[str, str]) -> Result:
-    """The project's global register maxima must be unchanged by a research prompt."""
-    dec = read(DOCS / "DECISIONS.md")
-    req = read(DOCS / "stage-2" / "03_requirements_traceability.md")
-    req_max = max(int(n) for n in re.findall(r"\bREQ-(\d{3})\b", req))
-    d_max = max(int(n) for n in re.findall(r"\bD-(\d{3})\b", dec))
-    ok = req_max == 703 and d_max >= 151
-    return Result(29, "no global REQ ID allocated by 11A (max stays REQ-703)", ok,
-                  f"REQ max {req_max}, D max {d_max} (D-144..D-151 are the eight direction decisions)")
+    """The 11A allocation boundary holds while later prompts allocate lawfully.
+
+    The original check asserted `req_max == 703`, which was true at the 11A
+    handoff and false as soon as 11B allocated `REQ-704`…`REQ-763`. A maximum is
+    the wrong invariant: it cannot tell a legitimate later allocation from an
+    unauthorised one. This check keeps the historical boundary (`REQ-703` is the
+    last ID that existed when 11A closed) and then verifies *provenance*:
+
+    * the tracker is contiguous and duplicate-free from REQ-001 to its maximum;
+    * no row is attributed to 11A — 11A allocated no global requirement;
+    * every row above the historical boundary is attributed to a prompt that is
+      sanctioned to allocate it (today, 11B for REQ-704…REQ-763);
+    * the 11A report itself contains no requirement-allocation row;
+    * the history the check exists to protect is intact (D-144…D-151 present).
+    """
+    research = d["main"]
+    req = d["requirements"] if "requirements" in d else read(REQUIREMENTS)
+    dec = d["decisions"] if "decisions" in d else read(DECISIONS)
+
+    rows: list[tuple[str, list[str]]] = []
+    malformed: list[str] = []
+    for line in req.splitlines():
+        match = re.match(r"\|\s*(REQ-\d{3})\s*\|", line)
+        if not match:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        rows.append((match.group(1), cells))
+        if len(cells) < 9:
+            malformed.append(match.group(1))
+
+    ids = [rid for rid, _ in rows]
+    nums = sorted(int(rid[4:]) for rid in ids)
+    problems: list[str] = []
+
+    if not rows:
+        return Result(29, "historical allocation boundary and provenance", False,
+                      "the tracker table could not be parsed, so the check is vacuous")
+    if len(set(ids)) != len(ids):
+        dup = sorted({i for i in ids if ids.count(i) > 1})
+        problems.append(f"duplicate requirement IDs {dup[:5]}")
+    if nums != list(range(1, max(nums) + 1)):
+        missing = sorted(set(range(1, max(nums) + 1)) - set(nums))
+        problems.append(f"tracker is not contiguous; first gaps {missing[:5]}")
+    if malformed:
+        problems.append(f"malformed rows {malformed[:5]}")
+
+    if HISTORICAL_REQ_MAX not in nums:
+        problems.append(f"historical boundary {HISTORICAL_REQ_MAX} is no longer present")
+
+    owned_by_11a = [rid for rid, cells in rows if len(cells) > 6 and cells[6] == "11A"]
+    if owned_by_11a:
+        problems.append(f"11A is attributed {len(owned_by_11a)} requirement(s): {owned_by_11a[:5]}")
+
+    later = [(rid, cells) for rid, cells in rows if int(rid[4:]) > HISTORICAL_REQ_MAX]
+    for rid, cells in later:
+        owner = cells[6] if len(cells) > 6 else ""
+        number = int(rid[4:])
+        if number <= KNOWN_LATER_MAX:
+            # The 11B block is a recorded fact: REQ-704..REQ-763 are 11B's,
+            # except the two rows whose decision is explicitly downstream
+            # (REQ-748 -> Prompt 12, REQ-752 -> Prompt 14). Any other owner in
+            # this block is a misattribution.
+            if owner not in LATER_BLOCK_OWNERS:
+                problems.append(f"{rid} is attributed to {owner!r}, expected one of "
+                                f"{sorted(LATER_BLOCK_OWNERS)}")
+        elif owner == "11A":
+            problems.append(f"{rid} is attributed to 11A, which allocates no global requirement")
+        elif not KNOWN_PROMPT_OWNER.match(owner):
+            # A future legitimate prompt extends the register; an unknown owner,
+            # a malformed token or a bare number is an attribution defect.
+            problems.append(f"{rid} has an unknown owner {owner!r}")
+
+    if re.search(r"^\|\s*REQ-\d{3}\s*\|", research, flags=re.M):
+        problems.append("the 11A report contains a requirement-allocation row")
+
+    decision_ids = set(re.findall(r"^\|\s*(D-\d{3})\s*\|", dec, flags=re.M)) or set(
+        re.findall(r"\b(D-\d{3})\b", dec))
+    missing_decisions = [f"D-{n:03d}" for n in range(144, 152) if f"D-{n:03d}" not in decision_ids]
+    if missing_decisions:
+        problems.append(f"the 11A decision history is missing {missing_decisions[:5]}")
+
+    detail = (f"tracker 1..{max(nums)} contiguous, {len(later)} later allocation(s) all attributed, "
+              f"11A owns 0, boundary REQ-{HISTORICAL_REQ_MAX} intact, "
+              f"D-144..D-151 present")
+    return Result(29, "historical allocation boundary preserved and later allocations attributed",
+                  not problems, detail if not problems else "; ".join(problems[:5]))
 
 
 def c30(d: dict[str, str]) -> Result:
@@ -569,14 +677,26 @@ def self_test() -> int:
     """Seed defects into an in-memory copy and confirm each is detected."""
     base = {k: read(v) for k, v in FILES.items()}
     defects = 0
+    seeded = 0
 
     def expect(name, docs, want_fail_prefix):
-        nonlocal defects
+        nonlocal defects, seeded
+        seeded += 1
         fails = [r.check for r in run_all(docs) if not r.ok]
         if want_fail_prefix in fails:
             print(f"  self-test {name}: detected (check {want_fail_prefix} fails)")
         else:
             print(f"  self-test {name}: MISSED (failing checks {fails})")
+            defects += 1
+
+    def expect_ok(name, docs, want_check):
+        nonlocal defects, seeded
+        seeded += 1
+        result = {r.check: r for r in run_all(docs)}[want_check]
+        if result.ok:
+            print(f"  self-test {name}: accepted (check {want_check} passes)")
+        else:
+            print(f"  self-test {name}: WRONGLY REJECTED ({result.detail[:140]})")
             defects += 1
 
     d = dict(base)
@@ -612,7 +732,41 @@ def self_test() -> int:
                                   "11A_nope_registers.md)", 1)
     expect("internal link target broken", d, 26)
 
-    print(f"\nSELF-TEST: {8 - defects}/8 seeded defects detected")
+    # --- C29: historical allocation boundary and provenance (11C-C1) --------
+    expect_ok("original 11A boundary and the real register accepted", dict(base), 29)
+
+    d = dict(base)
+    d["requirements"] += (
+        "\n| REQ-764 | A future prompt's lawful allocation | Events | Provisional |"
+        " source | B-11 | 11C | — | — |\n")
+    expect_ok("future legitimate allocation accepted", d, 29)
+
+    d = dict(base)
+    d["requirements"] += (
+        "\n| REQ-764 | 11A allocating a global requirement | Events | Provisional |"
+        " source | B-11 | 11A | — | — |\n")
+    expect("11A allocated a new global requirement", d, 29)
+
+    d = dict(base)
+    lines = d["requirements"].splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("| REQ-710 |"):
+            cells = line.split("|")
+            cells[7] = " 07B "
+            lines[i] = "|".join(cells)
+            break
+    d["requirements"] = "\n".join(lines)
+    expect("requirement attributed to the wrong prompt", d, 29)
+
+    d = dict(base)
+    d["requirements"] += "\n| REQ-703 | duplicated boundary row | x | Provisional | x | x | 10B | x | x |\n"
+    expect("duplicated requirement ID", d, 29)
+
+    d = dict(base)
+    d["requirements"] = d["requirements"].replace("| REQ-703 |", "| REQ-799 |", 1)
+    expect("historical boundary row removed", d, 29)
+
+    print(f"\nSELF-TEST: {seeded - defects}/{seeded} seeded cases behaved as expected")
     return 0 if defects == 0 else 1
 
 

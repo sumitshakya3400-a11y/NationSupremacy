@@ -113,7 +113,7 @@ def stale_next_actions(text: str, current_prompt: int = 4) -> list[str]:
 # claim is attributed to a sub-prompt only up to the next sub-prompt mention,
 # so "07B is complete; 07C is next" is never read as a 07B claim.
 
-CURRENT_SUBPROMPT = "11C"
+CURRENT_SUBPROMPT = "12"
 # 2026-10-29: Prompt 08 is split too, so 08A joins the completed set.
 # 2026-10-30: 08B is complete as well, so it is caught the same way, and
 # 08C closes the set.
@@ -132,10 +132,37 @@ CURRENT_SUBPROMPT = "11C"
 # 2026-11-05 (Prompt 11B): the B-11 specification is complete at the
 # system-specification level, so 11B joins the completed set and the live
 # sub-prompt becomes 11C. 11C is not complete, so Prompt 11 stays open.
+# 2026-11-06 (Prompt 11C): the workflow/acceptance companion closed the whole
+# Prompt 11 family at the specification/documentation level, so 11C joins the
+# completed set. Its ACCEPTANCE is PARTIAL, which is tracked separately below:
+# "specification-complete" and "accepted" are different states and must never
+# be collapsed into one.
 COMPLETED_SUBPROMPTS = ("07A", "07B", "07C", "08A", "08B", "08C", "09A", "09B", "09C",
-                        "10A", "10B", "10C", "11A", "11B")
+                        "10A", "10B", "10C", "11A", "11B", "11C")
+
+# The scheduled next Stage 2 prompt. There is no 12A/12B/12C split, so the
+# prompt-level and sub-prompt-level values coincide; both names are kept so a
+# caller that asks either question gets the same answer.
+CURRENT_PROMPT = CURRENT_SUBPROMPT
+NEXT_PROMPT = CURRENT_PROMPT
+
+# Acceptance is not completion. A prompt can be specification-complete and still
+# be unaccepted; 11C is exactly that. Only a recorded owner verdict changes this.
+PROMPT_ACCEPTANCE = {"11C": "PARTIAL"}
+
+# Prompts the roadmap has not started. "12" is the next scheduled stage; 14 is
+# the calibration prompt, which must not be reported as begun or complete.
+UNSTARTED_PROMPTS = ("12", "13", "14", "15")
+
+# Owner-reserved decisions that no documentation pass may close.
+OWNER_RESERVED_OPEN = tuple(f"UD-{i:03d}" for i in list(range(40, 50)) + [50, 51])
 
 SUBPROMPT = re.compile(r"\b((?:0[789]|1[01])[A-C])\b")
+
+# A prompt-level mention ends the region a sub-prompt claim can own. Without
+# this, "11C is complete … so Prompt 12 is next and has not started" was read
+# as an 11C claim, because Prompt 12 is not itself a sub-prompt match.
+PROMPT_MENTION = re.compile(r"\bPrompt\s*0?\d{1,2}[A-C]?\b", re.IGNORECASE)
 
 NEXT_TASK_CLAIM = re.compile(
     r"\b(?:is|remains|stays)\s+(?:still\s+)?the\s+next(?:\s+(?:intended|outstanding|authorized))?"
@@ -190,26 +217,151 @@ def subprompt_status_problems(
     """
     problems: list[str] = []
     seen: set[str] = set()
-    for clause in status_clauses(text):
-        if HISTORICAL_MARKER.search(clause):
+    # A labelled history label applies to the whole record, not just the clause
+    # that happens to contain it. Splitting first lost the label, so the 11A
+    # status block ("superseded by the 11B status above: … 11C is next") was
+    # reported even though the record is explicitly historical.
+    for line in text.splitlines():
+        if HISTORICAL_MARKER.search(line):
             continue
-        for match in SUBPROMPT.finditer(clause):
-            if match.group(1) not in completed:
+        for clause in (part.strip() for part in re.split(r"(?<=[.;])\s+", line.strip())):
+            if not clause:
                 continue
-            rest = clause[match.end():]
-            following = SUBPROMPT.search(rest)
-            tail = rest[: following.start()] if following else rest
-            prefix = clause[: match.start()]
-            flagged = bool(
-                NEXT_TASK_CLAIM.search(tail)
-                or NOT_STARTED_CLAIM.search(tail)
-                or PENDING_CLAIM.search(tail)
-                or NEXT_TASK_PREFIX.search(prefix)
-            )
-            if not flagged:
-                continue
-            flat = re.sub(r"\s+", " ", clause)
-            if flat not in seen:
-                seen.add(flat)
-                problems.append(flat[:160])
+            for match in SUBPROMPT.finditer(clause):
+                if match.group(1) not in completed:
+                    continue
+                rest = clause[match.end():]
+                bounds = [m.start() for m in (SUBPROMPT.search(rest), PROMPT_MENTION.search(rest)) if m]
+                tail = rest[: min(bounds)] if bounds else rest
+                prefix = clause[: match.start()]
+                flagged = bool(
+                    NEXT_TASK_CLAIM.search(tail)
+                    or NOT_STARTED_CLAIM.search(tail)
+                    or PENDING_CLAIM.search(tail)
+                    or NEXT_TASK_PREFIX.search(prefix)
+                )
+                if not flagged:
+                    continue
+                flat = re.sub(r"\s+", " ", clause)
+                if flat not in seen:
+                    seen.add(flat)
+                    problems.append(flat[:160])
     return problems
+
+
+# --- Cross-document status agreement (2026-11-06, Prompt 11C-C1) ------------
+# Completing a prompt is not the same as accepting it, and neither is the same
+# as implementing it. The 11C audit found a document that still said "11C … not
+# started" while the status blocks said the prompt was complete, and a status
+# model whose `CURRENT_SUBPROMPT` still named the finished prompt. The checks
+# below compare *declarations* across documents instead of trusting each file
+# separately. They stay lexical on purpose: the project has no database of
+# status records, only Markdown that has to agree with itself.
+
+STATUS_BLOCK = re.compile(r"<!-- STATUS:BEGIN -->(.*?)<!-- STATUS:END -->", re.S)
+DECLARED_NEXT = re.compile(r"^stage_2_next_prompt\s*:\s*([0-9]{1,2}[A-C]?)\s*$", re.M)
+ROADMAP_NEXT_ROW = re.compile(
+    r"^\|\s*Next prompt\s*\|\s*(.*?)\s*\|\s*$", re.M
+)
+PROMPT_14_DONE = re.compile(
+    r"\bprompt\s*14\b[^.\n]{0,80}\b(?:is|are|was|has been|have been)\s+"
+    r"(?:now\s+)?(?:complete|completed|done|approved|calibrated|started)\b",
+    re.IGNORECASE,
+)
+IMPLEMENTED_CLAIM = re.compile(
+    r"\b(?:is|are|was|were|has been|have been)\s+(?:now\s+)?(?:fully\s+)?"
+    r"(?:implemented|released|deployed|runtime-verified|playtested)\b",
+    re.IGNORECASE,
+)
+OWNER_RESERVED_APPROVED = re.compile(
+    r"\bUD-(?:04[0-9]|05[01])\b[^.\n]{0,80}\b(?:is|are|was|were|has been|have been)\s+"
+    r"(?:now\s+)?(?:approved|resolved|closed|signed off)\b",
+    re.IGNORECASE,
+)
+NEGATION_WORDS = {
+    "no", "not", "never", "without", "neither", "nor", "none", "cannot",
+    "prohibit", "prohibited", "forbid", "forbidden", "unapproved", "unresolved",
+    "outstanding", "pending", "open",
+}
+
+
+def _negated(clause: str) -> bool:
+    tokens = {t.strip(".,;:()*`").lower() for t in clause.split()}
+    return bool(tokens & NEGATION_WORDS)
+
+
+def declared_next_prompt(text: str) -> str | None:
+    """The prompt a document says comes next, from its STATUS block or its row.
+
+    Both forms are admitted because the continuity files carry a STATUS block
+    while the Stage 2 handoff carries a `| Next prompt |` row. A document that
+    declares neither returns None and is not compared.
+    """
+    block = STATUS_BLOCK.search(text)
+    if block:
+        match = DECLARED_NEXT.search(block.group(1))
+        if match:
+            return match.group(1)
+    row = ROADMAP_NEXT_ROW.search(text)
+    if row:
+        match = PROMPT_NUMBER.search(row.group(1))
+        if match:
+            return match.group(1)
+    return None
+
+
+def continuity_problems(
+    documents: dict[str, str],
+    expected_next: str | None = None,
+) -> list[str]:
+    """Return disagreements between active status documents.
+
+    `documents` is a name→text map of the live status surfaces. The checks are:
+
+    1. every declared next prompt equals `expected_next` (default `NEXT_PROMPT`);
+    2. no document presents a completed sub-prompt as still next / not started;
+    3. no document presents the B-11 or 11C work as runtime-implemented;
+    4. no owner-reserved decision is presented as approved or resolved;
+    5. Prompt 14 is not presented as started, complete or calibrated.
+
+    Historical prose is exempt only where it labels itself (the `HISTORICAL_MARKER`
+    rule), and negated claims are exempt because they assert the opposite.
+    """
+    expected = expected_next or NEXT_PROMPT
+    problems: list[str] = []
+
+    declarations: dict[str, str] = {}
+    for name, text in documents.items():
+        value = declared_next_prompt(text)
+        if value is not None:
+            declarations[name] = value
+    for name, value in sorted(declarations.items()):
+        if value != expected:
+            problems.append(
+                f"{name}: declares next prompt {value!r}, expected {expected!r}"
+            )
+    if len({v for v in declarations.values()}) > 1:
+        problems.append(f"status documents disagree on the next prompt: {declarations}")
+
+    for name, text in documents.items():
+        for excerpt in subprompt_status_problems(text):
+            problems.append(f"{name}: completed sub-prompt presented as live: {excerpt}")
+
+        for clause in status_clauses(text):
+            if HISTORICAL_MARKER.search(clause) or _negated(clause):
+                continue
+            low = clause.lower()
+            if ("11c" in low or "b-11" in low or "prompt 11" in low) and IMPLEMENTED_CLAIM.search(clause):
+                problems.append(f"{name}: specification presented as implementation: {clause[:150]}")
+            if OWNER_RESERVED_APPROVED.search(clause):
+                problems.append(f"{name}: owner-reserved decision presented as settled: {clause[:150]}")
+            if PROMPT_14_DONE.search(clause):
+                problems.append(f"{name}: Prompt 14 presented as begun or complete: {clause[:150]}")
+
+    seen: set[str] = set()
+    unique: list[str] = []
+    for problem in problems:
+        if problem not in seen:
+            seen.add(problem)
+            unique.append(problem)
+    return unique
