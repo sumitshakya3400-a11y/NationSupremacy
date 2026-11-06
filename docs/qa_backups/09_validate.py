@@ -569,9 +569,12 @@ check("10B specification complete" in log_status("10")
       "progress log row 10 records 10B complete, 10C complete and Prompt 12B next", log_status("10"))
 # 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
 # pending count, so a row that silently regresses to "Pending" or to 12A-live
-# fails here even though the count of bare Pending rows is unchanged.
-check("12A complete at the research/design-foundations level" in log_status("12")
-      and "12B next and not started" in log_status("12"),
+# fails here even though the count of bare Pending rows is unchanged. The
+# status cell must *begin* with the 12A completion text, so a cell that names
+# some other state first cannot borrow 12A's completion from later in the cell.
+status12 = log_status("12").replace("**", "")
+check(status12.startswith("12A complete at the research/design-foundations level")
+      and "12B next and not started" in status12,
       "progress log row 12 records 12A complete and 12B next", log_status("12"))
 
 # 15f. The *current* next action (2026-10-23 micro-correction) ----------------

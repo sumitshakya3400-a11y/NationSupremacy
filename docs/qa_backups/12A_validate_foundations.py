@@ -1337,7 +1337,7 @@ FIXTURES: list = [
     Fixture("12A-N03", "12A-09", False, fx_duplicate_requirement,
             "a requirement id is duplicated", "duplicate"),
     Fixture("12A-N04", "12A-10", False, fx_no_verification_intent,
-            "a requirement has no verification", "verification"),
+            "a requirement has no verification", "verification [44]"),
     Fixture("12A-N05", "12A-12", False, fx_unsupported_approval,
             "a candidate is marked Approved", "bad status"),
     Fixture("12A-N06", "12A-22", False, fx_owner_row_closed,
@@ -1349,7 +1349,7 @@ FIXTURES: list = [
     Fixture("12A-N09", "12A-35", False, fx_contradictory_classification,
             "a category loses its axis assignment", "axis value"),
     Fixture("12A-N10", "12A-33", False, fx_legal_overreach,
-            "an unsupported legal conclusion", "legal"),
+            "an unsupported legal conclusion", "we are (?:GDPR|DSA|COPPA) co"),
     Fixture("12A-N11", "12A-06", False, fx_untraceable_assertion,
             "a benchmark cites no source", "uncited"),
     Fixture("12A-N12", "12A-30", False, fx_illegal_gate_status,
@@ -1422,10 +1422,19 @@ def run_fixtures(model, verbose):
         ok, detail = by_id[fx.cid].fn(mutated)
         good = (ok == fx.expect)
         wrong_reason = ""
-        if good and not fx.expect and fx.reason and fx.reason.lower() not in str(detail).lower():
-            good = False
-            wrong_reason = (f"; rejected for the wrong reason — expected "
-                            f"{fx.reason!r} in {str(detail)[:90]!r}")
+        if good and not fx.expect and fx.reason:
+            detail_l = str(detail).lower()
+            # A bare bucket label ("legal", "verification") also occurs in an
+            # empty failure bucket ("legal []") printed by a check that failed
+            # for a different cause. Require the finding named by the fixture,
+            # and reject a reason that only matches an empty bucket.
+            empty_bucket = f"{fx.reason.lower()} []" in detail_l
+            if fx.reason.lower() not in detail_l or empty_bucket:
+                good = False
+                why = ("the declared finding bucket is empty"
+                       if empty_bucket else
+                       f"expected {fx.reason!r} in {str(detail)[:90]!r}")
+                wrong_reason = f"; rejected for the wrong reason — {why}"
         if fx.expect:
             pos_n += 1
             pos_ok += 1 if good else 0
