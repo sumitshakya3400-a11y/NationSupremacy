@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Current cross-file validator for the Project X Stage 1 document set.
+"""Current cross-file validator for the Project X document set.
+
+Purpose (2026-11-06, Prompt 11C-C1): this is a **current-project** validator,
+not a frozen Stage 1 snapshot. It reads the live registers and continuity files
+and checks that they agree with each other and with the roadmap. The Stage 1
+closure assertions it has always carried are retained *inside* it — they are
+still meaningful and are not relaxed — but they are joined by the current
+totals (REQ-763, DD-210, UD-051, D-162) instead of the maxima that happened to
+hold when each was first written. A later legitimate allocation extends a
+maximum; it must not fail a validator that was only ever meant to catch a
+*missing* or *misattributed* row.
 
 History: this started as a point-in-time checker written at the end of the
 Prompt 8 correction pass. Its original assertions expected Prompt 9 to be
@@ -36,6 +46,8 @@ if hasattr(sys.stdout, "reconfigure"):
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from status_rules import (  # noqa: E402  (document-QA helper)
     COMPLETED_SUBPROMPTS,
+    CURRENT_PROMPT,
+    continuity_problems,
     stale_next_actions,
     subprompt_status_problems,
 )
@@ -47,7 +59,80 @@ fail: list[str] = []
 
 
 def rd(path: Path) -> str:
+    """Read a UTF-8 document, replacing undecodable bytes."""
     return path.read_text(encoding="utf-8", errors="replace")
+
+
+def contiguous_ids(prefix: str, ids: list[str]) -> bool:
+    """True when `ids` is exactly `prefix-001` … in order, with no gap or repeat.
+
+    A maximum-based test cannot distinguish a legitimate later allocation from a
+    dropped row; contiguity can. Prompt 11C-C1 replaced three `== 199`-style
+    maxima with this rule, and the self-test pins it.
+    """
+    return ids == [f"{prefix}-{i:03d}" for i in range(1, len(ids) + 1)]
+
+
+def _self_test() -> int:
+    """In-memory regression cases for the rules that were corrected."""
+    cases: list[tuple[str, bool]] = []
+
+    cases.append(("contiguous register accepted",
+                  contiguous_ids("REQ", [f"REQ-{i:03d}" for i in range(1, 764)])))
+    cases.append(("gap rejected",
+                  not contiguous_ids("REQ", ["REQ-001", "REQ-003"])))
+    cases.append(("duplicate rejected",
+                  not contiguous_ids("REQ", ["REQ-001", "REQ-002", "REQ-002"])))
+    cases.append(("malformed rejected",
+                  not contiguous_ids("REQ", ["REQ-001", "REQ-2"])))
+    cases.append(("order rejected",
+                  not contiguous_ids("REQ", ["REQ-002", "REQ-001"])))
+
+    ud_table = chr(10).join([
+        "| UD-001 | q | A | x | y | z | p | d | **Resolved** by D-001 |",
+        "| UD-040 | q | A | x | y | z | p | d | Open — owner |",
+        "| UD-051 | q | A | x | y | z | p | d | Open — owner |",
+    ])
+    counts = {"Resolved": 0, "Deferred": 0, "Open": 0}
+    for line in ud_table.splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        status = cells[8]
+        if status.startswith("**Resolved"):
+            counts["Resolved"] += 1
+        elif status.startswith("**Deferred"):
+            counts["Deferred"] += 1
+        elif status.startswith("Open"):
+            counts["Open"] += 1
+    cases.append(("UD counts derived from rows", counts == {"Resolved": 1, "Deferred": 0, "Open": 2}))
+
+    clean = {"a.md": "<!-- STATUS:BEGIN -->" + chr(10) + "stage_2_next_prompt: 12B"
+                       + chr(10) + "<!-- STATUS:END -->" + chr(10)}
+    cases.append(("consistent status accepted", continuity_problems(clean) == []))
+    stale = {"a.md": "<!-- STATUS:BEGIN -->" + chr(10) + "stage_2_next_prompt: 11C"
+                       + chr(10) + "<!-- STATUS:END -->" + chr(10)}
+    cases.append(("stale live prompt rejected", continuity_problems(stale) != []))
+    roadmap = {"roadmap.md": "Prompt 11C has not started."}
+    cases.append(("stale roadmap rejected", continuity_problems(roadmap) != []))
+    impl = {"p.md": "The B-11 workflow layer is fully implemented and released."}
+    cases.append(("implementation claim rejected", continuity_problems(impl) != []))
+    owner = {"h.md": "UD-040 is approved and closed by this pass."}
+    cases.append(("owner-reserved claim rejected", continuity_problems(owner) != []))
+    p14 = {"r.md": "Prompt 14 is complete."}
+    cases.append(("Prompt 14 completion rejected", continuity_problems(p14) != []))
+    p14_ok = {"r.md": "Prompt 14 has not started; calibration remains outstanding."}
+    cases.append(("unstarted Prompt 14 accepted", continuity_problems(p14_ok) == []))
+
+    bad = 0
+    for name, ok in cases:
+        print(f"  self-test {name}: {'ok' if ok else 'WRONG'}")
+        bad += 0 if ok else 1
+    print(f"SELF-TEST: {len(cases) - bad}/{len(cases)} cases behaved as expected")
+    return 0 if bad == 0 else 1
+
+
+_selftest_rc = 0
+if "--self-test" in sys.argv:
+    _selftest_rc = _self_test()
 
 
 # --- Stage 2 reference guards (2026-10-28 cross-document reconciliation) ---
@@ -214,8 +299,8 @@ if "--self-test" in sys.argv:
           f"-> {(clean_header or ['no problems'])[0]}")
     bad += 0 if not clean_header else 1
     total = len(fixtures) + 1
-    if bad:
-        print(f"SELF-TEST: {bad} of {total} guards failed")
+    if _selftest_rc or bad:
+        print(f"SELF-TEST: combined failure (rule cases rc={_selftest_rc}, fixture failures={bad})")
         raise SystemExit(2)
     print(f"SELF-TEST: {total}/{total} guards detect their defect")
     raise SystemExit(0)
@@ -329,6 +414,7 @@ if not re.search(r"conditionally ready", r9, re.I):
 
 # 5. ID registers ------------------------------------------------------------
 def ids(text: str, prefix: str) -> set[str]:
+    """Numeric identifier suffixes for a prefix."""
     return {v for v in re.findall(prefix + r"-(.{3})", text) if v.isdigit()}
 
 
@@ -350,6 +436,7 @@ if w != [chr(c) for c in range(65, 83)]:
 
 # 6. Relative links resolve --------------------------------------------------
 def links(text: str) -> list[str]:
+    """Relative Markdown link targets in a document."""
     out = []
     for m in re.finditer(r"\]\(([^)\s#]+)", text):
         link = m.group(1)
@@ -501,8 +588,8 @@ if any("08C" not in text or "Prompt 09" not in text for text in (ctx, hnd, prog)
 if handoff_doc.exists():
     ho = rd(handoff_doc)
     block = ho[ho.index("## 10. Next action"):ho.index("## 11. House rules")] if "## 10. Next action" in ho and "## 11. House rules" in ho else ""
-    if "Prompt 10C" not in block or "Prompt 10B" not in block or "Prompt 11" not in block:
-        fail.append("stage-2/00 §10: next action does not name Prompt 10B/10C complete and Prompt 11 next")
+    if "Prompt 11C" not in block or "Prompt 12" not in block:
+        fail.append("stage-2/00 §10: next action does not name Prompt 11C complete and Prompt 12 next")
     ho_header = ho[:ho.index("## 1.")] if "## 1." in ho else ho[:1500]
     for problem in handoff_header_problems(ho_header):
         fail.append(problem)
@@ -522,6 +609,7 @@ STATUS_KEYS = [
 
 
 def status_block(text: str) -> dict[str, str]:
+    """Parsed key/value pairs from the single STATUS block."""
     blocks = re.findall(r"<!-- STATUS:BEGIN -->(.*?)<!-- STATUS:END -->", text, re.S)
     if len(blocks) != 1:
         fail.append(f"STATUS blocks found: {len(blocks)} (expected 1)")
@@ -548,8 +636,9 @@ if all(blocks):
         fail.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     if one.get("stage_2") != "IN PROGRESS":
         fail.append(f"STATUS: stage_2 is {one.get('stage_2')!r}, expected IN PROGRESS")
-    if one.get("stage_2_next_prompt") != "11B":
-        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 11B")
+    if one.get("stage_2_next_prompt") != CURRENT_PROMPT:
+        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, "
+                    f"expected {CURRENT_PROMPT!r} (status_rules.CURRENT_PROMPT)")
     op_state = one.get("operations_points", "")
     if not (op_state.startswith("Approved") and "D-015" in op_state and "provisional" in op_state.lower()):
         fail.append(f"STATUS: Operations Points state is {op_state!r}, expected the D-015 model with provisional values")
@@ -561,6 +650,22 @@ if all(blocks):
     m = re.search(r"D-(\d{3})\.\.D-(\d{3})", one.get("decisions_range", ""))
     if not m or m.group(2) != d_last or m.group(1) != "001":
         fail.append(f"STATUS: decisions_range is {one.get('decisions_range')!r}, log ends D-{d_last}")
+
+# 7c-2. Cross-document status agreement (2026-11-06, Prompt 11C-C1) ----------
+# The 11C audit found a roadmap that still called 11C the next, unstarted task
+# while the STATUS blocks recorded it complete. Each file was internally
+# consistent; only a comparison catches that, so the six live surfaces are
+# compared here as well as in the 11C validator.
+_status_docs = {
+    "AI_CONTEXT.md": ctx,
+    "AI_HANDOFF.md": hnd,
+    "PROJECT_PROGRESS.md": prog,
+    "ROADMAP.md": rd(DOCS / "ROADMAP.md"),
+    "stage-2/00_stage_2_handoff.md": rd(DOCS / "stage-2" / "00_stage_2_handoff.md"),
+    "stage-2/01_stage_2_prompt_roadmap.md": rd(DOCS / "stage-2" / "01_stage_2_prompt_roadmap.md"),
+}
+for problem in continuity_problems(_status_docs):
+    fail.append(f"status agreement: {problem}")
 
 # 7e. Stage 2 Prompt 01 deliverables ----------------------------------------
 stage2_files = {
@@ -576,8 +681,13 @@ for label, name in stage2_files.items():
 if (DOCS / "stage-2" / stage2_files["trace"]).exists():
     tr = rd(DOCS / "stage-2" / stage2_files["trace"])
     ids_ = re.findall(r"^\| (REQ-\d{3}) ", tr, re.M)
-    if ids_ != [f"REQ-{i:03d}" for i in range(1, 704)]:
-        fail.append(f"tracker requirement IDs: {len(ids_)} rows, expected REQ-001..703")
+    # Current allocation: contiguous from REQ-001 to the live maximum. A later
+    # prompt extending the register keeps this true; a dropped, duplicated or
+    # malformed ID breaks it.
+    if not contiguous_ids("REQ", ids_):
+        fail.append(f"tracker requirement IDs are not contiguous REQ-001..REQ-{len(ids_):03d}: {len(ids_)} rows")
+    elif len(ids_) < 763:
+        fail.append(f"tracker requirement count regressed: {len(ids_)} rows, expected at least REQ-763")
     rows_ = [ln for ln in tr.splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
     if any(not re.search(r"\| (?:0[2-9]|1[0-5])[ABC]? \||\| all \|", ln) for ln in rows_):
         fail.append("tracker contains a requirement with no assigned prompt")
@@ -587,8 +697,11 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 199:
-        fail.append("design register does not carry DD-001..DD-199")
+    dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dr, re.M)
+    if not contiguous_ids("DD", dd_rows):
+        fail.append(f"design register IDs are not contiguous DD-001..DD-{len(dd_rows):03d}")
+    elif len(dd_rows) < 210:
+        fail.append(f"design register count regressed: {len(dd_rows)} rows, expected at least DD-210")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -599,14 +712,18 @@ if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
         fail.append("design register does not record DD-019 -> DD-033 with provisional OP values")
 if (DOCS / "stage-2" / stage2_files["unresolved"]).exists():
     ur = rd(DOCS / "stage-2" / stage2_files["unresolved"])
-    if len(re.findall(r"^\| UD-\d{3} \|", ur, re.M)) != 49:
-        fail.append("unresolved register does not carry UD-001..UD-049")
+    ud_rows = re.findall(r"^\| (UD-\d{3}) \|", ur, re.M)
+    if not contiguous_ids("UD", ud_rows):
+        fail.append(f"unresolved register IDs are not contiguous UD-001..UD-{len(ud_rows):03d}")
+    elif len(ud_rows) < 51:
+        fail.append(f"unresolved register count regressed: {len(ud_rows)} rows, expected at least UD-051")
 if (DOCS / "stage-2" / stage2_files["log"]).exists():
     lg = rd(DOCS / "stage-2" / stage2_files["log"])
     if "Prompt 03 checkpoint" not in lg or "Prompt 04 checkpoint" not in lg or "Prompt 05 checkpoint" not in lg or "Prompt 06A" not in lg or "Prompt 06B" not in lg:
         fail.append("Stage 2 progress log does not record Prompts 03–05 and 06A/06B")
 
     def log_status(prompt):
+        """Status cell for a prompt row in the progress log."""
         for line in lg.splitlines():
             if line.startswith(f"| {prompt} |"):
                 cells = [c.strip() for c in line.strip().strip("|").split("|")]
@@ -675,14 +792,36 @@ for did in ("D-140", "D-141"):
     if not any(ln.startswith(f"| {did} |") for ln in dec.splitlines()):
         fail.append(f"DECISIONS.md lost {did}")
 
-for uid in [f"UD-{i:03d}" for i in range(40, 50)]:
+for uid in [f"UD-{i:03d}" for i in range(40, 50)] + ["UD-050", "UD-051"]:
     row = next((ln for ln in ur.splitlines() if ln.startswith(f"| {uid} |")), "")
     cells = [c.strip() for c in row.strip().strip("|").split("|")] if row else []
     status = cells[8] if len(cells) >= 9 else ""
     if not row or not status.startswith("Open"):
         fail.append(f"{uid} is not preserved as Open")
-if "**27 Resolved**" not in ur or "**4 Deferred to a future prompt**" not in ur or "**18 Open**" not in ur:
-    fail.append("UD register counts changed during the acceptance record")
+
+
+def ud_status_counts(text: str) -> dict[str, int]:
+    """Count UD rows by their Status cell. Declared totals are compared to this."""
+    counts = {"Resolved": 0, "Deferred": 0, "Open": 0}
+    for line in text.splitlines():
+        if not re.match(r"\| UD-\d{3} \|", line):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        status = cells[8] if len(cells) >= 9 else ""
+        if status.startswith("**Resolved"):
+            counts["Resolved"] += 1
+        elif status.startswith("**Deferred"):
+            counts["Deferred"] += 1
+        elif status.startswith("Open"):
+            counts["Open"] += 1
+    return counts
+
+
+_udc = ud_status_counts(ur)
+if (f"**{_udc['Resolved']} Resolved**" not in ur
+        or f"**{_udc['Deferred']} Deferred to a future prompt**" not in ur
+        or f"**{_udc['Open']} Open**" not in ur):
+    fail.append(f"UD register declared counts disagree with its rows: {_udc}")
 
 roadmap01 = rd(DOCS / "stage-2" / "01_stage_2_prompt_roadmap.md")
 if "Prompt 09C" not in roadmap01 or "16_alliances_workflows_acceptance.md" not in roadmap01:
@@ -698,8 +837,12 @@ if "Prompt 10A" not in roadmap01 or "research/10A_politics_and_war_warfare_resea
 # live prompt to Prompt 11.
 if "Prompt 10C" not in roadmap01 or "17_warfare_workflows_acceptance.md" not in roadmap01:
     fail.append("01 roadmap does not register Prompt 10C complete with its canonical companion")
-if "Prompt 11" not in roadmap01:
-    fail.append("01 roadmap does not register Prompt 11 as next")
+if "Prompt 11C" not in roadmap01 or "19_world_events_objectives_rankings_progression_workflows_integration_acceptance.md" not in roadmap01:
+    fail.append("01 roadmap does not register Prompt 11C complete with its canonical companion")
+if "Prompt 12" not in roadmap01:
+    fail.append("01 roadmap does not register Prompt 12 as next")
+if "PARTIAL" not in roadmap01:
+    fail.append("01 roadmap does not record the PARTIAL acceptance verdict for Prompt 11C")
 if ("17_warfare_and_settlements.md" not in roadmap01
         or "17_warfare_formula_register.md" not in roadmap01):
     fail.append("01 roadmap does not link the B-10 rulebook and formula register")
@@ -824,6 +967,8 @@ _WORDS["one hundred and forty-one"] = 141
 _WORDS["one hundred and forty-two"] = 142
 _WORDS["one hundred and forty-three"] = 143
 _WORDS["one hundred and fifty-one"] = 151
+_WORDS["one hundred and sixty-one"] = 161
+_WORDS["one hundred and sixty-two"] = 162
 _WORDS["one hundred and five"] = 105
 _WORDS["one hundred and eight"] = 108
 _WORDS["one hundred and seventy-seven"] = 177
@@ -873,20 +1018,22 @@ if ur_doc.exists():
     ur = rd(ur_doc)
     urows = {m.group(1): ln for ln in ur.splitlines()
              if (m := re.match(r"\| (UD-\d{3}) \|", ln))}
-    expected_ids = [f"UD-{i:03d}" for i in range(1, 50)]
+    expected_ids = [f"UD-{i:03d}" for i in range(1, len(urows) + 1)]
     if sorted(urows) != expected_ids:
-        fail.append(f"unresolved register IDs are not UD-001..UD-049: {len(urows)} rows")
+        fail.append(f"unresolved register IDs are not UD-001..UD-{len(urows):03d}: {len(urows)} rows")
     resolved = {"UD-001", "UD-002", "UD-003", "UD-004", "UD-008", "UD-010",
                 "UD-011", "UD-014", "UD-015", "UD-016", "UD-018", "UD-019",
                 "UD-020", "UD-021", "UD-025", "UD-027", "UD-028", "UD-029",
                 "UD-030", "UD-009", "UD-013", "UD-033", "UD-012", "UD-039",
-                "UD-032"}
-    deferred = {"UD-022": "13", "UD-023": "13", "UD-024": "11",
-                "UD-031": "12"
-                }
+                "UD-032", "UD-024"}
+    # UD-024 was deferred to Prompt 11 and resolved by D-158 in 11B; UD-050 and
+    # UD-051 were opened by 11B/11C and remain owner-reserved.
+    deferred = {"UD-022": "13", "UD-023": "13", "UD-031": "12"}
     open_ud = ["UD-005", "UD-006", "UD-007", "UD-017", "UD-026", "UD-036",
-               "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049"]
+               "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044",
+               "UD-045", "UD-046", "UD-047", "UD-048", "UD-049", "UD-050", "UD-051"]
     def _ud_status(row: str) -> str:
+        """Status cell for an unresolved-decision row."""
         cells = [c.strip() for c in row.strip().strip("|").split("|")]
         return cells[8] if len(cells) >= 9 else ""
 
@@ -905,8 +1052,12 @@ if ur_doc.exists():
         u6 = re.findall(r"^\| `?(UD-\d{3})`? \|", ur[ur.index("## 6."):], re.M)
         if u6 != non_resolved:
             fail.append(f"§6 inventory disagrees with non-resolved rows: {u6}")
-    if "**27 Resolved**" not in ur or "**4 Deferred to a future prompt**" not in ur or "**18 Open**" not in ur:
-        fail.append("unresolved register does not state the reconciling 27/4/18 counts")
+    if "**27 Resolved**" in ur or "**4 Deferred to a future prompt**" in ur or "**18 Open**" in ur:
+        fail.append("unresolved register still states the superseded 27/4/18 counts")
+    if (f"**{_udc['Resolved']} Resolved**" not in ur
+            or f"**{_udc['Deferred']} Deferred to a future prompt**" not in ur
+            or f"**{_udc['Open']} Open**" not in ur):
+        fail.append(f"unresolved register does not state the reconciling counts {_udc}")
 
 for did in [f"D-{i:03d}" for i in range(24, 31)]:
     drow = next((ln for ln in dec.splitlines() if ln.startswith(f"| {did} |")), "")
@@ -919,8 +1070,14 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{did} lost its {successor} supersession")
 
 # 7g-3. Continuity totals and the fixed architecture ------------------------
-    if "D-001" not in text or "D-151" not in text:
-        fail.append(f"{name}: decision range is not D-001..D-151")
+# The block used to run at function-body indentation with no loop, so it tested
+# only the last text bound by an unrelated loop (debt D-5 in the 11C record).
+# It now checks each continuity file against the register's real maximum.
+_dec_ids = [m.group(1) for m in re.finditer(r"^\| (D-\d{3}) \|", dec, re.M)]
+_d_last = _dec_ids[-1] if _dec_ids else "D-162"
+for name, text in (("AI_CONTEXT", ctx), ("AI_HANDOFF", hnd), ("PROJECT_PROGRESS", prog)):
+    if "D-001" not in text or _d_last not in text:
+        fail.append(f"{name}: decision range is not D-001..{_d_last}")
     if "Cloudflare" not in text or "Supabase" not in text:
         fail.append(f"{name}: fixed Cloudflare + Supabase architecture not named")
     if re.search(r"\b(Vercel|Netlify|Firebase)\b", text):
@@ -929,7 +1086,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-if ("DD-001" not in ctx04 or "DD-225" not in ctx04) or ("D-001" not in ctx04 or "D-177" not in ctx04):
+if ("DD-001" not in ctx04 or "DD-225" not in ctx04) or ("D-001" not in ctx04 or _d_last not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")
@@ -952,8 +1109,10 @@ for label, text in (("DECISIONS", dec), ("audit", au)):
 # 7h. The requirements status counts must match the table ---------------------
 tr_doc = DOCS / "stage-2" / "03_requirements_traceability.md"
 if tr_doc.exists():
-    tr_rows = [ln for ln in rd(tr_doc).splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
+    tr_text = rd(tr_doc)
+    tr_rows = [ln for ln in tr_text.splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
     counts = {"Approved": 0, "Provisional": 0, "Open": 0, "Deferred": 0, "Proposed": 0}
+    unknown: list[str] = []
     for ln in tr_rows:
         cells = ln.split("|")
         cell = cells[4] if len(cells) > 4 else ""
@@ -961,8 +1120,22 @@ if tr_doc.exists():
             if key in cell:
                 counts[key] += 1
                 break
-    if counts != {"Approved": 55, "Provisional": 630, "Open": 17, "Deferred": 1, "Proposed": 0}:
-        fail.append(f"requirements status counts are {counts}, expected 55/630/17/1/0")
+        else:
+            unknown.append(ln.strip()[:60])
+    total = sum(counts.values())
+    declared = re.search(r"\|\s*Requirements tracked\s*\|\s*\*\*(\d+)\*\*\s*\|", tr_text)
+    declared_total = int(declared.group(1)) if declared else None
+    if unknown:
+        fail.append(f"requirements with no legal status: {unknown[:3]}")
+    if declared_total is None:
+        fail.append("tracker does not declare its tracked requirement total")
+    elif total != declared_total:
+        fail.append(f"requirements status counts sum to {total}, tracker declares {declared_total}")
+    if total < 763:
+        fail.append(f"requirements count regressed: {total} rows, expected at least REQ-763")
+    if counts["Approved"] != 55:
+        fail.append(f"approved requirement count changed to {counts['Approved']}; owner approvals "
+                    f"change only by a recorded decision")
 
 # 7i. Stage 2 Prompt 03 specification (2026-10-24) ---------------------------
 b03_doc = DOCS / "stage-2" / "09_account_onboarding_nation_creation_and_progression.md"
@@ -1200,7 +1373,8 @@ prodlike = [
 ]
 if prodlike:
     fail.append("production-code-like files present: " + "; ".join(prodlike[:10]))
-py_out = [f for f in files if f.endswith(".py") and "qa_backups" not in Path(f).parts]
+py_out = [f for f in files if f.endswith(".py") and "qa_backups" not in Path(f).parts
+          and not (set(Path(f).parts) & EXEMPT_PARTS)]  # prototypes/ is the documented exemption
 if py_out:
     fail.append(".py files outside qa_backups: " + "; ".join(py_out))
 

@@ -170,6 +170,51 @@ appear in no page, repository file or report; no secret was printed in this pass
 prototype), one-account-per-person enforcement, and true concurrent resolver
 calls (§8).
 
+### 4.1 Correction (2026-11-06, Prompt 11C-C1) — `profiles.treasury` was writable
+
+The table above is preserved as the record of what the 2026-11-05 run measured.
+The Prompt 11C audit found that it does not support the sentence beneath it:
+
+- The "Update own profile | 1 row" test changed `display_name`. It never tried a
+  financial column.
+- The "Set a treasury balance directly" test targeted **`nations.treasury`**, not
+  `profiles.treasury`.
+- `0003_grants_and_rls.sql` granted `select, insert, update` on the whole
+  `feasibility.profiles` table to `authenticated`. The RLS policy scopes *which
+  row* is writable; it does not scope *which columns*. A signed-in player could
+  therefore write `treasury` (and `owner_sub`, and `user_id`) on their own row.
+
+So "the browser-facing client cannot move money" was true for `nations` and
+**false for `profiles`**. The defect is corrected in
+`migrations/0005_profile_column_privileges.sql`:
+
+| Layer | Mechanism |
+|---|---|
+| Privilege | `revoke update on feasibility.profiles from authenticated`, then `grant update (display_name)` — one column only. `insert` is revoked too; no policy authorises it. |
+| Defence in depth | Trigger `profiles_guard_server_columns` raises `42501` on any change to `user_id`, `owner_sub` or `treasury`, including a `SECURITY DEFINER` write. |
+| Reading | `select` on the own row is unchanged; RLS still decides which row. |
+
+**Client-editable:** `display_name` only. **Protected:** `profiles.treasury`,
+`profiles.owner_sub`, `profiles.user_id`, and all of `nations.treasury`.
+**Server-authoritative operations:** the turn resolver (`resolve_turn` /
+`resolve_slot`) credits `nations.treasury` as the owning subsystem; it never
+writes a profile row, and it remains callable only by the service role.
+
+**Tests actually executed on 2026-11-06:** `tests/test_profile_permissions.py`
+migration lint, **10/10**, exit 0. The lint proves the migration's shape — the
+column grant, the revoke order, RLS, the trigger — and that the SQL test file
+contains all seven required cases. It does **not** prove database behaviour.
+
+**Blocked:** `tests/sql/profile_permissions.test.sql` was **not executed**. No
+PostgreSQL instance, Supabase CLI, Docker or Python driver exists in this
+environment; the runner reports `BLOCKED` (exit 77). The seven cases — own
+`display_name` allowed; own `profiles.treasury`, own and other `nations.treasury`,
+another user's profile and a `SECURITY DEFINER` path denied; the resolver still
+crediting `nations.treasury` — are implemented and must be run against a
+disposable database before the correction is described as verified. **The
+prototype is not production-secure and the correction is not yet
+runtime-verified.**
+
 ---
 
 ## 5. Turn engine, idempotency, recovery
