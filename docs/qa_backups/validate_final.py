@@ -639,8 +639,8 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
             or "Prompt 10C complete" not in log_status("10")
             or "Prompt 11 next" not in log_status("10")):
         fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 11 next")
-    if lg.count("| Pending |") != 4:
-        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 4 (rows 12-15; row 11 records 11A complete)")
+    if lg.count("| Pending |") != 3:
+        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 3 (rows 13-15; rows 11-12 record their sub-prompts complete)")
 
 # 7e-2. Phase 09B acceptance, Prompt 09C completion at the specification level
 # and downstream alignment (2026-11-03). Acceptance and 09C completion are

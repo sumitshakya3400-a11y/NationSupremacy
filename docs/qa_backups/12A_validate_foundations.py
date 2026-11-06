@@ -314,13 +314,19 @@ def _collect_all_dd(text: str) -> list[list[str]]:
 
 
 def _gates(main_text: str) -> dict[str, str]:
-    """Parse the P12A gate table into {gate id: status token}."""
+    """Parse the P12A gate table into {gate id: status token}.
+
+    Only the Result cell (column 6) counts. Searching the whole row would let a
+    status word in the evidence, limitation or action cell decide the gate.
+    """
     out: dict[str, str] = {}
     for ln in main_text.splitlines():
         m = re.match(r"^\|\s*`?(P12A-\d{2})`?\s*\|", ln)
         if m:
-            toks = STATUS_TOKENS_RE.findall(ln)
-            out[m.group(1)] = toks[-1] if toks else "MISSING"
+            row = cells(ln)
+            result = row[5] if len(row) > 5 else ""
+            toks = STATUS_TOKENS_RE.findall(result)
+            out[m.group(1)] = toks[0] if toks else "MISSING"
     return out
 
 
@@ -357,8 +363,10 @@ def check_03(m: Model) -> tuple[bool, str]:
     """Every source row carries a valid type token, an access-dated URL and a confidence."""
     bad_type, bad_conf, bad_url = [], [], []
     for n, c in m.rs.items():
-        body = " ".join(c).upper()
-        if not any(t in body for t in SOURCE_TYPES):
+        # A token anywhere else in the row (title, finding, implication) must
+        # not rescue an empty or invalid Type cell.
+        type_cell = c[3].upper()
+        if not any(t in type_cell for t in SOURCE_TYPES):
             bad_type.append(n)
         if not any(c[-1].startswith(t) for t in CONFIDENCE_TOKENS):
             bad_conf.append(n)
@@ -596,6 +604,8 @@ def check_18(m: Model) -> tuple[bool, str]:
 def check_19(m: Model) -> tuple[bool, str]:
     """Design register: contiguous DD ids, the fifteen new rows, and a reconciling tally."""
     ids = sorted(m.dd_rows)
+    if not ids:
+        return False, "the design register has no DD rows"
     bad = gaps(ids)
     if bad:
         return False, f"gaps in DD- numbering: {bad[:8]}"
@@ -613,7 +623,8 @@ def check_19(m: Model) -> tuple[bool, str]:
     if missing_new:
         return False, f"missing DD rows {missing_new}"
     if not declared or total != int(declared.group(1)):
-        return False, f"tally rows sum to {total}, register declares {declared.groups if declared else 'nothing'}"
+        declared_value = declared.group(1) if declared else "nothing"
+        return False, f"tally rows sum to {total}, register declares {declared_value}"
     return True, f"225 DD rows; §6 tally sums to {total} and matches the declared total"
 
 
@@ -668,6 +679,9 @@ def check_23(m: Model) -> tuple[bool, str]:
     if p1 != p2:
         return False, ("half-row mismatch: only-1 "
                        f"{sorted(set(p1) - set(p2))[:4]}, only-2 {sorted(set(p2) - set(p1))[:4]}")
+    short = [n for n in p1 if len(m.int_p1[n]) < 7 or len(m.int_p2[n]) < 7]
+    if short:
+        return False, f"short dependency rows: {short[:4]}"
     empty = [n for n in p1 if any(not c for c in m.int_p1[n][1:])
              or any(not c for c in m.int_p2[n][1:])]
     def open_cell(cell: str) -> bool:
@@ -694,6 +708,9 @@ def check_24(m: Model) -> tuple[bool, str]:
     d, c, r = sorted(m.rk_def), sorted(m.rk_ctl), sorted(m.rk_res)
     if not (d == c == r):
         return False, f"half-set mismatch: def {len(d)}, ctl {len(c)}, res {len(r)}"
+    short = [n for n in d if len(m.rk_ctl[n]) < 5 or len(m.rk_res[n]) < 2]
+    if short:
+        return False, f"short threat rows: {short[:4]}"
     bad_class = [n for n in d
                  if not any(_plain(m.rk_ctl[n][1]).upper().startswith(k) for k in RISK_CLASSES)]
     no_basis = [n for n in d if "L" not in m.rk_ctl[n][2] or "I" not in m.rk_ctl[n][3]]
@@ -710,6 +727,12 @@ def check_24(m: Model) -> tuple[bool, str]:
 
 def check_25(m: Model) -> tuple[bool, str]:
     """Every threat names a preventive control, a detection control and a requirement."""
+    d, c, r = sorted(m.rk_def), sorted(m.rk_ctl), sorted(m.rk_res)
+    if not (d == c == r):
+        return False, f"half-set mismatch: def {len(d)}, ctl {len(c)}, res {len(r)}"
+    short = [n for n in d if len(m.rk_ctl[n]) < 7 or len(m.rk_res[n]) < 2]
+    if short:
+        return False, f"short threat rows: {short[:4]}"
     no_prev = [n for n in m.rk_def if len(m.rk_ctl[n][5]) < 8]
     no_det = [n for n in m.rk_def if len(m.rk_ctl[n][6]) < 8]
     no_req = [n for n in m.rk_def if "12A-CR" not in " ".join(m.rk_res[n])]
@@ -886,6 +909,26 @@ def _claim_sentence(text: str, start: int, end: int) -> str:
     return text[left:right]
 
 
+def _claim_context(text: str, start: int, end: int) -> str:
+    """Return the sentence, or the table cell, that contains the claim.
+
+    A Markdown table row is one line, so a whole-sentence search would let a
+    "no" in one cell excuse a claim in another cell of the same row. When the
+    claim sits in a table, only its own cell is the context.
+    """
+    row_start = text.rfind("\n", 0, start) + 1
+    row_end = text.find("\n", end)
+    if row_end == -1:
+        row_end = len(text)
+    row = text[row_start:row_end]
+    if row.lstrip().startswith("|"):
+        rel_start, rel_end = start - row_start, end - row_start
+        left = row.rfind("|", 0, rel_start)
+        right = row.find("|", rel_end)
+        return row[left + 1:right if right != -1 else len(row)]
+    return _claim_sentence(text, start, end)
+
+
 def check_33(m: Model) -> tuple[bool, str]:
     """No implementation, no executed test and no legal conclusion is claimed."""
     impl, legal, promo = [], [], []
@@ -893,9 +936,11 @@ def check_33(m: Model) -> tuple[bool, str]:
         text = m.src[key]
         for pat in IMPLEMENTATION_CLAIMS:
             for mt in re.finditer(pat, text, re.I):
-                sentence = _claim_sentence(text, mt.start(), mt.end())
-                if not re.search(r"\b(?:not|nothing|never|without|no|only)\b",
-                                 sentence, re.I):
+                # "only" narrows scope; it does not disclaim a claim. A negation
+                # in a neighbouring table cell does not disclaim it either.
+                context = _claim_context(text, mt.start(), mt.end())
+                if not re.search(r"\b(?:not|nothing|never|without|no)\b",
+                                 context, re.I):
                     impl.append((key, mt.group(0)[:34]))
         for pat in LEGAL_OVERREACH:
             if re.search(pat, text, re.I):
@@ -1182,6 +1227,35 @@ def fx_protected_decision_changed(model):
     return model
 
 
+def fx_staging_only_implementation_claim(model):
+    """Fixture: "only" narrows scope; it must not excuse an implementation claim."""
+    model.src["main"] = _sub(model.src["main"], "## 28. Conclusions",
+                             "The moderation service is implemented only in staging."
+                             "\n\n## 28. Conclusions")
+    model.rebuild()
+    return model
+
+
+def fx_cross_cell_negation(model):
+    """Fixture: a "no" in a neighbouring table cell must not excuse the claim."""
+    model.src["main"] = _sub(
+        model.src["main"], "## 28. Conclusions",
+        "| No implementation is claimed here | The moderation service is now implemented. |"
+        "\n\n## 28. Conclusions")
+    model.rebuild()
+    return model
+
+
+def fx_illegal_gate_result(model):
+    """Fixture: Result cell illegal while another cell carries a legal token."""
+    model.src["main"] = _sub(
+        model.src["main"],
+        "**PASS** | Classification is of documentation state",
+        "**DONE** | PASS is recorded in this cell for the fixture")
+    model.rebuild()
+    return model
+
+
 FIXTURES: list = [
     Fixture("12A-P01", "12A-02", True, lambda m: m, "source ids resolve contiguously"),
     Fixture("12A-P02", "12A-05", True, lambda m: m, "every cited source resolves"),
@@ -1212,6 +1286,12 @@ FIXTURES: list = [
             "a protected decision is superseded"),
     Fixture("12A-N16", "12A-33", False, fx_implementation_claim_after_negation,
             "an unrelated negation must not suppress a real implementation claim"),
+    Fixture("12A-N17", "12A-33", False, fx_staging_only_implementation_claim,
+            "an implementation claim qualified only by scope is still a claim"),
+    Fixture("12A-N18", "12A-33", False, fx_cross_cell_negation,
+            "a negation in another table cell must not suppress the claim"),
+    Fixture("12A-N19", "12A-30", False, fx_illegal_gate_result,
+            "an illegal Result cell is not rescued by a legal token elsewhere"),
 ]
 
 
@@ -1258,6 +1338,11 @@ def run_fixtures(model, verbose):
         else:
             neg_n += 1
             neg_ok += 1 if good else 0
+        if not good:
+            want = "accepted" if fx.expect else "rejected"
+            got = "accepted" if ok else "rejected"
+            problems.append(f"{fx.fid} ({fx.cid}) expected {want}, got {got} "
+                            f"({fx.desc})")
         if verbose or not good:
             want = "accepted" if fx.expect else "rejected"
             print(f"[{'OK ' if good else 'BAD'}] {fx.fid} {fx.cid} expected to {want} "

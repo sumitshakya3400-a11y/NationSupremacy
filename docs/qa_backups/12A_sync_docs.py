@@ -81,13 +81,16 @@ BLOCKQUOTE = (
     "allocated: **`REQ-763` remains the frontier and `REQ-764` is reserved for Prompt 12B**. The "
     "independent validator [`docs/qa_backups/12A_validate_foundations.py`]"
     "({QA}12A_validate_foundations.py) passes **35/35** checks with **10/10** positive and "
-    "**16/16** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
+    "**19/19** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
     "0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. B-12's canonical rulebook path "
     "**`stage-2/20_fair_play_and_player_protection.md` is reserved, not created** (D-163/DD-211). "
-    "**No fair-play rule, penalty, duration, permission, moderation workflow, schema or "
-    "implementation exists; the Supabase prototype's client-writable `profiles.treasury` column "
-    "and its unprotected `audit` table remain open defects, and the prototype is not "
-    "security-verified.** **Prompt 12B — B-12 rulebook and formula register — is next in the "
+    "**No new B-12 fair-play rule, penalty, duration, permission, moderation workflow or schema "
+    "was written by 12A, and no implementation exists; B-03 already specifies the inherited "
+    "enforcement rules — pair restrictions, shared-network review, preservation orders, "
+    "retention and appeals — that B-12 must adopt rather than re-decide. The Supabase "
+    "prototype's client-writable `profiles.treasury` column and its unprotected `audit` table "
+    "remain open defects, and the prototype is not security-verified.** **Prompt 12B — B-12 "
+    "rulebook and formula register — is next in the "
     "roadmap, has not started, and is not authorized to start by this prompt.**\n")
 
 

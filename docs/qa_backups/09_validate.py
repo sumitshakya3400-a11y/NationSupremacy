@@ -552,7 +552,9 @@ check("**Complete**" in log_status("07"), "progress log marks Prompt 07 complete
 # is complete. 2026-11-05 (Prompt 11A): 11A research closes at the
 # research/design-foundations level, so row 11 is no longer a bare Pending row
 # and only 12–15 stay pending.
-check(log.count("| Pending |") == 4, "progress log keeps Prompts 12-15 pending", str(log.count("| Pending |")))
+# 2026-11-06 (Prompt 12A): row 12 is no longer a bare Pending row, so only
+# 13–15 stay pending.
+check(log.count("| Pending |") == 3, "progress log keeps Prompts 13-15 pending", str(log.count("| Pending |")))
 check(all(k in next((ln for ln in log.splitlines() if ln.startswith("| 08 |")), "")
           for k in ("**08A complete**", "**08B complete**", "**08C complete**")),
       "progress log row 08 records 08A, 08B and 08C complete", "row 08")
