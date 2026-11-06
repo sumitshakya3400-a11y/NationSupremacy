@@ -42,7 +42,8 @@ DEFERRED = {
 }
 OPEN = {"UD-005", "UD-006", "UD-007", "UD-017", "UD-026", "UD-036",
         "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049",
-        "UD-050", "UD-051",}
+        "UD-050", "UD-051",
+        "UD-052", "UD-053", "UD-054", "UD-055", "UD-056", "UD-057", "UD-058", "UD-059", "UD-060",}
 
 
 def read(path: Path) -> str:
@@ -96,7 +97,7 @@ class DecisionRangeTests(unittest.TestCase):
 class UnresolvedStatusTests(unittest.TestCase):
     def test_every_row_has_one_exclusive_status(self) -> None:
         rows = ud_rows()
-        self.assertEqual(sorted(rows), [f"UD-{i:03d}" for i in range(1, 52)])
+        self.assertEqual(sorted(rows), [f"UD-{i:03d}" for i in range(1, 61)])
         counts = {"Resolved": 0, "Deferred": 0, "Open": 0}
         for cells in rows.values():
             self.assertGreaterEqual(len(cells), 9)
@@ -109,8 +110,8 @@ class UnresolvedStatusTests(unittest.TestCase):
                 counts["Open"] += 1
             else:
                 self.fail(f"unclassified status: {status!r}")
-        self.assertEqual(counts, {"Resolved": 28, "Deferred": 3, "Open": 20})
-        self.assertEqual(sum(counts.values()), 51)
+        self.assertEqual(counts, {"Resolved": 28, "Deferred": 3, "Open": 29})
+        self.assertEqual(sum(counts.values()), 60)
 
     def test_deferred_rows_name_their_owning_prompt(self) -> None:
         rows = ud_rows()
@@ -173,9 +174,10 @@ class HandoffTests(unittest.TestCase):
         # 11A/11B/11C with 11A research complete on 2026-11-05, so the live
         # sub-prompt recorded in every STATUS block is 11C.
         # 2026-11-06 (Prompt 11C): the 11C workflow/acceptance companion closed the
-        # Prompt 11 family at the design level, so every STATUS block now records 12.
+        # Prompt 11 family at the design level, so every STATUS block recorded 12.
+        # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt is 12B.
         for path in (DOCS / "AI_CONTEXT.md", DOCS / "AI_HANDOFF.md", DOCS / "PROJECT_PROGRESS.md"):
-            self.assertRegex(read(path), r"stage_2_next_prompt:\s*12\b", path.name)
+            self.assertRegex(read(path), r"stage_2_next_prompt:\s*12B\b", path.name)
         progress = read(DOCS / "PROJECT_PROGRESS.md")
         self.assertRegex(progress, r"\| 04 \| Economy[^\n]*\| \*\*Complete\*\*")
         self.assertRegex(progress, r"\| 05 \| Cities[^\n]*\| \*\*Complete\*\*")
@@ -202,8 +204,8 @@ class HandoffTests(unittest.TestCase):
         self.assertTrue(row10, "PROJECT_PROGRESS has no Stage 2 Prompt 10 row")
         self.assertIn("10B specification complete", row10)
         self.assertIn("Prompt 10C complete", row10)
-        # 2026-11-06 (Prompt 11C): Prompt 11 closed, so row 10 must name Prompt 12.
-        self.assertIn("Prompt 12 is next", row10)
+        # 2026-11-06 (Prompt 12A): 12A closed, so row 10 must name Prompt 12B.
+        self.assertIn("Prompt 12B is next", row10)
         # 2026-11-05: the Stage 2 Prompt 11 row records 11A's research closure
         # and names 11B as live, without claiming a B-11 rulebook.
         row11 = next((ln for ln in progress.splitlines()
@@ -212,7 +214,7 @@ class HandoffTests(unittest.TestCase):
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11)
         # 2026-11-06 (Prompt 11C): 11C is complete, not "next and not started".
         self.assertIn("11C complete at the specification/documentation level", row11)
-        self.assertIn("Prompt 12 next and not started", row11)
+        self.assertIn("Prompt 12B next and not started", row11)
         self.assertIn("B-11 rulebook at the specification level", row11)
 
 

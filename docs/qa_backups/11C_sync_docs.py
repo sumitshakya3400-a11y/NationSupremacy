@@ -71,8 +71,8 @@ B11_NEW = (
     "accepted by C3; **Prompt 11C complete at the specification/documentation level (log §72): canonical companion "
     "19_world_events_objectives_rankings_progression_workflows_integration_acceptance.md with 25 WJ journeys, 50 WWF workflows, "
     "84 WEE edge cases, 272 WTA tests (all Designed, not executed), 30 WTS threats, 11 WEG gaps, the 17 WPC contracts reused, "
-    "and 20 gates at 11 PASS / 9 PARTIAL / 0 FAIL / 0 BLOCKED; validator 11C_validate_b11_workflows.py 34/34 with 9/9 positive and "
-    "19/19 negative fixtures; Prompt 11 design closure now awaits owner acceptance of the PARTIAL verdict; the Supabase profile "
+    "and 20 gates at 12 PASS / 8 PARTIAL / 0 FAIL / 0 BLOCKED; validator 11C_validate_b11_workflows.py 31/31 with 8/8 positive and "
+    "17/17 negative fixtures; Prompt 11 design closure now awaits owner acceptance of the PARTIAL verdict; the Supabase profile "
     "treasury UPDATE defect stays open and the prototype is not security-verified; Prompt 12 is next and is not authorized to start**"
 )
 
