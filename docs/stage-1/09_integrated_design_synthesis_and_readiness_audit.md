@@ -9,6 +9,8 @@
 
 ---
 
+> **Historical snapshot — superseded on the points below.** This report is the state of the audit on 2026-10-23 *before* the owner's final closure. It is preserved unchanged as evidence of what was found. Its "Stage 1 not complete" status, its three conditional gates and its §19 stage numbering are **historical**: Stage 1 was subsequently **CLOSED** with accepted carry-forward items (D-011, [Report 13](13_stage_1_final_closure_and_stage_2_handoff.md)), and the official roadmap numbering was restored (D-012, [ROADMAP.md](../ROADMAP.md)) — Stage 2 is the Master Game Design Bible, Stage 3 the hosting test, Stage 5 the architecture. The work packages numbered "2A/2B/3…9" in §19.2 are **internal package labels**, not official stages; [ROADMAP.md](../ROADMAP.md) maps them. Nothing else in this report is retracted.
+
 ## How to read this report
 
 Every material statement carries one of the labels below. The labels are not decoration: they are the audit's main defence against the failure mode where a recommendation is later remembered as an approval.
@@ -56,7 +58,7 @@ Two abbreviations are used throughout: **FPB** = first playable build (a real mu
 - [Section 23 — Handoff and continuity file updates](#section-23--handoff-and-continuity-file-updates)
 - [Appendix A — Source register](#appendix-a--source-register)
 - [Appendix B — New identifier families introduced by this report](#appendix-b--new-identifier-families-introduced-by-this-report)
-- [Appendix C — Change log for this pass](#appendix-c--change-log-for-this-pass)
+- [Appendix C — Change log for this pass](#appendix-c--change-log-for-this-pass-2026-10-23)
 
 ---
 

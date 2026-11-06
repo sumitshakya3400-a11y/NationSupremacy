@@ -5,6 +5,8 @@
 **Status:** **STAGE 1 CLOSED — ACCEPTED CARRY-FORWARD ITEMS RECORDED**
 **Scope:** The final bounded Stage 1 review. No new audit cycle. No game implementation.
 
+> **Revision 1.1 (2026-10-23) — roadmap alignment, no finding changed.** The closure decision, gate dispositions, test results and recorded deletions above are unchanged. Phase names and "Stage 2" references below were written before the official stage numbering was restored (**D-012**, [ROADMAP.md](../ROADMAP.md)); they are re-pointed here and there only. Official numbering: **Stage 2 = Master Game Design Bible**, **Stage 3 = test the free-hosting architecture**, **Stage 5 = application architecture and database**, **Stage 6 = accounts**, **Stage 8+ = the feature, security, balance and launch stages**. The OD-02 scope decision and the production schema design therefore belong to **Stage 5**, not Stage 2.
+
 ---
 
 ## 1. Final decision
@@ -136,15 +138,15 @@ Each item names the phase, the reason, and an acceptance criterion. These are th
 
 | ID | Item | Phase | Acceptance criterion |
 |---|---|---|---|
-| **CF-01** | Capacity target and quota validation | Stage 3 (architecture) → before public launch | An owner-approved maximum concurrent nation count exists; measured rows/turn, storage/day and slot duration at that size are recorded with quota headroom; the approval is a DECISIONS entry |
-| **CF-02** | Backup and restore drill | Stage 3 design, Stage 8 execution | A documented logical export is stored outside the project; a restore into a scratch database reproduces table row counts and the audit ledger; RTO/RPO recorded; no paid feature used |
+| **CF-01** | Capacity target and quota validation | Stage 3 → before public launch | An owner-approved maximum concurrent nation count exists; measured rows/turn, storage/day and slot duration at that size are recorded with quota headroom; the approval is a DECISIONS entry |
+| **CF-02** | Backup and restore drill | Stage 3 design, Stage 8+ execution | A documented logical export is stored outside the project; a restore into a scratch database reproduces table row counts and the audit ledger; RTO/RPO recorded; no paid feature used |
 | **CF-03** | Twelve consecutive boundary observation | Stage 3 (elapsed time) | `cron.job_run_details` shows 12 consecutive even-hour successes and `feasibility.cron_heartbeat` has one row per slot; no duplicate application in `turn_applied` |
-| **CF-04** | Supabase Auth end-to-end | Stage 3 | Sign-up → sign-in → protected read/write → sign-out works with real JWTs; two accounts cannot read each other's rows; no service key in client code |
-| **CF-05** | OD-02 scope decision (CP vs FPB) | Stage 3, first task | A DECISIONS entry selects the taxonomy and FPB scope, resolving DEF-001/002; the schema work uses that scope |
-| **CF-06** | True concurrency test of the resolver | Stage 8 (security validation) | Two overlapping sessions start simultaneously; exactly one applies the batch; the other observes `busy` or a completed slot; no double application |
+| **CF-04** | Supabase Auth end-to-end | Stage 6 | Sign-up → sign-in → protected read/write → sign-out works with real JWTs; two accounts cannot read each other's rows; no service key in client code |
+| **CF-05** | OD-02 scope decision (CP vs FPB) | Stage 5, first task | A DECISIONS entry selects the taxonomy and FPB scope, resolving DEF-001/002; the schema work uses that scope |
+| **CF-06** | True concurrency test of the resolver | Stage 8+ (security) | Two overlapping sessions start simultaneously; exactly one applies the batch; the other observes `busy` or a completed slot; no double application |
 | **CF-07** | Billing-scope read and quota alarms | Stage 3 | Both providers are confirmed on free tier by an authorised read, and a documented threshold/alarm exists for database size and function usage |
-| **CF-08** | Recovery, e-mail and moderation runbooks (OD-06/07/08) | Stage 8 | Written procedures exist for restore, account recovery and abuse handling, each with a named owner step and no paid dependency |
-| **CF-09** | GATE-13 evidence completion: V-2/CV-002 sessions | Stage 6 (UX validation) | At least one moderated session and one concept-validation session are recorded with outcomes; nothing is fabricated in the meantime |
+| **CF-08** | Recovery, e-mail and moderation runbooks (OD-06/07/08) | Stage 8+ (administration) | Written procedures exist for restore, account recovery and abuse handling, each with a named owner step and no paid dependency |
+| **CF-09** | GATE-13 evidence completion: V-2/CV-002 sessions | Stage 8+ (UI polish / alpha) | At least one moderated session and one concept-validation session are recorded with outcomes; nothing is fabricated in the meantime |
 
 ---
 
@@ -157,12 +159,12 @@ Each item names the phase, the reason, and an acceptance criterion. These are th
 | Capacity unknown at scale | CF-01; measured 264 B/turn and 35.5 ms/slot give a planning basis | Stage 3 |
 | The Pages site runs as an Advanced Mode function, not static assets | Documented in Report 12 §2.1; static assets remain the production path | Stage 3 (deployment) |
 | One scheduler, one region, one provider | Documented single point of dependency; no second scheduler is permitted by D-008 | Accepted |
-| D-004 (Operations Points) unresolved | Remains **Provisional**; war design is Stage 5 | Stage 5 |
-| Scope (OD-02) undecided | CF-05 is the first Stage 3 task; architecture work starts with it | Owner |
+| D-004 (Operations Points) unresolved | Remains **Provisional**; it may be specified as a proposal in Stage 2 Prompt 10 but not approved | Stage 8+ (warfare) |
+| Scope (OD-02) undecided | CF-05 is the first Stage 5 task; architecture work starts with it | Owner |
 
 ---
 
-## 9. Stage 2 entry checklist
+## 9. Stage 2 entry checklist (Master Game Design Bible)
 
 - [x] Design reports 01–09 exist and are internally consistent.
 - [x] Architecture chosen and recorded (D-008), with the public address (D-009) and dedicated backend (D-010).
@@ -171,16 +173,18 @@ Each item names the phase, the reason, and an acceptance criterion. These are th
 - [x] No secret in the client or the repository.
 - [x] Carry-forward items assigned with acceptance criteria (§7).
 - [x] Continuity files consistent and closed (D-011).
-- [ ] CF-05 (scope) decided — first task of Stage 3, not a Stage 1 condition.
+- [ ] CF-05 (scope) decided — first task of Stage 5, not a Stage 1 condition.
 - [ ] CF-03 soak completed — elapsed time only.
 
 ---
 
 ## 10. What Stage 2 is
 
-Per the project's own roadmap ([Report 09 §19.2](09_integrated_design_synthesis_and_readiness_audit.md)), Stage 2 comprises **2A (decision closure and Stage 1 close-out)** and **2B (free-tier measurement spike)**. Both are delivered: 2A by this report, 2B by Reports 11–12. The next workstream in that same roadmap is **Stage 3 — architecture and schema** (TQ-01…TQ-17, SDQ-003/018), and it is the first work the owner is authorizing as "Stage 2" in the implementation sense.
+**Stage 2 is the Master Game Design Bible** — the authoritative design specification for how the game works (D-012, [ROADMAP.md](../ROADMAP.md)). It is a design-specification stage: no game code, no migrations, no deployments.
 
-**First task:** resolve OD-02 and write the production data model, authority matrix and turn-phase catalogue for the accepted scope — see [docs/stage-2/00_stage_2_handoff.md](../stage-2/00_stage_2_handoff.md).
+The work this report originally described under "Stage 2" has moved: the internal packages **2A** (decision closure and close-out) and **2B** (free-tier measurement spike) from [Report 09 §19.2](09_integrated_design_synthesis_and_readiness_audit.md) are **delivered** — 2A by this report, 2B by Reports 11–12 — and the "architecture and schema" workstream (TQ-01…TQ-17, SDQ-003/018) is now **official Stage 5**.
+
+**Stage 2's first task:** Prompt 01 — Master Game Design Bible structure and requirements traceability, registered with the other fourteen prompts in [stage-2/01_stage_2_prompt_roadmap.md](../stage-2/01_stage_2_prompt_roadmap.md) and framed by [stage-2/00_stage_2_handoff.md](../stage-2/00_stage_2_handoff.md).
 
 ---
 
@@ -188,7 +192,7 @@ Per the project's own roadmap ([Report 09 §19.2](09_integrated_design_synthesis
 
 The public page at `https://nation-supremacy.pages.dev` is a **technical feasibility preview**. It contains no accounts, no gameplay, no player data and no nation, economy, diplomacy or war systems. The prototype's schema is synthetic (`feasibility` schema, 1,000 generated nations, 10-unit deltas).
 
-Nothing built so far is the game. Stage 2 begins the production design; implementation follows the roadmap's later stages.
+Nothing built so far is the game. Stage 2 writes the rulebook; architecture follows at Stage 5 and implementation at the later stages.
 
 ---
 
@@ -202,7 +206,8 @@ No evidenced defect was found that prevents Stage 2 from starting: no exposed cr
 
 ## 13. Records
 
-- Decision log: **D-011** records this closure and the Stage 2 authorization.
-- Continuity: [AI_CONTEXT](../AI_CONTEXT.md), [AI_HANDOFF](../AI_HANDOFF.md), [PROJECT_PROGRESS](../PROJECT_PROGRESS.md) updated to the closed state.
-- Stage 2 package: [docs/stage-2/00_stage_2_handoff.md](../stage-2/00_stage_2_handoff.md).
+- Decision log: **D-011** records this closure and the Stage 2 authorization; **D-012** records the official stage numbering and Stage 2's mission.
+- Continuity: [AI_CONTEXT](../AI_CONTEXT.md), [AI_HANDOFF](../AI_HANDOFF.md), [PROJECT_PROGRESS](../PROJECT_PROGRESS.md) updated to the closed state, then to the aligned roadmap.
+- Stage 2 package: [docs/stage-2/00_stage_2_handoff.md](../stage-2/00_stage_2_handoff.md) and the register [docs/stage-2/01_stage_2_prompt_roadmap.md](../stage-2/01_stage_2_prompt_roadmap.md).
+- Official roadmap: [ROADMAP.md](../ROADMAP.md).
 - Validators updated for the closed state (historical assertions kept, current-state assertions retargeted) and re-run; results in §4.3.

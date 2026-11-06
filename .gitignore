@@ -14,9 +14,14 @@ node_modules/
 dist/
 *.log
 
+# Python caches
+__pycache__/
+*.pyc
+
 # Editor / OS noise
 .DS_Store
 Thumbs.db
 
-# Freebuff workspace marker (tooling metadata, not project content)
+# Tooling metadata, not project content
 .freebuff/
+.cloud-attachments/

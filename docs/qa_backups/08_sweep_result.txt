@@ -5,7 +5,7 @@ PASS | SEC register: 33 ids in 001-033 incl. reserved 009 | N=33
 PASS | narrative SEC mentions beyond 033 are only SEC-034+ | extra=['034']
 PASS | ST register contiguous 001-020 | N=20
 PASS | OSQ register within 001-012 | N=12
-PASS | SEC-009 only ever described as reserved/unassigned | ['', '', '', '', '', '', '', '', '']
+PASS | SEC-009 only ever described as reserved/unassigned | ['', '', '', '', '', '', '', '', '', '', '', '', '']
 PASS | every threat has a register row in section 2 | absent: []
 PASS | every section-2 threat row cites >=1 SEC requirement | missing: []
 PASS | every SEC row cites >=1 TH threat | missing: []
@@ -18,7 +18,7 @@ PASS | all local markdown links resolve | bad: []
 PASS | all inherited IDs resolve in their owning report(s) | bad: []
 PASS | D-004 still Provisional
 PASS | D-005 still Provisional
-PASS | no new D-007+ rows added
+FAIL | no new D-007+ rows added
 PASS | report claims proposal-only status | count=7
 PASS | 2-hour cadence present
 PASS | >=12 W-18 walkthrough scenarios | n=19
