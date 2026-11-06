@@ -1275,22 +1275,25 @@ def run_checks(base_dir: Path | None = None, reviews: list[str] | None = None) -
     # ------------------------------------------------------------------
     d_ids = [split_row(line)[0] for line in decisions.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", line)]
     # 2026-11-06 (Prompt 11C): D-162 / DD-210 record the authorization-code reuse
-    # decision, so the registers now run to D-162 and DD-210.
-    if d_ids != [f"D-{i:03d}" for i in range(1, 163)]:
-        failures.append(f"[C17] DECISIONS.md IDs are not exactly D-001..D-162 ({len(d_ids)} rows)")
+    # decision. 2026-11-06 (Prompt 12A): D-163…D-177 / DD-211…DD-225 are the fifteen B-12
+    # research-and-design-foundation positions and UD-052…UD-060 were opened, so the
+    # registers now run to D-177, DD-225 and UD-060. These are frontier counts, not
+    # owner-status assertions: UD-040…UD-051 are untouched and still Open.
+    if d_ids != [f"D-{i:03d}" for i in range(1, 178)]:
+        failures.append(f"[C17] DECISIONS.md IDs are not exactly D-001..D-177 ({len(d_ids)} rows)")
     dd_ids = [split_row(line)[0] for line in dd.splitlines() if re.match(r"\|\s*DD-\d{3}\s*\|", line)]
-    if dd_ids != [f"DD-{i:03d}" for i in range(1, 211)]:
-        failures.append(f"[C17] DD rows are not exactly DD-001..DD-210 ({len(dd_ids)} rows)")
+    if dd_ids != [f"DD-{i:03d}" for i in range(1, 226)]:
+        failures.append(f"[C17] DD rows are not exactly DD-001..DD-225 ({len(dd_ids)} rows)")
     ud_ids = [split_row(line)[0] for line in ud.splitlines() if re.match(r"\|\s*UD-\d{3}\s*\|", line)]
-    if ud_ids != [f"UD-{i:03d}" for i in range(1, 52)]:
-        failures.append(f"[C17] UD rows are not exactly UD-001..UD-051 ({len(ud_ids)} rows)")
+    if ud_ids != [f"UD-{i:03d}" for i in range(1, 61)]:
+        failures.append(f"[C17] UD rows are not exactly UD-001..UD-060 ({len(ud_ids)} rows)")
     ud_counts = {"Resolved": 0, "Open": 0, "Deferred": 0}
     for line in ud.splitlines():
         if re.match(r"\|\s*UD-\d{3}\s*\|", line):
             word = status_word(split_row(line)[-1])
             if word in ud_counts:
                 ud_counts[word] += 1
-    if ud_counts != {"Resolved": 28, "Open": 20, "Deferred": 3}:
+    if ud_counts != {"Resolved": 28, "Open": 29, "Deferred": 3}:
         failures.append(f"[C17] UD status counts changed: {ud_counts}")
     dd_counts = {"Approved": 0, "Provisional": 0, "Confirmed": 0, "Binding inherited": 0, "Candidate": 0, "Superseded": 0, "Deferred": 0}
     for line in dd.splitlines():
@@ -1315,14 +1318,14 @@ def run_checks(base_dir: Path | None = None, reviews: list[str] | None = None) -
                 dd_counts["Deferred"] += 1
             else:
                 failures.append(f"[C17] DD status is unclassified: {cells[0]} '{cells[2][:50]}'")
-    expected_dd_counts = {"Approved": 130, "Provisional": 51, "Confirmed": 23, "Binding inherited": 2, "Candidate": 2, "Superseded": 1, "Deferred": 1}
+    expected_dd_counts = {"Approved": 130, "Provisional": 51, "Confirmed": 38, "Binding inherited": 2, "Candidate": 2, "Superseded": 1, "Deferred": 1}
     if dd_counts != expected_dd_counts:
         failures.append(f"[C17] DD status counts changed: {dd_counts}")
     tally_section = dd.split("## 6. Current tallies", 1)[-1]
     tally_expectations = {
         "Approved": 130,
         "Provisional": 51,
-        "Confirmed": 23,
+        "Confirmed": 38,
         "Binding inherited": 2,
         "Candidate / Open": 2,
         "Superseded": 1,
@@ -1332,10 +1335,10 @@ def run_checks(base_dir: Path | None = None, reviews: list[str] | None = None) -
         match = re.search(rf"^\|\s*{re.escape(label)}\s*\|\s*(\d+)\s*\|", tally_section, re.M)
         if not match or int(match.group(1)) != expected:
             failures.append(f"[C17] DD tally row '{label}' missing or not {expected}")
-    if "| **Total** | **210** |" not in tally_section:
-        failures.append("[C17] DD tally total is not 210")
-    if "Project decisions: **162**" not in dd:
-        failures.append("[C17] DD register no longer records 162 project decisions")
+    if "| **Total** | **225** |" not in tally_section:
+        failures.append("[C17] DD tally total is not 225")
+    if "Project decisions: **177**" not in dd:
+        failures.append("[C17] DD register no longer records 177 project decisions")
     if status_word(get_row(decisions, "D-135")[4]) != "Confirmed":
         failures.append("[C17] D-135 (open-ended constitutions) must remain Confirmed")
     if status_word(get_row(dd, "DD-151")[2]) != "Approved":
@@ -2820,7 +2823,7 @@ def main() -> int:
         print("[NOT PASSED] Confirmed defects fail; review findings must not pass silently.")
         return 1
     print("[PASS] All 34 semantic checks passed with no review findings.")
-    print("Status: Phase 09B Alliance specification and documentation accepted at the specification/documentation level; Prompt 09C is complete at the specification/documentation level; Prompt 10A research, the Prompt 10B specification and Prompt 10C workflows and acceptance are complete; Prompt 11A research and design foundations is complete at the research/design-foundations level (2026-11-05); Prompt 11B is complete at the system-specification level (2026-11-05), and its 11B-C2 correction preserves the original 52-gate crosswalk (52/52 PASS) with 61 separate validator checks; independent acceptance of 11B-C2 was recorded by C3 on 2026-11-05; Prompt 11C is complete at the specification/documentation level (2026-11-06, 20 gates at 12 PASS / 8 PARTIAL with 31 separate validator checks), and Prompt 12 is next but not authorized to start.")
+    print("Status: Phase 09B Alliance specification and documentation accepted at the specification/documentation level; Prompt 09C is complete at the specification/documentation level; Prompt 10A research, the Prompt 10B specification and Prompt 10C workflows and acceptance are complete; Prompt 11A research and design foundations is complete at the research/design-foundations level (2026-11-05); Prompt 11B is complete at the system-specification level (2026-11-05), and its 11B-C2 correction preserves the original 52-gate crosswalk (52/52 PASS) with 61 separate validator checks; independent acceptance of 11B-C2 was recorded by C3 on 2026-11-05; Prompt 11C is complete at the specification/documentation level (2026-11-06, 20 gates at 12 PASS / 8 PARTIAL with 31 separate validator checks), and Prompt 12A is complete at the research and design-foundations level (2026-11-06, 22 gates at 15 PASS / 7 PARTIAL with 35 separate validator checks), and Prompt 12B is next but not authorized to start.")
     return 0
 
 

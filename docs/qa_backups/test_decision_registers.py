@@ -42,7 +42,8 @@ DEFERRED = {
 }
 OPEN = {"UD-005", "UD-006", "UD-007", "UD-017", "UD-026", "UD-036",
         "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049",
-        "UD-050", "UD-051",}
+        "UD-050", "UD-051",
+        "UD-052", "UD-053", "UD-054", "UD-055", "UD-056", "UD-057", "UD-058", "UD-059", "UD-060",}
 
 
 def read(path: Path) -> str:
@@ -96,7 +97,7 @@ class DecisionRangeTests(unittest.TestCase):
 class UnresolvedStatusTests(unittest.TestCase):
     def test_every_row_has_one_exclusive_status(self) -> None:
         rows = ud_rows()
-        self.assertEqual(sorted(rows), [f"UD-{i:03d}" for i in range(1, 52)])
+        self.assertEqual(sorted(rows), [f"UD-{i:03d}" for i in range(1, 61)])
         counts = {"Resolved": 0, "Deferred": 0, "Open": 0}
         for cells in rows.values():
             self.assertGreaterEqual(len(cells), 9)
@@ -109,8 +110,8 @@ class UnresolvedStatusTests(unittest.TestCase):
                 counts["Open"] += 1
             else:
                 self.fail(f"unclassified status: {status!r}")
-        self.assertEqual(counts, {"Resolved": 28, "Deferred": 3, "Open": 20})
-        self.assertEqual(sum(counts.values()), 51)
+        self.assertEqual(counts, {"Resolved": 28, "Deferred": 3, "Open": 29})
+        self.assertEqual(sum(counts.values()), 60)
 
     def test_deferred_rows_name_their_owning_prompt(self) -> None:
         rows = ud_rows()

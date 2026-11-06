@@ -214,8 +214,14 @@ class CurrentStateConsistencyTests(unittest.TestCase):
             "\n".join(row[2] for row in rows).lower(),
             r"prompt 09c[^.\n]{0,80}(?:implemented|functioning|released|deployed)",
         )
+        # 2026-11-06 (Prompt 12A): row 12 stops being a bare Pending row because
+        # 12A closed at the research/design-foundations level, so only 13-15 stay
+        # Pending.
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
-        self.assertEqual(pending, [f"{i:02d}" for i in range(12, 16)])
+        self.assertEqual(pending, [f"{i:02d}" for i in range(13, 16)])
+        row12 = next(row for row in rows if row[0] == "12")
+        self.assertIn("12A COMPLETE at the research and design-foundations level", row12[2])
+        self.assertIn("Prompt 12B is next, has not started", row12[2])
 
         row10 = next(row for row in rows if row[0] == "10")
         self.assertIn("10B specification complete", row10[2])
@@ -431,9 +437,14 @@ class SubPromptStatusTests(unittest.TestCase):
         live = ("**Prompt 11B - the B-11 specification is complete; "
                 "Prompt 11C - B-11 workflows and acceptance is the next intended task** "
                 "and has not started.")
-        self.assertEqual(subprompt_status_problems(live), [])
-        # 11C is not complete: naming it as live must not be flagged.
-        self.assertEqual(subprompt_status_problems("Prompt 11C is the next intended task."), [])
+        # 2026-11-06 (Prompt 12A): 11C closed on 2026-11-06 and Prompt 12A closed
+        # the same day, so the sentence that was live on 2026-11-05 is now a stale
+        # claim and must be flagged, while the genuinely live sub-prompt 12B must
+        # not be. The 12 family also had to join the sub-prompt pattern first:
+        # before it, "12A" was not a recognised sub-prompt token at all.
+        self.assertEqual(len(subprompt_status_problems(live)), 1)
+        self.assertEqual(subprompt_status_problems("Prompt 12B is the next intended task."), [])
+        self.assertEqual(len(subprompt_status_problems("Prompt 12A is the next intended task.")), 1)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

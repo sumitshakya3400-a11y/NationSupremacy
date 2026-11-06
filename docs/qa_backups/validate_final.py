@@ -826,6 +826,7 @@ _WORDS["one hundred and forty-three"] = 143
 _WORDS["one hundred and fifty-one"] = 151
 _WORDS["one hundred and five"] = 105
 _WORDS["one hundred and eight"] = 108
+_WORDS["one hundred and seventy-seven"] = 177
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):
@@ -928,7 +929,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-if ("DD-001" not in ctx04 or "DD-199" not in ctx04) or ("D-001" not in ctx04 or "D-151" not in ctx04):
+if ("DD-001" not in ctx04 or "DD-225" not in ctx04) or ("D-001" not in ctx04 or "D-177" not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")
