@@ -203,8 +203,8 @@ class HandoffTests(unittest.TestCase):
         self.assertTrue(row10, "PROJECT_PROGRESS has no Stage 2 Prompt 10 row")
         self.assertIn("10B specification complete", row10)
         self.assertIn("Prompt 10C complete", row10)
-        # 2026-11-06 (Prompt 11C): Prompt 11 closed, so row 10 must name Prompt 12.
-        self.assertIn("Prompt 12 is next", row10)
+        # 2026-11-06 (Prompt 12A): 12A closed, so row 10 must name Prompt 12B.
+        self.assertIn("Prompt 12B is next", row10)
         # 2026-11-05: the Stage 2 Prompt 11 row records 11A's research closure
         # and names 11B as live, without claiming a B-11 rulebook.
         row11 = next((ln for ln in progress.splitlines()
@@ -213,7 +213,7 @@ class HandoffTests(unittest.TestCase):
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11)
         # 2026-11-06 (Prompt 11C): 11C is complete, not "next and not started".
         self.assertIn("11C complete at the specification/documentation level", row11)
-        self.assertIn("Prompt 12 next and not started", row11)
+        self.assertIn("Prompt 12B next and not started", row11)
         self.assertIn("B-11 rulebook at the specification level", row11)
 
 

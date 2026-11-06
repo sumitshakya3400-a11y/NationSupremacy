@@ -54,6 +54,14 @@ RULES = [
      "Prompt 12A — the B-12 research and design foundations — is **complete** (log §73) and "
      "**Prompt 12B — the B-12 rulebook and formula register — is next in the roadmap, not "
      "started, and needs explicit owner authorization.**"),
+    # Residual shapes left after the first pass: the progress and roadmap summary
+    # rows omitted "has not started" or used a bare "is next".
+    ("Prompt 11C complete (log §72); Prompt 12 next and not started",
+     "Prompt 11C complete (log §72); Prompt 12A complete at the research/design-foundations "
+     "level (log §73); Prompt 12B next and not started"),
+    ("11A–11C are now complete at the design level and Prompt 12 is next.",
+     "11A–11C are complete at the design level, Prompt 12A is complete at the "
+     "research/design-foundations level and Prompt 12B is next."),
 ]
 
 BLOCKQUOTE = (
@@ -73,7 +81,7 @@ BLOCKQUOTE = (
     "allocated: **`REQ-763` remains the frontier and `REQ-764` is reserved for Prompt 12B**. The "
     "independent validator [`docs/qa_backups/12A_validate_foundations.py`]"
     "({QA}12A_validate_foundations.py) passes **35/35** checks with **10/10** positive and "
-    "**15/15** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
+    "**16/16** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
     "0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. B-12's canonical rulebook path "
     "**`stage-2/20_fair_play_and_player_protection.md` is reserved, not created** (D-163/DD-211). "
     "**No fair-play rule, penalty, duration, permission, moderation workflow, schema or "
@@ -84,11 +92,19 @@ BLOCKQUOTE = (
 
 
 def build_blockquote(prefix: str, qa: str) -> str:
+    """Return the 12A status blockquote with surface-relative link prefixes."""
     return BLOCKQUOTE.replace("{P}", prefix).replace("{QA}", qa)
 
 
 def demote_and_insert(text: str, bq: str) -> str:
-    """Put the 12A blockquote first and mark the previous current header superseded."""
+    """Put the 12A blockquote first and mark the previous current header superseded.
+
+    Idempotent: a surface that already carries a 12A status blockquote is
+    returned unchanged, so a second run cannot insert a duplicate block or
+    demote the blockquote it inserted last time.
+    """
+    if any(ln.startswith("> **12A status (") for ln in text.split("\n")):
+        return text
     lines = text.split("\n")
     for i, ln in enumerate(lines):
         if ln.startswith("> **1") and " status (2026-1" in ln and "; current —" in ln:

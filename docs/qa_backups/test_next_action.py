@@ -226,14 +226,14 @@ class CurrentStateConsistencyTests(unittest.TestCase):
         row10 = next(row for row in rows if row[0] == "10")
         self.assertIn("10B specification complete", row10[2])
         self.assertIn("Prompt 10C complete", row10[2])
-        # 2026-11-06 (Prompt 11C): Prompt 11 closed at the design level, so row 10
-        # must name Prompt 12 as the live prompt instead of presenting 11 as next.
-        self.assertIn("Prompt 12 is next", row10[2])
+        # 2026-11-06 (Prompt 12A): 12A closed at the research level, so row 10
+        # must name 12B as the live sub-prompt instead of presenting 12 as next.
+        self.assertIn("Prompt 12B is next", row10[2])
 
         row11 = next(row for row in rows if row[0] == "11")
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11[2])
         self.assertIn("11C complete at the specification/documentation level", row11[2])
-        self.assertIn("Prompt 12 next and not started", row11[2])
+        self.assertIn("Prompt 12B next and not started", row11[2])
         # A research pass must never be described as a written rulebook.
         self.assertIn("b-11 rulebook at the specification level", row11[2].lower())
         self.assertNotRegex(

@@ -957,8 +957,9 @@ def validate(docs: Path) -> tuple[list[str], int]:
     status_rules = (docs / "qa_backups" / "status_rules.py").read_text(encoding="utf-8")
     # 2026-11-04 (Prompt 10C): the live prompt advanced to 11 when 10C closed.
     # 2026-11-04 (Prompt 11A): Prompt 11 then split, and 11A research closed, so
-    # the live sub-prompt is 11B. The 10-family completion facts are unchanged.
-    check('CURRENT_SUBPROMPT = "12A"' in status_rules, "10-continuity", "status_rules.py does not set 12A as the current sub-prompt")
+    # the live sub-prompt was 11B. 2026-11-06: 12A closed, so it is 12B. The
+    # 10-family completion facts are unchanged.
+    check('CURRENT_SUBPROMPT = "12B"' in status_rules, "10-continuity", "status_rules.py does not set 12B as the current sub-prompt")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 

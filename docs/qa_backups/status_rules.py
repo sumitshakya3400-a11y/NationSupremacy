@@ -113,7 +113,7 @@ def stale_next_actions(text: str, current_prompt: int = 4) -> list[str]:
 # claim is attributed to a sub-prompt only up to the next sub-prompt mention,
 # so "07B is complete; 07C is next" is never read as a 07B claim.
 
-CURRENT_SUBPROMPT = "12A"
+CURRENT_SUBPROMPT = "12B"
 # 2026-10-29: Prompt 08 is split too, so 08A joins the completed set.
 # 2026-10-30: 08B is complete as well, so it is caught the same way, and
 # 08C closes the set.
@@ -139,6 +139,8 @@ CURRENT_SUBPROMPT = "12A"
 # same shape as the 10 and 11 families. 12A is complete at the research level,
 # so the live sub-prompt is 12B and the regex gains the 12 family — without it
 # "12A" was not a recognised sub-prompt token at all.
+# 2026-11-06 (Prompt 12A closure): 12A joins the completed set, so the live
+# sub-prompt is 12B and a sentence naming 12A as next is now stale.
 COMPLETED_SUBPROMPTS = ("07A", "07B", "07C", "08A", "08B", "08C", "09A", "09B", "09C",
                         "10A", "10B", "10C", "11A", "11B", "11C", "12A")
 

@@ -156,18 +156,22 @@ CR_CATEGORIES_20 = [
 # --- parsing helpers --------------------------------------------------------
 
 def read(path: Path) -> str:
+    """Read a document as UTF-8 text, replacing decoding errors."""
     return path.read_text(encoding="utf-8", errors="replace")
 
 
 def cells(row: str) -> list[str]:
+    """Split one Markdown table row into stripped cells."""
     return [c.strip() for c in row.strip().strip("|").split("|")]
 
 
 def id_numbers(text: str, prefix: str) -> list[int]:
+    """Return the sorted, de-duplicated numeric ids of one prefix in text."""
     return sorted({int(n) for n in re.findall(rf"\b{re.escape(prefix)}-(\d+)\b", text)})
 
 
 def rows_for(text: str, prefix: str, arity: int | None = None) -> list[list[str]]:
+    """Return table rows that begin with a backticked id of the given prefix."""
     pat = re.compile(rf"^\|\s*`{re.escape(prefix)}-(\d+)`\s*\|")
     out = []
     for ln in text.splitlines():
@@ -195,6 +199,7 @@ def rows_after(text: str, anchor: str, prefix: str) -> list[list[str]]:
 
 
 def by_num(rows: list[list[str]]) -> dict[int, list[str]]:
+    """Index parsed rows by their numeric 12A id."""
     out: dict[int, list[str]] = {}
     for x in rows:
         m = re.search(r"12A-[A-Z]+-(\d+)", x[0])
@@ -204,16 +209,19 @@ def by_num(rows: list[list[str]]) -> dict[int, list[str]]:
 
 
 def gaps(nums: list[int]) -> list[int]:
+    """Return the missing integers between the smallest and largest id."""
     if not nums:
         return []
     return [n for n in range(nums[0], nums[-1] + 1) if n not in set(nums)]
 
 
 def citations(text: str, prefix: str) -> set[int]:
+    """Return every numeric id of one prefix cited in backticks."""
     return {int(n) for n in re.findall(rf"`{re.escape(prefix)}-(\d+)`", text)}
 
 
 def section(text: str, heading_re: str, stop_re: str) -> str:
+    """Return the text from a heading to the next heading matched by stop_re."""
     m = re.search(heading_re, text, flags=re.M)
     if not m:
         return ""
@@ -247,6 +255,7 @@ class Model:
     req_max: int = 0
 
     def rebuild(self) -> None:
+        """Re-derive every parsed view from the raw source texts."""
         s = self.src.get("sources", "")
         r = self.src.get("registers", "")
         g = self.src.get("main", "")
@@ -295,6 +304,7 @@ def _collect(rows: list[list[str]]) -> list[list[str]]:
 
 
 def _collect_all_dd(text: str) -> list[list[str]]:
+    """Return every DD table row in file order, duplicates included."""
     out = []
     for ln in text.splitlines():
         m = re.match(r"^\|\s*`?(DD-\d{3})`?\s*\|", ln)
@@ -315,6 +325,7 @@ def _gates(main_text: str) -> dict[str, str]:
 
 
 def load() -> Model:
+    """Build a Model from the eight canonical input files."""
     m = Model()
     for key, path in FILES.items():
         m.src[key] = read(path) if path.exists() else ""
@@ -325,6 +336,7 @@ def load() -> Model:
 # --- checks ----------------------------------------------------------------
 
 def check_01(m: Model) -> tuple[bool, str]:
+    """Every canonical deliverable and register exists."""
     missing = [p.name for p in FILES.values() if not p.exists()]
     return (not missing,
             "all eight canonical inputs present" if not missing else f"missing: {missing}")
@@ -371,16 +383,23 @@ def check_04(m: Model) -> tuple[bool, str]:
 
 
 def check_05(m: Model) -> tuple[bool, str]:
-    """Every RS id cited anywhere must resolve to a real source row."""
+    """Every cited source resolves, and every source row is used by something."""
     cited = (citations(m.src["registers"], "12A-RS") | citations(m.src["main"], "12A-RS")
              | citations(m.src["sources"], "12A-RS"))
+    # A row's own first cell names the row, so leaving it in the corpus makes
+    # every row trivially "cited" and the orphan half of this check vacuous.
+    # Strip each defining identifier before harvesting usage.
+    stripped = re.sub(r"^\|\s*`12A-RS-\d+`", "", m.src["sources"], flags=re.M)
+    usage = (citations(m.src["registers"], "12A-RS") | citations(m.src["main"], "12A-RS")
+             | citations(stripped, "12A-RS"))
     dangling = sorted(c for c in cited if c not in m.rs)
-    uncited = sorted(n for n in m.rs if n not in cited)
+    uncited = sorted(n for n in m.rs if n not in usage)
     if dangling:
         return False, f"cited but absent: {dangling[:8]}"
     if uncited:
-        return False, f"{len(uncited)} source rows never cited anywhere: {uncited[:8]}"
-    return True, f"all {len(cited)} cited source references resolve and every row is used"
+        return False, f"{len(uncited)} source rows cited only by themselves: {uncited[:8]}"
+    return True, (f"all {len(cited)} cited source references resolve and all {len(m.rs)} rows "
+                  "are used outside their own defining cell")
 
 
 def check_06(m: Model) -> tuple[bool, str]:
@@ -652,6 +671,7 @@ def check_23(m: Model) -> tuple[bool, str]:
     empty = [n for n in p1 if any(not c for c in m.int_p1[n][1:])
              or any(not c for c in m.int_p2[n][1:])]
     def open_cell(cell: str) -> bool:
+        """Accept a populated field even when its wording is short or open-ended."""
         return bool(re.fullmatch(r"(?:None|Owner|Stage \d+|Prompt \d+|12[BC]|1[3-5])", cell)) \
             or bool(re.search(r"OPEN|UD-\d", cell)) or len(cell) >= 8
 
@@ -665,6 +685,7 @@ def check_23(m: Model) -> tuple[bool, str]:
 
 
 def _plain(cell: str) -> str:
+    """Strip Markdown emphasis characters from a cell."""
     return re.sub(r"[*`]", "", cell).strip()
 
 
@@ -851,6 +872,20 @@ def check_32(m: Model) -> tuple[bool, str]:
     return True, "§73 present and reporting execution; §§67, 70, 71 and 72 intact"
 
 
+def _claim_sentence(text: str, start: int, end: int) -> str:
+    """Return the single sentence that contains text[start:end].
+
+    Negation only excuses a claim when it is part of the same statement: an
+    unrelated "not" earlier in the paragraph must not neutralise a real claim.
+    """
+    left = 0
+    for m in re.finditer(r"[.!?\n]", text[:start]):
+        left = m.end()
+    nxt = re.search(r"[.!?\n]", text[end:])
+    right = end + nxt.start() + 1 if nxt else len(text)
+    return text[left:right]
+
+
 def check_33(m: Model) -> tuple[bool, str]:
     """No implementation, no executed test and no legal conclusion is claimed."""
     impl, legal, promo = [], [], []
@@ -858,8 +893,9 @@ def check_33(m: Model) -> tuple[bool, str]:
         text = m.src[key]
         for pat in IMPLEMENTATION_CLAIMS:
             for mt in re.finditer(pat, text, re.I):
-                ctx = text[max(0, mt.start() - 70):mt.end() + 40]
-                if not re.search(r"\b(?:not|nothing|never|without|no |only)\b", ctx, re.I):
+                sentence = _claim_sentence(text, mt.start(), mt.end())
+                if not re.search(r"\b(?:not|nothing|never|without|no|only)\b",
+                                 sentence, re.I):
                     impl.append((key, mt.group(0)[:34]))
         for pat in LEGAL_OVERREACH:
             if re.search(pat, text, re.I):
@@ -917,6 +953,7 @@ CHECKS: list = []
 
 
 def _register():
+    """Populate CHECKS from the check specification table."""
     specs = [
         ("12A-01", "all canonical deliverables and registers exist", check_01),
         ("12A-02", "source ids unique, contiguous, count as declared", check_02),
@@ -975,6 +1012,7 @@ class Fixture:
 
 
 def _drop_line(text: str, needle: str) -> str:
+    """Remove the first line containing needle, or fail loudly."""
     lines = text.splitlines(keepends=True)
     for i, ln in enumerate(lines):
         if needle in ln:
@@ -983,6 +1021,7 @@ def _drop_line(text: str, needle: str) -> str:
 
 
 def _dup_line(text: str, needle: str) -> str:
+    """Duplicate the first line containing needle, or fail loudly."""
     lines = text.splitlines(keepends=True)
     for i, ln in enumerate(lines):
         if needle in ln:
@@ -991,18 +1030,21 @@ def _dup_line(text: str, needle: str) -> str:
 
 
 def _sub(text: str, old: str, new: str) -> str:
+    """Replace one occurrence of old with new, or fail loudly."""
     if old not in text:
         raise AssertionError("fixture needle absent: " + old[:50])
     return text.replace(old, new, 1)
 
 
 def fx_missing_source(model):
+    """Fixture: delete one research source row."""
     model.src["sources"] = _drop_line(model.src["sources"], "`12A-RS-077`")
     model.rebuild()
     return model
 
 
 def fx_dangling_source_ref(model):
+    """Fixture: cite a source id that does not exist."""
     model.src["registers"] = _sub(model.src["registers"], "`12A-RS-001`, `12A-RS-002`",
                                   "`12A-RS-901`, `12A-RS-002`")
     model.rebuild()
@@ -1010,12 +1052,14 @@ def fx_dangling_source_ref(model):
 
 
 def fx_duplicate_requirement(model):
+    """Fixture: duplicate one candidate requirement row."""
     model.src["registers"] = _dup_line(model.src["registers"], "| `12A-CR-030` |")
     model.rebuild()
     return model
 
 
 def fx_no_verification_intent(model):
+    """Fixture: remove a requirement's verification approach."""
     old = ("| `12A-CR-044` | Key custody is what separates a keyed MAC from a "
            "brute-forceable digest over a small identifier space |")
     new = ("| `12A-CR-044` | Key custody | `12A-RS-092` | D-036 | Strongly positive "
@@ -1026,6 +1070,7 @@ def fx_no_verification_intent(model):
 
 
 def fx_unsupported_approval(model):
+    """Fixture: mark a candidate requirement Approved."""
     model.src["registers"] = _sub(
         model.src["registers"],
         "its notice and its appeal route | Moderation | B | New proposal",
@@ -1035,6 +1080,7 @@ def fx_unsupported_approval(model):
 
 
 def fx_owner_row_closed(model):
+    """Fixture: close an owner-reserved unresolved row."""
     model.src["ud"] = _sub(
         model.src["ud"],
         "| Open — awaiting explicit owner decision on what a member can "
@@ -1045,18 +1091,21 @@ def fx_owner_row_closed(model):
 
 
 def fx_missing_dependency_half(model):
+    """Fixture: remove one half of a dependency pair."""
     model.src["registers"] = _drop_line(model.src["registers"], "| `12A-INT-25` | Aggregate only |")
     model.rebuild()
     return model
 
 
 def fx_duplicate_decision(model):
+    """Fixture: duplicate one DD design row."""
     model.src["dd"] = _dup_line(model.src["dd"], "| DD-214 |")
     model.rebuild()
     return model
 
 
 def fx_contradictory_classification(model):
+    """Fixture: remove a category's three-axis assignment."""
     model.src["main"] = _sub(
         model.src["main"],
         "| `12A-IC-06` | Military-confidential information | Private | "
@@ -1067,6 +1116,7 @@ def fx_contradictory_classification(model):
 
 
 def fx_legal_overreach(model):
+    """Fixture: assert an unsupported legal conclusion."""
     model.src["main"] = _sub(model.src["main"], "## 28. Conclusions",
                              "The GDPR is binding on the project and we are DSA compliant."
                              "\n\n## 28. Conclusions")
@@ -1075,6 +1125,7 @@ def fx_legal_overreach(model):
 
 
 def fx_untraceable_assertion(model):
+    """Fixture: remove the source citation from a benchmark row."""
     model.src["sources"] = _sub(
         model.src["sources"],
         "obligation for 12B | `12A-RS-121` |",
@@ -1084,6 +1135,7 @@ def fx_untraceable_assertion(model):
 
 
 def fx_illegal_gate_status(model):
+    """Fixture: replace a gate status with an undefined token."""
     model.src["main"] = _sub(
         model.src["main"],
         "checks `12A-23`, `12A-09` | **PASS**",
@@ -1093,6 +1145,7 @@ def fx_illegal_gate_status(model):
 
 
 def fx_implementation_claim(model):
+    """Fixture: claim that a control is implemented."""
     model.src["main"] = _sub(model.src["main"], "## 28. Conclusions",
                              "The moderation service is now implemented."
                              "\n\n## 28. Conclusions")
@@ -1100,7 +1153,18 @@ def fx_implementation_claim(model):
     return model
 
 
+def fx_implementation_claim_after_negation(model):
+    """A negation in an earlier sentence must not excuse a later real claim."""
+    model.src["main"] = _sub(model.src["main"], "## 28. Conclusions",
+                             "This pass adds no implementation and no test run."
+                             "\n\nThe moderation service is now implemented."
+                             "\n\n## 28. Conclusions")
+    model.rebuild()
+    return model
+
+
 def fx_totals_drift(model):
+    """Fixture: change a declared register total."""
     model.src["registers"] = _sub(
         model.src["registers"],
         "| Candidate requirements | `12A-CR-###` | `12A-CR-001` … `12A-CR-106` | **106** |",
@@ -1110,6 +1174,7 @@ def fx_totals_drift(model):
 
 
 def fx_protected_decision_changed(model):
+    """Fixture: supersede a protected decision."""
     model.src["decisions"] = _sub(model.src["decisions"],
                                   "| **Confirmed** (policy) | Resolves UD-014's policy half.",
                                   "| **Superseded** by Prompt 12A | Resolves UD-014's policy half.")
@@ -1145,12 +1210,15 @@ FIXTURES: list = [
     Fixture("12A-N14", "12A-16", False, fx_totals_drift, "a declared total drifts"),
     Fixture("12A-N15", "12A-20", False, fx_protected_decision_changed,
             "a protected decision is superseded"),
+    Fixture("12A-N16", "12A-33", False, fx_implementation_claim_after_negation,
+            "an unrelated negation must not suppress a real implementation claim"),
 ]
 
 
 # --- runners ----------------------------------------------------------------
 
 def run_checks(model, verbose):
+    """Run every check and return the pass count, total and failures."""
     by_id = {c.cid: c for c in CHECKS}
     failed = []
     passed = 0
@@ -1166,6 +1234,7 @@ def run_checks(model, verbose):
 
 
 def run_fixtures(model, verbose):
+    """Run the fixture suite against deep-copied models."""
     by_id = {c.cid: c for c in CHECKS}
     pos_ok = pos_n = neg_ok = neg_n = 0
     problems = []
@@ -1197,6 +1266,7 @@ def run_fixtures(model, verbose):
 
 
 def main(argv: list) -> int:
+    """Parse arguments, run the selected suites and print the verdict."""
     ap = argparse.ArgumentParser(description="Prompt 12A foundations validator")
     ap.add_argument("--verbose", action="store_true")
     ap.add_argument("--self-test", action="store_true")

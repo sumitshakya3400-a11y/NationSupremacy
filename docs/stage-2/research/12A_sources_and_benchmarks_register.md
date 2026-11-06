@@ -410,3 +410,32 @@ Confidence is counted at the **leading token** of the cell. Eleven rows carry a 
 Nine sources carry a retrieval failure in substance (`12A-RS-017`, `-021`, `-022`, `-030`, `-039`, `-077`, `-127`, `-129`, `-132`) and none of them supports a requirement on its own. Of the 106 candidate requirements in the companion register, **61** cite at least one external source identifier in their evidence field and **45** rest on internal project evidence — which is correct for the 46 rows whose status is `Restates approved policy`, since an approved decision is itself the source.
 
 These totals are recomputed from the rows by `12A_validate_foundations.py` checks `12A-02`, `12A-03`, `12A-16` and `12A-17`, and are not asserted here.
+
+## 11. Supporting-only sources
+
+Twenty rows are used as corroboration for a statement in the companion report without being named inline in that sentence, because the sentence already cites the primary or authoritative row for the same point. Naming every corroborating source in every sentence would have made the report unreadable without adding evidence. This index makes the use explicit, so that no row exists in the register without a stated purpose. A row's evidence strength here is the same as its `Conf.` cell; nothing is upgraded by inclusion.
+
+| What the row supports | Row | Where it is relied on | Strength and limitation |
+|---|---|---|---|
+| The operator, not a third-party product, owns the fair-play verdict; an external anti-cheat service does not supply a turn-based browser game's decisions | `12A-RS-003` | §7.1 buildable-layer table and §6.7 responsibility split | `High`; vendor documentation, no detector internals |
+| The automation-abuse vocabulary that separates bot use from cheat software, behind the "automation and bot abuse" class | `12A-RS-009` | §6.3 exploit taxonomy and §21 threat model | `High`; a taxonomy, not evidence about any specific product |
+| The setting-transfer caveat: layered platform attestation exists where a binary exists, and none of it transfers to a clientless browser game | `12A-RS-011` | §7.1 and §2's scope boundary | `High` (abstract only); no comparable material for this game shape |
+| "Never trust the client" as a field-wide posture rather than a project preference | `12A-RS-016` | §6.1 | `Medium`; tertiary summary of a settled practice |
+| Effective-once rather than exactly-once construction: exactly-once is regional, adds latency and is not the default | `12A-RS-025` | §7.1 transactional-atomicity row and §22's `D-025` recovery posture | `High`; a different platform's guarantee, transferred only as a limit |
+| The real-money motive behind multi-account supply and the conclusion that abuse must be made unprofitable | `12A-RS-030` | §8.2 secondary-account scenario and §28 conclusions | `Unverified`; fetch returned a corrupted stream, metadata only, no figure quoted |
+| `CF-Connecting-IP` as the authoritative address the origin should read, the basis for `D-036`'s signal choice | `12A-RS-031` | §10.2 | `High`; vendor reference |
+| The OWASP ASVS 5.0 group frame against which the turn-boundary API can be self-assessed: anti-automation, rate limiting, business-logic sequencing and time-of-check | `12A-RS-035` | §21 threat register and §26 standards row | `High`; a voluntary checklist, no conformance claim |
+| Arts 15, 20 and 21 rights in the data lifecycle: portability applies only to consent- or contract-based automated processing, and Art 21(2) never engages where there is no marketing | `12A-RS-088` | §10.5 lifecycle and §26 conditional-rights row | `High` (mirror text); applicability remains `UD-017` |
+| GDPR Chapter V's binding of the *onward* transfer leg, behind the region-versus-transfer-posture conflict | `12A-RS-104` | §10.4 and §26's Arts 44/46 entry | `High`; article text, not a jurisdiction finding |
+| The vendor's own no-sale statement, certification list and SCC reliance as the Pages-layer backstop | `12A-RS-110` | §10.4 and §26 | `Medium`; vendor self-description, not independent audit |
+| The controller/processor split and the breach-notification duty on which the controller-side 72-hour clock depends | `12A-RS-111` | §10.5 incident obligation and §22 | `High`; contract text |
+| In-app account deletion as a distribution-channel rule that binds only if a wrapped app ships | `12A-RS-113` | §26 platform-rule row | `High`; guideline text, not applicable today |
+| The same rule's own deference to local retention law, so a platform rule cannot discharge a retention duty | `12A-RS-114` | §26 platform-rule row | `Medium`; a developer news post |
+| Google Play's in-app *and* web-link deletion requirement, the part that would reach a browser game | `12A-RS-115` | §26 platform-rule row | `High`; platform policy text |
+| A volunteer-run, zero-staff platform as the closest structural analogue to server-resolved rated play | `12A-RS-130` | §5 comparator discussion | `High`; policy page, not an outcome study |
+| The rejected pattern — statistical detection followed by immediate closure — that this project's evidence states refuse | `12A-RS-131` | §5 and §6.6 | `Low`; URL not captured in this pass |
+| The incident life cycle and evidence-retention obligation that the exploit-and-incident lane must satisfy | `12A-RS-145` | §19 auditability and §22 recovery | `High`; public standard |
+| Empirical false positives from behavioural deviation — "rage-clicking" read as exploitation — supporting the rule that deviation is not proof | `12A-RS-150` | §6.6 and §13 | `High`; a different game genre, used only for the false-positive direction |
+| Log-based detection working in a deliberately server-authoritative setting, which is the setting Nation Supremacy actually has | `12A-RS-151` | §7.3 detection ceiling | `High`; older study, no transfer of its rate |
+
+This index is a use map, not new evidence. Every row still carries its own limitation in Registers A–E, and the retrieval failures in §9 remain in force.
