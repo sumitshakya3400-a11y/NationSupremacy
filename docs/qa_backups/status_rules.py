@@ -142,7 +142,11 @@ CURRENT_SUBPROMPT = "12B"
 # 2026-11-06 (Prompt 12A closure): 12A joins the completed set, so the live
 # sub-prompt is 12B and a sentence naming 12A as next is now stale.
 COMPLETED_SUBPROMPTS = ("07A", "07B", "07C", "08A", "08B", "08C", "09A", "09B", "09C",
+<<<<<<< HEAD
                         "10A", "10B", "10C", "11A", "11B", "11C", "12A", "12B")
+=======
+                        "10A", "10B", "10C", "11A", "11B", "11C", "12A")
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 SUBPROMPT = re.compile(r"\b((?:0[789]|1[0-2])[A-C])\b")
 

@@ -423,8 +423,13 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-06 (Prompt 11C): the 11C companion closed the Prompt 11 family at
     # the design level, so the live prompt is 12; 10/11 remain valid history.
     # 2026-11-07 (Prompt 12A review remediation): 12A closed, so 12B is live.
+<<<<<<< HEAD
     check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12[A-C]?)", status.group(1)) is not None,
           "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C or 12/12A/12B/12C as the active prompt")
+=======
+    check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12B?)", status.group(1)) is not None,
+          "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C or 12/12B as the active prompt")
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
     # --- 9. Permissions inventory -------------------------------------------
     perm_block = section(research, "### 7.2", "### 7.3")

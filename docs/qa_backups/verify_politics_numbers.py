@@ -1520,11 +1520,20 @@ def progress_status_problems(log_text, progress_text):
             or "Prompt 10B: complete at the specification/documentation level" not in rows.get("09", "")):
         problems.append("progress-log row 09 does not record Phase 09B accepted, 09C complete, 10A complete and 10B complete: %r" % rows.get("09"))
     # 2026-11-04 (Prompt 10C): 10C closed, so row 10 must also record it.
+<<<<<<< HEAD
     # 2026-11-07 (Prompt 12B): 12B closed, so the live sub-prompt named by row 10 is 12C.
     if ("10B specification complete" not in rows.get("10", "")
             or "Prompt 10C complete" not in rows.get("10", "")
             or "Prompt 12C next" not in rows.get("10", "")):
         problems.append("progress-log row 10 does not record 10B complete, 10C complete and Prompt 12C next: %r" % rows.get("10"))
+=======
+    # 2026-11-06 (Prompt 12A): Prompt 11 closed and 12A is complete, so the
+    # live sub-prompt named by row 10 is 12B.
+    if ("10B specification complete" not in rows.get("10", "")
+            or "Prompt 10C complete" not in rows.get("10", "")
+            or "Prompt 12B next" not in rows.get("10", "")):
+        problems.append("progress-log row 10 does not record 10B complete, 10C complete and Prompt 12B next: %r" % rows.get("10"))
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     header = log_text[:log_text.index("## 1.")] if "## 1." in log_text else log_text[:1500]
     if "**Prompt 06B complete**" not in header:
         problems.append("the progress-log header does not record 06B as complete")

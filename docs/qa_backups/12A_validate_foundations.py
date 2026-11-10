@@ -74,7 +74,11 @@ FILES = {"main": MAIN, "sources": SOURCES, "registers": REGISTERS,
 # documentation defect, not a style preference: the project's rule is that a
 # published count must equal the rows that exist.
 EXPECTED = {
+<<<<<<< HEAD
     "12A-RS": 153,
+=======
+    "12A-RS": 152,
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     "12A-BM": 40,
     "12A-CMP": 18,
     "12A-CR": 106,
@@ -439,6 +443,7 @@ def check_08(m: Model) -> tuple[bool, str]:
     flagged = len(re.findall(r"Fetch failed|not retrievable|could not be read|"
                              r"blocked|403|502|404|excerpt only|search index",
                              text, re.I))
+<<<<<<< HEAD
     disclosure = re.compile(
         r"Fetch failed|could not be read|not read|unreadable|not retrievable|"
         r"corrupted stream|index record only|search-index snippet|excerpt|"
@@ -453,6 +458,16 @@ def check_08(m: Model) -> tuple[bool, str]:
     unverified = [n for n, c in m.rs.items() if c[-1].startswith("Unverified")]
     return True, (f"{flagged} retrieval statements; all {len(RETRIEVAL_FAILURE_ROWS)} "
                   f"substantive retrieval failures carry a disclosure; "
+=======
+    unverified = [n for n, c in m.rs.items() if c[-1].startswith("Unverified")]
+    need = [n for n, c in m.rs.items()
+            if re.search(r"Fetch failed|not read|unreadable|403|blocked", " ".join(c), re.I)]
+    if flagged < 20:
+        return False, f"only {flagged} retrieval-failure statements in the register"
+    if not need:
+        return False, "no row admits a retrieval failure; unverifiable claims may be present"
+    return True, (f"{flagged} retrieval statements; {len(need)} rows admit they were not read; "
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
                   f"{len(unverified)} rated Unverified")
 
 
@@ -548,8 +563,13 @@ def check_14(m: Model) -> tuple[bool, str]:
 
 def check_15(m: Model) -> tuple[bool, str]:
     """An A-phase pass allocates no global REQ identifier and moves no frontier."""
+<<<<<<< HEAD
     if m.req_max < 763 or m.req_max > 869:
         return False, f"global requirement register frontier is REQ-{m.req_max}, expected 763 or the later 12B frontier 869"
+=======
+    if m.req_max != 763:
+        return False, f"global requirement register frontier is REQ-{m.req_max}, expected 763"
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     rows = re.findall(r"^\|\s*`?REQ-(\d{3})`?\s*\|", m.src["registers"], re.M)
     added = sorted({n for n in rows if int(n) >= 764})
     if added:
@@ -557,8 +577,13 @@ def check_15(m: Model) -> tuple[bool, str]:
     reserved = re.findall(r"REQ-7(?:6[4-9]|7\d|8\d)", m.src["registers"])
     if not reserved:
         return False, "the reserved 12B block is not declared"
+<<<<<<< HEAD
     return True, ("12A allocated no global requirement row; REQ-763 was its frontier "
                   f"and REQ-764…REQ-869 now belong to Prompt 12B; {len(reserved)} reservation mentions")
+=======
+    return True, ("REQ-763 remains the frontier; REQ-764 onward reserved for 12B; "
+                  f"{len(reserved)} reservation mentions and no allocated row")
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 
 def check_16(m: Model) -> tuple[bool, str]:
@@ -586,9 +611,15 @@ def check_17(m: Model) -> tuple[bool, str]:
             "12A-CMP": EXPECTED["12A-CMP"]}
     have = {"12A-RS": len(m.rs), "12A-BM": len(m.bm), "12A-CMP": len(m.cmp_)}
     bad = [f"{k}: declared {want[k]} found {have[k]}" for k in want if want[k] != have[k]]
+<<<<<<< HEAD
     if not re.search(r"\| \*\*153\*\* \| contiguous, no gaps, no duplicates \|", s):
         bad.append("the 153-row total is not stated in §10")
     return (not bad, "sources register totals reconcile (153 / 40 / 18)" if not bad
+=======
+    if not re.search(r"\| \*\*152\*\* \| contiguous, no gaps, no duplicates \|", s):
+        bad.append("the 152-row total is not stated in §10")
+    return (not bad, "sources register totals reconcile (152 / 40 / 18)" if not bad
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
             else "; ".join(bad))
 
 
@@ -597,14 +628,23 @@ def check_18(m: Model) -> tuple[bool, str]:
     ids = sorted(m.d_rows)
     if gaps(ids):
         return False, f"gaps in D- numbering: {gaps(ids)[:8]}"
+<<<<<<< HEAD
     if len(ids) < 177 or ids[-1] < 177:
         return False, f"expected at least D-001…D-177, found {len(ids)} rows to max {ids[-1] if ids else 0}"
+=======
+    if len(ids) != 177 or ids[-1] != 177:
+        return False, f"expected D-001…D-177, found {len(ids)} rows to max {ids[-1] if ids else 0}"
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     incomplete = [n for n in range(163, 178)
                   if n not in m.d_rows or len(m.d_rows[n]) != 8
                   or any(len(c) < 8 for c in m.d_rows[n][3:8])]
     if incomplete:
         return False, f"new decision rows incomplete: {incomplete}"
+<<<<<<< HEAD
     return True, f"{len(ids)} decisions, contiguous and unique; D-163…D-177 all carry eight fields"
+=======
+    return True, "177 decisions, contiguous and unique; D-163…D-177 all carry eight fields"
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 
 def check_19(m: Model) -> tuple[bool, str]:
@@ -615,8 +655,13 @@ def check_19(m: Model) -> tuple[bool, str]:
     bad = gaps(ids)
     if bad:
         return False, f"gaps in DD- numbering: {bad[:8]}"
+<<<<<<< HEAD
     if ids[-1] < 225 or len(ids) < 225:
         return False, f"expected at least 225 DD rows, found {len(ids)} to max {ids[-1]}"
+=======
+    if ids[-1] != 225 or len(ids) != 225:
+        return False, f"expected 225 DD rows, found {len(ids)} to max {ids[-1]}"
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     missing_new = [n for n in range(211, 226) if n not in m.dd_rows]
     raw_dd = len(re.findall(r"^\| DD-(\d{3}) \|", m.src["dd"], re.M))
     if raw_dd != len(ids):
@@ -631,7 +676,11 @@ def check_19(m: Model) -> tuple[bool, str]:
     if not declared or total != int(declared.group(1)):
         declared_value = declared.group(1) if declared else "nothing"
         return False, f"tally rows sum to {total}, register declares {declared_value}"
+<<<<<<< HEAD
     return True, f"{len(ids)} DD rows; §6 tally sums to {total} and matches the declared total"
+=======
+    return True, f"225 DD rows; §6 tally sums to {total} and matches the declared total"
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 
 def check_20(m: Model) -> tuple[bool, str]:
@@ -904,7 +953,11 @@ def check_31(m: Model) -> tuple[bool, str]:
         return False, f"required keys absent: {missing_keys}"
     if not first["stage_2_next_prompt"].startswith("12"):
         return False, f"stage_2_next_prompt is '{first['stage_2_next_prompt']}'"
+<<<<<<< HEAD
     if not re.fullmatch(r"D-001\.\.D-1(?:77|87)", first["decisions_range"]):
+=======
+    if first["decisions_range"] != "D-001..D-177":
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
         return False, f"decisions_range is '{first['decisions_range']}'"
     return True, (f"the {len(required)} required status keys agree; next prompt "
                   f"{first['stage_2_next_prompt']}, range {first['decisions_range']}")
@@ -1014,6 +1067,7 @@ def check_35(m: Model) -> tuple[bool, str]:
                    "D-042, TR-021, TR-090 and WEP-647")
 
 
+<<<<<<< HEAD
 # --- 12A-C1 reconciliation constants (2026-11-07) ---------------------------
 # These sets are the canonical access classification documented in register
 # §10.1. They are deliberately explicit: a row moving between classes must be
@@ -1326,6 +1380,8 @@ def check_45(m: Model) -> tuple[bool, str]:
                   "RS-153 addition are stated consistently")
 
 
+=======
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 # --- registry ----------------------------------------------------------------
 
 @dataclass
@@ -1378,6 +1434,7 @@ def _register():
         ("12A-33", "no implementation, executed-test or legal overclaim", check_33),
         ("12A-34", "external link gate resolves every internal link", check_34),
         ("12A-35", "information-classification foundation complete and consistent", check_35),
+<<<<<<< HEAD
         ("12A-36", "benchmark count agrees across report and register", check_36),
         ("12A-37", "comparator count agrees across report and register", check_37),
         ("12A-38", "source confidence summary agrees with the rows", check_38),
@@ -1388,6 +1445,8 @@ def _register():
         ("12A-43", "D-176/DD-224 residual references are correct", check_43),
         ("12A-44", "multi-account wording is precise, not absolute", check_44),
         ("12A-45", "global access date agrees with per-row retrieval records", check_45),
+=======
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     ]
     for cid, name, fn in specs:
         CHECKS.append(_Check(cid, name, fn))
@@ -1647,6 +1706,7 @@ def fx_missing_residual_column(model):
     return model
 
 
+<<<<<<< HEAD
 def fx_bm_range_short(model):
     """Fixture: the report's §5 benchmark range stops short of the register."""
     model.src["main"] = _sub(
@@ -1747,6 +1807,8 @@ def fx_access_date_collapse(model):
     return model
 
 
+=======
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 FIXTURES: list = [
     Fixture("12A-P01", "12A-02", True, lambda m: m, "source ids resolve contiguously"),
     Fixture("12A-P02", "12A-05", True, lambda m: m, "every cited source resolves"),
@@ -1809,6 +1871,7 @@ FIXTURES: list = [
     Fixture("12A-N23", "12A-24", False, fx_missing_residual_column,
             "a threat row is truncated before the residual column",
             "short threat rows"),
+<<<<<<< HEAD
     Fixture("12A-N24", "12A-36", False, fx_bm_range_short,
             "the report's benchmark range stops at 32", "§5 benchmark range"),
     Fixture("12A-N25", "12A-37", False, fx_cmp_range_short,
@@ -1831,6 +1894,8 @@ FIXTURES: list = [
     Fixture("12A-N33", "12A-45", False, fx_access_date_collapse,
             "the RS-153 addition is dated to the original access day",
             "access-date statement"),
+=======
+>>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 ]
 
 
