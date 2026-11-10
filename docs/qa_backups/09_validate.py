@@ -404,8 +404,8 @@ if blocks:
     else:
         failures.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     checks_ref[0] += 1
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12")
+    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12C":
+        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12C")
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -484,6 +484,8 @@ WORDS["one hundred and forty-three"] = 143
 WORDS["one hundred and fifty-one"] = 151
 WORDS["one hundred and sixty-one"] = 161
 WORDS["one hundred and sixty-two"] = 162
+WORDS["one hundred and seventy-seven"] = 177
+WORDS["one hundred and eighty-seven"] = 187
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -506,7 +508,7 @@ check("no gameplay rules" in outline.lower() or "No gameplay rules" in outline,
       "outline states it contains no gameplay rules")
 
 req_ids = re.findall(r"^\| (REQ-\d{3}) ", trace, re.M)
-check(req_ids == [f"REQ-{i:03d}" for i in range(1, 764)], "tracker carries REQ-001..REQ-763 in order", str(len(req_ids)))
+check(req_ids == [f"REQ-{i:03d}" for i in range(1, 870)], "tracker carries REQ-001..REQ-869 in order", str(len(req_ids)))
 req_rows = [ln for ln in trace.splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
 unprompted = [ln[:10] for ln in req_rows if not re.search(r"\| (?:0[2-9]|1[0-5])[ABC]? \||\| all \|", ln)]
 check(not unprompted, "every requirement is assigned to a Stage 2 prompt", "; ".join(unprompted[:5]))
@@ -516,7 +518,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
       "tracker states that zero validations have been executed")
 
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 211)], "design register carries DD-001..DD-210", str(len(dd_rows)))
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 236)], "design register carries DD-001..DD-235", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -524,7 +526,7 @@ check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provis
 check("D-004" in dd and "| D-013 |" in dd, "design register reconciles D-004 and D-013")
 
 ud_ids = re.findall(r"^\| (UD-\d{3}) \|", ud, re.M)
-check(ud_ids == [f"UD-{i:03d}" for i in range(1, 52)], "unresolved register carries UD-001..UD-051", str(len(ud_ids)))
+check(ud_ids == [f"UD-{i:03d}" for i in range(1, 61)], "unresolved register carries UD-001..UD-060", str(len(ud_ids)))
 ud_rows = [ln for ln in ud.splitlines() if ln.startswith("| UD-")]
 unclassed = [ln[:10] for ln in ud_rows if not re.search(r"\| [ABCDE][^|]*\|", ln)]
 check(not unclassed, "every unresolved item has a blocking class", "; ".join(unclassed[:5]))
@@ -551,7 +553,9 @@ check("**Complete**" in log_status("07"), "progress log marks Prompt 07 complete
 # is complete. 2026-11-05 (Prompt 11A): 11A research closes at the
 # research/design-foundations level, so row 11 is no longer a bare Pending row
 # and only 12–15 stay pending.
-check(log.count("| Pending |") == 4, "progress log keeps Prompts 12-15 pending", str(log.count("| Pending |")))
+# 2026-11-06 (Prompt 12A): row 12 is no longer a bare Pending row, so only
+# 13–15 stay pending.
+check(log.count("| Pending |") == 3, "progress log keeps Prompts 13-15 pending", str(log.count("| Pending |")))
 check(all(k in next((ln for ln in log.splitlines() if ln.startswith("| 08 |")), "")
           for k in ("**08A complete**", "**08B complete**", "**08C complete**")),
       "progress log row 08 records 08A, 08B and 08C complete", "row 08")
@@ -562,8 +566,19 @@ check("**ACCEPTED" in log_status("09")
       "progress log row 09 records Phase 09B accepted, 09C complete, 10A complete and 10B complete", log_status("09"))
 check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
-      and "Prompt 11 next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 11 next", log_status("10"))
+      and "Prompt 12C next" in log_status("10"),
+      "progress log row 10 records 10B complete, 10C complete and Prompt 12C next", log_status("10"))
+# 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
+# pending count, so a row that silently regresses to "Pending" or to 12A-live
+# fails here even though the count of bare Pending rows is unchanged. The
+# status cell must *begin* with the 12A completion text, so a cell that names
+# some other state first cannot borrow 12A's completion from later in the cell.
+status12 = log_status("12").replace("**", "")
+low12 = status12.lower()
+check(low12.startswith("12a complete at the research/design-foundations level")
+      and "12b complete at the specification" in low12
+      and "12c next" in low12,
+      "progress log row 12 records 12A complete, 12B complete and 12C next", log_status("12"))
 
 # 15f. The *current* next action (2026-10-23 micro-correction) ----------------
 # Section 14 proves Prompt 02 is mentioned somewhere. This section proves no
@@ -680,9 +695,9 @@ for ln in req_rows:
     cell = ln.split("|")[4].strip() if len(ln.split("|")) > 4 else ""
     key = "Approved" if "Approved" in cell else ("Provisional" if "Provisional" in cell else ("Proposed" if "Proposed" in cell else ("Open" if "Open" in cell else ("Deferred" if "Deferred" in cell else "?"))))
     req_status[key] = req_status.get(key, 0) + 1
-check(req_status.get("Approved") == 55 and req_status.get("Provisional") == 688 and req_status.get("Proposed", 0) == 0
-      and req_status.get("Open") == 19 and req_status.get("Deferred") == 1,
-      "requirements are 55 approved / 688 provisional / 19 open / 1 deferred / 0 proposed", str(req_status))
+check(req_status.get("Approved") == 55 and req_status.get("Provisional") == 774 and req_status.get("Proposed", 0) == 0
+      and req_status.get("Open") == 39 and req_status.get("Deferred") == 1,
+      "requirements are 55 approved / 774 provisional / 39 open / 1 deferred / 0 proposed", str(req_status))
 check("executed** validation | **0**" in trace,
       "requirements register still states zero executed validations")
 
@@ -707,7 +722,7 @@ ctx_03 = next((ln for ln in ctx.splitlines() if "stage-2/03_requirements" in ln)
 ctx_07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
 check(("DD-001" in ctx_04 and "DD-209" in ctx_04) and ("D-001" in ctx_04 and "D-161" in ctx_04),
       "AI_CONTEXT row 04 describes the current 151 decisions / 199 positions")
-check("688 provisional" in ctx_03 and "19 open" in ctx_03 and "55 approved" in ctx_03 and "1 deferred" in ctx_03,
+check("774 provisional" in ctx_03 and "39 open" in ctx_03 and "55 approved" in ctx_03 and "1 deferred" in ctx_03,
       "AI_CONTEXT row 03 describes the current requirement counts")
 check("97 rules" in ctx_07 and "v1.5" in ctx_07,
       "AI_CONTEXT row 07 describes the current B-02 version")
@@ -754,10 +769,11 @@ resolved_ud = [
 deferred_ud = {"UD-022": "13", "UD-023": "13",
                "UD-031": "12"}
 open_ud = ["UD-005", "UD-006", "UD-007", "UD-017", "UD-026", "UD-036",
-           "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049", "UD-050", "UD-051"]
+           "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049", "UD-050", "UD-051",
+           "UD-052", "UD-053", "UD-054", "UD-055", "UD-056", "UD-057", "UD-058", "UD-059", "UD-060"]
 non_resolved_ud = sorted(list(deferred_ud) + open_ud)
-check(sorted(ud_rows) == [f"UD-{i:03d}" for i in range(1, 52)],
-      "unresolved rows are UD-001..UD-051 with no duplicate", str(len(ud_rows)))
+check(sorted(ud_rows) == [f"UD-{i:03d}" for i in range(1, 61)],
+      "unresolved rows are UD-001..UD-060 with no duplicate", str(len(ud_rows)))
 def ud_status(row: str) -> str:
     """Return the Status cell only; 'Resolved by D-019' elsewhere is history."""
     cells = [c.strip() for c in row.strip().strip("|").split("|")]
@@ -778,8 +794,8 @@ ud6_rows = re.findall(r"^\| `?(UD-\d{3})`? \|", ud6, re.M)
 check(ud6_rows == non_resolved_ud,
       "§6 inventory matches the 4 deferred + 18 open rows exactly", str(ud6_rows))
 check("**28 Resolved**" in ud and "**3 Deferred to a future prompt**" in ud
-      and "**20 Open**" in ud,
-      "the UD register states the reconciling 27/4/18 counts")
+      and "**29 Open**" in ud,
+      "the UD register states the reconciling 28/3/29 counts")
 
 # Every D-024..D-030 row must be Confirmed in DECISIONS and present in 04;
 # the superseded pair must keep pointing at its successor in both registers.
@@ -828,8 +844,8 @@ for row in ud_rows.values():
         status_counts["Deferred"] += 1
     elif cell.startswith("Open"):
         status_counts["Open"] += 1
-check(status_counts == {"Resolved": 28, "Deferred": 3, "Open": 20},
-      "UD status cells reconcile 28 Resolved / 3 Deferred / 20 Open", str(status_counts))
+check(status_counts == {"Resolved": 28, "Deferred": 3, "Open": 29},
+      "UD status cells reconcile 28 Resolved / 3 Deferred / 29 Open", str(status_counts))
 
 
 # 15d. Historical records stay historical, not "corrected" -------------------

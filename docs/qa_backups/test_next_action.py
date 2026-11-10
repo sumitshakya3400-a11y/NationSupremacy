@@ -31,6 +31,17 @@ from status_rules import (  # noqa: E402
 DOCS = Path(__file__).resolve().parents[1]
 
 
+def continuity_problems(texts: dict[str, str]) -> list[str]:
+    """Return stale next-action or completed-sub-prompt claims across documents."""
+    problems: list[str] = []
+    for name, text in texts.items():
+        for snippet in stale_next_actions(text):
+            problems.append(f"{name}: stale next action :: {snippet}")
+        for snippet in subprompt_status_problems(text):
+            problems.append(f"{name}: completed sub-prompt still live :: {snippet}")
+    return problems
+
+
 class StaleNextActionTests(unittest.TestCase):
     def test_current_field_naming_prompt_01_is_rejected(self) -> None:
         text = "**Next action:** Stage 2, Prompt 01 — structure and traceability.\n"
@@ -91,10 +102,15 @@ class StaleNextActionTests(unittest.TestCase):
                 if path.name in status_files:
                     # 2026-11-04 (Prompt 10C): 10C closed, so the live prompt was 11.
                     # 2026-11-04 (Prompt 11A): Prompt 11 split and 11A research
-                    # closed, so the live sub-prompt is 11B.
+                    # closed, so the live sub-prompt was 11B.
                     # 2026-11-06 (Prompt 11C): the 11C companion closed the whole
-                    # Prompt 11 family at the design level, so the live prompt is 12.
-                    self.assertEqual(status_next_prompt(text), "12")
+                    # Prompt 11 family at the design level, so the live prompt was 12.
+                    # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt
+                    # is now 12B.
+                    self.assertEqual(status_next_prompt(text), "12C")
+        texts = {p.name: p.read_text(encoding="utf-8", errors="replace")
+                 for p in files if p.name in status_files}
+        self.assertEqual(continuity_problems(texts), [])
 
 
 class CurrentStateConsistencyTests(unittest.TestCase):
@@ -214,20 +230,27 @@ class CurrentStateConsistencyTests(unittest.TestCase):
             "\n".join(row[2] for row in rows).lower(),
             r"prompt 09c[^.\n]{0,80}(?:implemented|functioning|released|deployed)",
         )
+        # 2026-11-06 (Prompt 12A): row 12 stops being a bare Pending row because
+        # 12A closed at the research/design-foundations level, so only 13-15 stay
+        # Pending.
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
-        self.assertEqual(pending, [f"{i:02d}" for i in range(12, 16)])
+        self.assertEqual(pending, [f"{i:02d}" for i in range(13, 16)])
+        row12 = next(row for row in rows if row[0] == "12")
+        self.assertIn("12A COMPLETE at the research and design-foundations level", row12[2])
+        self.assertIn("12B SPECIFICATION COMPLETE", row12[2])
+        self.assertIn("Prompt 12C is next", row12[2])
 
         row10 = next(row for row in rows if row[0] == "10")
         self.assertIn("10B specification complete", row10[2])
         self.assertIn("Prompt 10C complete", row10[2])
-        # 2026-11-06 (Prompt 11C): Prompt 11 closed at the design level, so row 10
-        # must name Prompt 12 as the live prompt instead of presenting 11 as next.
-        self.assertIn("Prompt 12 is next", row10[2])
+        # 2026-11-06 (Prompt 12A): 12A closed at the research level, so row 10
+        # must name 12B as the live sub-prompt instead of presenting 12 as next.
+        self.assertIn("Prompt 12C is next", row10[2])
 
         row11 = next(row for row in rows if row[0] == "11")
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11[2])
         self.assertIn("11C complete at the specification/documentation level", row11[2])
-        self.assertIn("Prompt 12 next and not started", row11[2])
+        self.assertIn("Prompt 12C next and not started", row11[2])
         # A research pass must never be described as a written rulebook.
         self.assertIn("b-11 rulebook at the specification level", row11[2].lower())
         self.assertNotRegex(
@@ -431,9 +454,15 @@ class SubPromptStatusTests(unittest.TestCase):
         live = ("**Prompt 11B - the B-11 specification is complete; "
                 "Prompt 11C - B-11 workflows and acceptance is the next intended task** "
                 "and has not started.")
-        self.assertEqual(subprompt_status_problems(live), [])
-        # 11C is not complete: naming it as live must not be flagged.
-        self.assertEqual(subprompt_status_problems("Prompt 11C is the next intended task."), [])
+        # 2026-11-06 (Prompt 12A): 11C closed on 2026-11-06 and Prompt 12A closed
+        # the same day, so the sentence that was live on 2026-11-05 is now a stale
+        # claim and must be flagged, while the genuinely live sub-prompt 12B must
+        # not be. The 12 family also had to join the sub-prompt pattern first:
+        # before it, "12A" was not a recognised sub-prompt token at all.
+        self.assertEqual(len(subprompt_status_problems(live)), 1)
+        self.assertEqual(subprompt_status_problems("Prompt 12C is the next intended task."), [])
+        self.assertEqual(len(subprompt_status_problems("Prompt 12B is the next intended task.")), 1)
+        self.assertEqual(len(subprompt_status_problems("Prompt 12A is the next intended task.")), 1)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

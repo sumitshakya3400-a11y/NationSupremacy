@@ -220,7 +220,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
         m.group(1)
         for m in re.finditer(r"^\| (REQ-\d{3}) \|", req, flags=re.MULTILINE)
     }
-    check(len(found_req_rows) == 763, "2-references", f"requirement register has {len(found_req_rows)} unique rows, expected 763")
+    check(len(found_req_rows) == 869, "2-references", f"requirement register has {len(found_req_rows)} unique rows, expected 869")
     for _, rid in pairs:
         check(rid in req_ids, "2-references", f"audit cites nonexistent requirement {rid}")
         check(rid in found_req_rows, "2-references", f"audit cites {rid}, which has no register row")
@@ -339,7 +339,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
                 check(re.search(r"\bno\b|not part|excluded|never", joined, flags=re.IGNORECASE) is not None, "6-communication", f"candidate requirement {rid} appears to add an excluded communication feature")
 
     # --- 7. Requirements and decisions --------------------------------------
-    check(len(cand_rows) == 763, "7-register", f"requirement table parsed {len(cand_rows)} rows, expected 763")
+    check(len(cand_rows) == 869, "7-register", f"requirement table parsed {len(cand_rows)} rows, expected 869")
     alliance_rows = [r for rid, r in cand_rows.items() if 534 <= int(rid.split("-")[1]) <= 653]
     check(len(alliance_rows) == 120, "7-register", f"Alliance requirement count is {len(alliance_rows)}, expected 120")
     check(all(r[3].startswith("Approved") or r[3].startswith("Proposed") or r[3].startswith("Provisional") or "Open" in r[3] or "Deferred" in r[3] for r in alliance_rows), "7-register", "an Alliance requirement is not Approved, Proposed, Provisional, Open or Deferred")
@@ -348,8 +348,8 @@ def validate(docs: Path) -> tuple[list[str], int]:
         key = re.sub(r"[*]", "", r[3]).split("(")[0].strip()
         status_counts[key] = status_counts.get(key, 0) + 1
     check(status_counts.get("Approved") == 55, "7-register", f"Approved count is {status_counts.get('Approved')}, expected 55")
-    check(status_counts.get("Open") == 19, "7-register", f"Open count is {status_counts.get('Open')}, expected 19")
-    check(status_counts.get("Provisional") == 688, "7-register", f"Provisional count is {status_counts.get('Provisional')}, expected 688")
+    check(status_counts.get("Open") == 39, "7-register", f"Open count is {status_counts.get('Open')}, expected 39")
+    check(status_counts.get("Provisional") == 774, "7-register", f"Provisional count is {status_counts.get('Provisional')}, expected 774")
     check(status_counts.get("Deferred") == 1, "7-register", f"Deferred count is {status_counts.get('Deferred')}, expected 1")
     check(status_counts.get("Proposed", 0) == 0, "7-register", "Proposed count is 0")
 
@@ -422,8 +422,9 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # valid history elsewhere in the same block.
     # 2026-11-06 (Prompt 11C): the 11C companion closed the Prompt 11 family at
     # the design level, so the live prompt is 12; 10/11 remain valid history.
-    check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12)", status.group(1)) is not None,
-          "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C or 12 as the active prompt")
+    # 2026-11-07 (Prompt 12A review remediation): 12A closed, so 12B is live.
+    check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12[A-C]?)", status.group(1)) is not None,
+          "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C or 12/12A/12B/12C as the active prompt")
 
     # --- 9. Permissions inventory -------------------------------------------
     perm_block = section(research, "### 7.2", "### 7.3")

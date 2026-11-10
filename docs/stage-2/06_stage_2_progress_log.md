@@ -1,11 +1,11 @@
 # Stage 2 progress log
 
 **Official stage:** Stage 2 — Create the Master Game Design Bible ([ROADMAP](../ROADMAP.md))
-**Last updated:** 2026-11-06 (**Prompt 11A — World events, objectives, rankings and long-term national progression: research, benchmarking and design foundations — is complete at the research/design-foundations level (§67); its canonical deliverable is [`research/11A_world_events_objectives_rankings_progression_research.md`](research/11A_world_events_objectives_rankings_progression_research.md) with two companion registers; Prompt 11B is complete at the system-specification level (2026-11-05; log §68); the 11B-C2 integrity correction is applied and locally verified (2026-11-05; log §70; original 52 criteria preserved and matched, 52/52 gate rows PASS with 61 separate checks); independent acceptance was recorded by C3 on 2026-11-05, and Prompt 11C is complete at the specification/documentation level (log §72); Prompt 12 is next and has not started. The 2026-11-04 record follows: **Prompt 10C — Warfare workflows, cross-system integration, acceptance and final pass — is complete at the specification/documentation level (§63); its canonical deliverable is [`17_warfare_workflows_acceptance.md`](17_warfare_workflows_acceptance.md); Prompt 11 was next; Prompt 10B (§58) and its correction passes 10B-C/10B-C2/10B-C3/10B-C4 (§59–§62) remain verified; Prompt 10A research (§56) and its correction (§57) remain complete; Stage 2 not complete.** Earlier on the same day: **Prompt 09C complete at the specification/documentation level — §53, with the §54 and §55 correction passes**. Earlier: **Prompt 06B complete**; the Prompt 06B micro-corrections in §12–§15, the consolidation audit in §16, the cross-document reconciliation in §17, the publication/catch-up correction in §18, the handoff-timing clarification in §19, the Prompt 07A research in §20, the Prompt 07B market foundations in §21, the **Prompt 07B status reconciliation and sub-prompt guard in §22**, the **Prompt 07C workflows, acceptance and product approval in §23**, the **Prompt 08A diplomacy research, evidence and requirements in §24**, the **Prompt 08B diplomacy foundations in §25**, the **Prompt 08B-C corrections in §26** the **Prompt 08B-D formula and handoff corrections in §27**, the **Prompt 08C workflows and acceptance in §28**, the **08C-C acceptance-matrix and reference corrections in §29**, the **08C-D semantic-coverage, traceability and replay corrections in §30** and the **08C-E bidirectional traceability and acceptance closure in §31** the **Prompt 09A alliance research and requirements baseline in §32**, the **Prompt 09A-C alliance corrections and semantic audit in §33** the **Prompt 09A-D final alliance treasury storage traceability correction in §34**, the **Prompt 09A-E AX-08 wording and treasury-policy correction in §35**, the **Prompt 09A-F final status reconciliation and acceptance closure in §36**, the **Prompt 09B alliance foundations in §37**, the **Prompt 09B-C foundations correction in §38**, the **Prompt 09B-D governance recovery, owner authority restoration, and semantic validation in §39**, the **Prompt 09B-E owner-reserved authority, diplomatic non-delegation, treasury neutrality, AX reconciliation and validator rebuild in §40**, the **Prompt 09B-F final authority audit, semantic validation and project-wide consistency audit in §41**, the **Prompt 09B-G validator hardening and adversarial regression in §42**, the **Prompt 09B-H negative-polarity entitlement correction in §43**, the **Prompt 09B-I correction in §44**, the **Prompt 09B-J correction in §45**, the **Prompt 09B-K final correction in §46**, the **Prompt 09B-L final consolidated correction in §47**, the **Prompt 09B-M final closeout in §48**, the **Prompt 09B-N recourse and former-member correction in §49**, the **Prompt 09B-O procedural false-negative correction in §50**, the **Prompt 09B-P dismissal, grievance and redress correction in §51**, and the **Phase 09B acceptance record in §52**) and the **Prompt 10A warfare research checkpoint in §56**
+**Last updated:** 2026-11-10 — **Prompt 12B-C1-R8-D (§84) records the owner's formal deferral of R8: R7's implementation is retained at 87/87 checks, 59/59 positive and 153/153 negative fixtures with the 23/23 subprocess mutation audit, its independent acceptance is NOT accepted, the eight R6 reproductions remain rejected, and the five bypass classes reported by the independent audit of Project X (77) are preserved as known residual weaknesses; no validator code was modified. 12B-C1 remains NOT CLOSED, the three PARTIAL gates are unchanged, and Prompt 12C is not authorized.** The 2026-11-07 record follows for history (its counts were superseded by R1–R7): **Prompt 12B — B-12 fair play, privacy, moderation and administration complete system specifications — is complete at the specification/documentation level (§75): four documents plus a validator, 344 rules, 16 formulas, `REQ-764`–`REQ-869`, D-178…D-187 / DD-226…DD-235, 26 gates at 23 PASS / 3 PARTIAL, validator 62/62 with 12/12 positive and 22/22 negative fixtures, and no migration, grant, audit control or gameplay change. Prompt 12C is next and not authorized.** The 2026-11-06 Prompt 11A record follows for history: (**Prompt 11A — World events, objectives, rankings and long-term national progression: research, benchmarking and design foundations — is complete at the research/design-foundations level (§67); its canonical deliverable is [`research/11A_world_events_objectives_rankings_progression_research.md`](research/11A_world_events_objectives_rankings_progression_research.md) with two companion registers; Prompt 11B is complete at the system-specification level (2026-11-05; log §68); the 11B-C2 integrity correction is applied and locally verified (2026-11-05; log §70; original 52 criteria preserved and matched, 52/52 gate rows PASS with 61 separate checks); independent acceptance was recorded by C3 on 2026-11-05, and Prompt 11C is complete at the specification/documentation level (log §72); Prompt 12A is complete at the research/design-foundations level (log §73); Prompt 12B was next at that time and is complete at the specification/documentation level (§75). The 2026-11-04 record follows: **Prompt 10C — Warfare workflows, cross-system integration, acceptance and final pass — is complete at the specification/documentation level (§63); its canonical deliverable is [`17_warfare_workflows_acceptance.md`](17_warfare_workflows_acceptance.md); Prompt 11 was next; Prompt 10B (§58) and its correction passes 10B-C/10B-C2/10B-C3/10B-C4 (§59–§62) remain verified; Prompt 10A research (§56) and its correction (§57) remain complete; Stage 2 not complete.** Earlier on the same day: **Prompt 09C complete at the specification/documentation level — §53, with the §54 and §55 correction passes**. Earlier: **Prompt 06B complete**; the Prompt 06B micro-corrections in §12–§15, the consolidation audit in §16, the cross-document reconciliation in §17, the publication/catch-up correction in §18, the handoff-timing clarification in §19, the Prompt 07A research in §20, the Prompt 07B market foundations in §21, the **Prompt 07B status reconciliation and sub-prompt guard in §22**, the **Prompt 07C workflows, acceptance and product approval in §23**, the **Prompt 08A diplomacy research, evidence and requirements in §24**, the **Prompt 08B diplomacy foundations in §25**, the **Prompt 08B-C corrections in §26** the **Prompt 08B-D formula and handoff corrections in §27**, the **Prompt 08C workflows and acceptance in §28**, the **08C-C acceptance-matrix and reference corrections in §29**, the **08C-D semantic-coverage, traceability and replay corrections in §30** and the **08C-E bidirectional traceability and acceptance closure in §31** the **Prompt 09A alliance research and requirements baseline in §32**, the **Prompt 09A-C alliance corrections and semantic audit in §33** the **Prompt 09A-D final alliance treasury storage traceability correction in §34**, the **Prompt 09A-E AX-08 wording and treasury-policy correction in §35**, the **Prompt 09A-F final status reconciliation and acceptance closure in §36**, the **Prompt 09B alliance foundations in §37**, the **Prompt 09B-C foundations correction in §38**, the **Prompt 09B-D governance recovery, owner authority restoration, and semantic validation in §39**, the **Prompt 09B-E owner-reserved authority, diplomatic non-delegation, treasury neutrality, AX reconciliation and validator rebuild in §40**, the **Prompt 09B-F final authority audit, semantic validation and project-wide consistency audit in §41**, the **Prompt 09B-G validator hardening and adversarial regression in §42**, the **Prompt 09B-H negative-polarity entitlement correction in §43**, the **Prompt 09B-I correction in §44**, the **Prompt 09B-J correction in §45**, the **Prompt 09B-K final correction in §46**, the **Prompt 09B-L final consolidated correction in §47**, the **Prompt 09B-M final closeout in §48**, the **Prompt 09B-N recourse and former-member correction in §49**, the **Prompt 09B-O procedural false-negative correction in §50**, the **Prompt 09B-P dismissal, grievance and redress correction in §51**, and the **Phase 09B acceptance record in §52**) and the **Prompt 10A warfare research checkpoint in §56**
 
-**Current task:** **Prompt 11C — B-11 workflows, cross-system integration and acceptance — is authorized by the C3 acceptance and has not started.** **Prompt 11A — research, benchmarking and design foundations — is complete at the research/design-foundations level (2026-11-05; §67)**, **Prompt 11B — the B-11 specification — is complete at the system-specification level (2026-11-05; §68)**, and Prompt 11's parent stays open until 11C closes. The Prompt 10C record (§63, corrections §64–§66) and the Prompt 10B specification (§58) with its correction passes (§59–§62) remain verified, Prompt 10A research (§56) and its correction (§57) remain complete, and Prompt 09C and its correction passes remain complete through §55. Prompt 10B specification and its 10B-C/10B-C2/10B-C3/10B-C4 correction passes (§58–§62) remain verified, Prompt 10A research (§56) and its correction (§57) remain complete, and Prompt 09C and its correction passes remain complete through §55.
+**Current task:** **R8 is DEFERRED BY OWNER (2026-11-10; §84): no further validator-hardening work is authorized, and the next development task must be separately authorized.** **Prompt 12C — B-12 workflows, cross-system integration and acceptance — is the next intended task; it has not started and needs explicit owner authorization (D-002).** **Prompt 12B — the B-12 rulebook, formula register, requirement register and acceptance framework — is complete at the specification/documentation level (2026-11-07; §75).** **Prompt 12A — the B-12 research, evidence, requirements and design foundations — is complete at the research and design-foundations level (2026-11-06; §73).** **Prompt 11A — research, benchmarking and design foundations — is complete at the research/design-foundations level (2026-11-05; §67)**, **Prompt 11B — the B-11 specification — is complete at the system-specification level (2026-11-05; §68)** and **Prompt 11C — workflows, cross-system integration and acceptance — is complete at the specification, integration and acceptance-design level (2026-11-06; §72)**. The Prompt 11 parent awaits the owner's acceptance of that PARTIAL verdict. The Prompt 10C record (§63, corrections §64–§66) and the Prompt 10B specification (§58) with its correction passes (§59–§62) remain verified, Prompt 10A research (§56) and its correction (§57) remain complete, and Prompt 09C and its correction passes remain complete through §55. Prompt 10B specification and its 10B-C/10B-C2/10B-C3/10B-C4 correction passes (§58–§62) remain verified, Prompt 10A research (§56) and its correction (§57) remain complete, and Prompt 09C and its correction passes remain complete through §55.
 
-**Current status:** **Prompt 09C — Alliance workflows, edge cases, acceptance matrix and release-gate evidence — is COMPLETE at the specification/documentation level (2026-11-03; §53, corrected by §54 and §55).** The canonical deliverable is `docs/stage-2/16_alliances_workflows_acceptance.md` (49 workflows, 65 edge cases, 132 acceptance tests, exhaustive traceability). Completion is documentation-only: no gameplay code, runtime test or deployment exists. **Prompt 10A — Politics and War warfare research, evidence, requirements and cross-system integration — is complete (2026-11-03, §56), research/documentation only; Prompt 10B — Warfare Foundations and Complete Rules — is complete at the specification/documentation level (§58) with its correction passes 10B-C/10B-C2/10B-C3/10B-C4 verified (§59–§62); Prompt 10C — Warfare workflows, cross-system integration, acceptance and final pass — is complete at the specification/documentation level (§63); **Prompt 11A — world events, objectives, rankings and long-term national progression research and design foundations — is complete at the research/design-foundations level (2026-11-05; §67)**, Prompt 11B is complete at the system-specification level (2026-11-05; log §68), Prompt 11C is next, authorized by the C3 acceptance, and not started; Prompt 11's parent stays open; Stage 2 is not complete.** **Phase 09B Alliance specification and documentation: ACCEPTED.** Acceptance is at the specification/documentation level (D-142 / DD-165), not production implementation, live-game integration testing or release. Owner-reserved decisions remain open: `UD-040`–`UD-049` are **Open / Yes — owner**, with only the partial authorizations recorded by `D-140` and `D-141`; `UD-039` remains Resolved by `D-137` with its no-object component amended in part. Global Trade remains preserved under `D-122` with G-1–G-6 unchanged. Prompt 09A is accepted after Prompt 09A-F (§32–§36); Prompt 09B foundations were corrected and accepted under Prompts 09B-D through 09B-P (§37–§52; [09B-F audit](16_alliances_project_wide_consistency_audit.md)); Prompt 09B-L reconciled automatic Alliance taxation, the ARL receipt/accounting and operational-funding boundary, the `AT-E00`/`AT-E01` effect catalogue and the 30-contract set; Prompts 09B-M through 09B-P closed the remaining corrections. No new 09B redesign or research was authorized or performed.
+**Current status:** **Prompt 09C — Alliance workflows, edge cases, acceptance matrix and release-gate evidence — is COMPLETE at the specification/documentation level (2026-11-03; §53, corrected by §54 and §55).** The canonical deliverable is `docs/stage-2/16_alliances_workflows_acceptance.md` (49 workflows, 65 edge cases, 132 acceptance tests, exhaustive traceability). Completion is documentation-only: no gameplay code, runtime test or deployment exists. **Prompt 10A — Politics and War warfare research, evidence, requirements and cross-system integration — is complete (2026-11-03, §56), research/documentation only; Prompt 10B — Warfare Foundations and Complete Rules — is complete at the specification/documentation level (§58) with its correction passes 10B-C/10B-C2/10B-C3/10B-C4 verified (§59–§62); Prompt 10C — Warfare workflows, cross-system integration, acceptance and final pass — is complete at the specification/documentation level (§63); **Prompt 11A — world events, objectives, rankings and long-term national progression research and design foundations — is complete at the research/design-foundations level (2026-11-05; §67)**, Prompt 11B is complete at the system-specification level (2026-11-05; log §68), Prompt 11C is complete at the specification/documentation level (2026-11-06; §72), Prompt 12A is complete at the research/design-foundations level (2026-11-06; §73), and Prompt 12B is complete at the specification/documentation level (§75); Prompt 12C is next and has not started; Prompt 11's parent awaits the owner's acceptance of its PARTIAL verdict; Stage 2 is not complete.** **Phase 09B Alliance specification and documentation: ACCEPTED.** Acceptance is at the specification/documentation level (D-142 / DD-165), not production implementation, live-game integration testing or release. Owner-reserved decisions remain open: `UD-040`–`UD-049` are **Open / Yes — owner**, with only the partial authorizations recorded by `D-140` and `D-141`; `UD-039` remains Resolved by `D-137` with its no-object component amended in part. Global Trade remains preserved under `D-122` with G-1–G-6 unchanged. Prompt 09A is accepted after Prompt 09A-F (§32–§36); Prompt 09B foundations were corrected and accepted under Prompts 09B-D through 09B-P (§37–§52; [09B-F audit](16_alliances_project_wide_consistency_audit.md)); Prompt 09B-L reconciled automatic Alliance taxation, the ARL receipt/accounting and operational-funding boundary, the `AT-E00`/`AT-E01` effect catalogue and the 30-contract set; Prompts 09B-M through 09B-P closed the remaining corrections. No new 09B redesign or research was authorized or performed.
 
 
 ---
@@ -32,9 +32,9 @@ Stage 2 writes **specifications only**. No game code, no migrations, no deployme
 | 07 | Trade and market systems — **07A** research, **07B** foundations, **07C** workflows and acceptance | **07A:** [`research/07A_politics_and_war_market_research.md`](research/07A_politics_and_war_market_research.md). **07B:** [`13_trade_and_markets.md`](13_trade_and_markets.md) **v1.1** + [`13_trade_and_markets_formula_register.md`](13_trade_and_markets_formula_register.md) **v1.1**. **07C:** [`14_market_workflows_and_acceptance.md`](14_market_workflows_and_acceptance.md) | **Complete** (2026-10-29) — 07A/07B 2026-10-28; 07C workflows, acceptance and product approval (D-122); [log §20–§23](06_stage_2_progress_log.md) |
 | 08 | Diplomacy between nations — **08A** research and requirements, **08B** foundations, **08C** workflows and acceptance | **08A:** [`research/08A_diplomacy_research.md`](research/08A_diplomacy_research.md). **08B:** [`15_diplomacy.md`](15_diplomacy.md) v1.2 + [formula register](15_diplomacy_formula_register.md) v1.2 (08B-C corrections in §26; 08B-D in §27). **08C:** [`15_diplomacy_workflows_acceptance.md`](15_diplomacy_workflows_acceptance.md) v1.3, corrected by 08C-C, 08C-D and 08C-E | **08A complete** (research only); **08B complete** (designed; no implementation); **08C complete** (2026-10-30; 30 workflows, 54 edge cases, **88 tests**, 52 covered / 2 partial; 118-row exhaustive ledger = 101 direct + 16 supporting + 1 deferred; designed, not executed); **08C-C correction complete** (§29); **08C-D correction complete** (§30); **08C-E correction complete** (§31); **Prompt 08 complete** | 2026-10-30 |
 | 09 | Alliance system and alliance management | `16_alliances.md` | **ACCEPTED — specification/documentation level (D-142 / DD-165)** — Prompt 09A accepted after 09A-F; Prompts 09B through 09B-P completed the Alliance specification and its audited corrections; acceptance does not imply production implementation, live-game integration testing or release, and UD-040–UD-049 remain Open. Prompt 09C: complete at the specification/documentation level (2026-11-03; §53); Prompt 10A: complete (research/documentation only; §56); Prompt 10B: complete at the specification/documentation level (§58), corrected by §59–§62; Prompt 10C: complete at the specification/documentation level (2026-11-04; §63). | §32–§36, §37–§55 |
-| 10 | Warfare, campaigns and postwar settlements | `17_warfare_and_settlements.md`; **10C companion:** [`17_warfare_workflows_acceptance.md`](17_warfare_workflows_acceptance.md) | **COMPLETE at the specification/documentation level — Prompt 10C complete (2026-11-04; §63, corrections §64–§65)** ([B-10 rulebook](17_warfare_and_settlements.md) v1.3 + [formula register](17_warfare_formula_register.md) v1.3; 30 sections, 188 numbered rules plus 42 lettered sub-rules, 39 formulas, 25 architecture decisions; 10C adds 40 workflows, 60 edge cases, 124 acceptance tests in 16 classes, a 50-requirement bidirectional ledger, 26 contiguous WAR ranges, the D-143 failure-code-gap disclosure and 13 integration rows; all 10A candidates dispositioned; `UD-032` resolved as Option A; documentation only — no code, no runtime test, no release); 10A research complete (§56) and correction (§57); 10B specification complete at the specification/documentation level (§58) with the 10B-C/10B-C2/10B-C3/10B-C4 corrections (§59–§62); 10C §17 records the P10C-01…P10C-44 gates; Prompt 11 next and not started. | §56–§65 |
-| 11 | World events, objectives, rankings and long-term progression — **11A** research and design foundations, **11B** specification, **11C** workflows and acceptance — **11C complete at the specification/documentation level (§72); the parent awaits owner acceptance of its PARTIAL verdict** | [`18_world_events_objectives_rankings_progression.md`](18_world_events_objectives_rankings_progression.md) (723 `WEP-` rules) + [`18_world_events_objectives_rankings_progression_formula_register.md`](18_world_events_objectives_rankings_progression_formula_register.md) (50 `F-WEP-` formulas, 17 contracts, 40 failure codes, 50 audit events); **11A deliverables:** [`research/11A_world_events_objectives_rankings_progression_research.md`](research/11A_world_events_objectives_rankings_progression_research.md), [`research/11A_comparator_sources_and_benchmarks.md`](research/11A_comparator_sources_and_benchmarks.md), [`research/11A_integration_and_risk_registers.md`](research/11A_integration_and_risk_registers.md) | **11B COMPLETE at the system-specification level** (2026-11-05; §68) — specification and documentation only; 60 requirements REQ-704…REQ-763, D-152…D-161 / DD-200–DD-209, UD-024 resolved, UD-050/UD-051 open; **11C next, not started** | 2026-11-05 |
-| 12 | Fair play, player protection, privacy and administration | `19_fair_play_and_player_protection.md` | Pending | — |
+| 10 | Warfare, campaigns and postwar settlements | `17_warfare_and_settlements.md`; **10C companion:** [`17_warfare_workflows_acceptance.md`](17_warfare_workflows_acceptance.md) | **COMPLETE at the specification/documentation level — Prompt 10C complete (2026-11-04; §63, corrections §64–§65)** ([B-10 rulebook](17_warfare_and_settlements.md) v1.3 + [formula register](17_warfare_formula_register.md) v1.3; 30 sections, 188 numbered rules plus 42 lettered sub-rules, 39 formulas, 25 architecture decisions; 10C adds 40 workflows, 60 edge cases, 124 acceptance tests in 16 classes, a 50-requirement bidirectional ledger, 26 contiguous WAR ranges, the D-143 failure-code-gap disclosure and 13 integration rows; all 10A candidates dispositioned; `UD-032` resolved as Option A; documentation only — no code, no runtime test, no release); 10A research complete (§56) and correction (§57); 10B specification complete at the specification/documentation level (§58) with the 10B-C/10B-C2/10B-C3/10B-C4 corrections (§59–§62); 10C §17 records the P10C-01…P10C-44 gates; Prompt 11 complete at the specification/documentation level (11C, §72); Prompt 12A complete at the research/design-foundations level (§73); Prompt 12B complete at the specification/documentation level (§75); Prompt 12C next, not started and pending owner authorization. | §56–§65 |
+| 11 | World events, objectives, rankings and long-term progression — **11A** research and design foundations, **11B** specification, **11C** workflows and acceptance — **11C complete at the specification/documentation level (§72); the parent awaits owner acceptance of its PARTIAL verdict; Prompt 12B authorization is pending** | [`18_world_events_objectives_rankings_progression.md`](18_world_events_objectives_rankings_progression.md) (723 `WEP-` rules) + [`18_world_events_objectives_rankings_progression_formula_register.md`](18_world_events_objectives_rankings_progression_formula_register.md) (50 `F-WEP-` formulas, 17 contracts, 40 failure codes, 50 audit events); **11A deliverables:** [`research/11A_world_events_objectives_rankings_progression_research.md`](research/11A_world_events_objectives_rankings_progression_research.md), [`research/11A_comparator_sources_and_benchmarks.md`](research/11A_comparator_sources_and_benchmarks.md), [`research/11A_integration_and_risk_registers.md`](research/11A_integration_and_risk_registers.md) | **11B COMPLETE at the system-specification level** (2026-11-05; §68) — specification and documentation only; 60 requirements REQ-704…REQ-763, D-152…D-161 / DD-200–DD-209, UD-024 resolved, UD-050/UD-051 open; **11C COMPLETE at the specification/documentation level** (2026-11-06; §72); **12A complete at the research/design-foundations level (§73); Prompt 12B next and not started** | 2026-11-06 |
+| 12 | Fair play, player protection, privacy and administration — **12A** research and design foundations, **12B** specification, **12C** workflows and acceptance | `20_fair_play_and_player_protection.md` plus its formula, requirement and acceptance companions | **12A complete at the research/design-foundations level**; **12B complete at the specification/documentation level**; **R7 retained at 87/87, 59/59, 153/153 and 23/23 but NOT independently accepted; the five Project X (77) bypass classes are known residual weaknesses; R8 is DEFERRED BY OWNER (§84)**; **12C next, not started and needs separate owner authorization** | 2026-11-10 |
 | 13 | Interface, screens and player journeys | `20_interface_and_player_journeys.md` | Pending | — |
 | 14 | Numbers, formulas, balance and worked examples | `21_formulas_and_balance.md` | Pending | — |
 | 15 | Assemble and verify the Bible | `22_master_game_design_bible.md`, `23_stage_2_completion_report.md` | Pending | — |
@@ -2944,3 +2944,716 @@ The baseline itself contains 81 pre-existing porcelain entries from earlier prom
 **Limitations.** No event fired, no objective progressed, no standing computed, no reward granted, no privacy suppression executed, no race resolved and no screen rendered. The validator proves internal consistency and reference integrity of documentation; it does not prove that any described behaviour works, that any control is enforced, that any cost fits a free tier, or that this pass was independently reviewed.
 
 **Verdict.** **PARTIAL — Prompt 11C complete at the specification/documentation level.** Implementation readiness for the B-11 workflow layer: **CONDITIONALLY READY** — a developer can build against §5–§22 and §31 today, provided the eight §29 owner decisions and the eleven `WEG-` gaps are dispositioned and the §16.6 prototype defect is closed in the production design. **Prompt 12 — fair play, player protection, privacy and administration — is the next roadmap prompt; it has not started and is not authorized to start by this entry (D-002). Prompt 14 calibration has not started. Prompt 11's parent closes only when the owner accepts this PARTIAL verdict.**
+
+---
+
+## 73. Prompt 12A — Fair play, privacy, moderation and administration: research, evidence, requirements and design foundations (2026-11-06)
+
+**Scope.** Research, evidence, requirements and design foundations for Bible part **B-12** across eight interconnected systems: fair play and anti-cheat, multi-account abuse, collusion and coordinated manipulation, privacy and information protection, player reporting and moderation, disciplinary enforcement and appeals, administrative authority and accountability, and security governance and auditability. This is an **A-phase pass**: research and foundations, not a rulebook. It allocated **no** global `REQ-`, wrote **no** B-12 rule, set **no** penalty or duration, finalised **no** permission set, designed **no** workflow or schema, ran **no** production security test, calibrated **no** number, and began no later prompt.
+
+**Authoritative inspection first.** Before any external research the pass read the authority hierarchy, the D-014 autonomy policy, both decision registers, the unresolved-decision register, the requirement register, the Stage-2 prompt roadmap, the Bible outline, the Stage-1 handoff, Report 08's four registers, and every subsystem specification the eight systems touch, plus the Supabase feasibility migrations and grants. §3 of the report records the result as a 16-row table classifying each existing control as **approved design requirement / documented-not-implemented / implemented in a prototype / executed and verified / unverified or blocked**. No control fell in the fourth class: **nothing in this repository has been executed and verified**. Three known issues were checked rather than assumed — the 11A validator's skipped check 29 (still a skip, recorded as debt `D-1`), the stale `validate_final.py` assertions (**12** failures, debt `D-2`, not weakened), and the prototype's client-writable `profiles.treasury` column (**still open**; the published 8/8 permission result does not cover it, and `revoke delete` is not an `update` restriction).
+
+**Canonical deliverables.** Three files in the established research path, using the 07A–11A naming convention:
+
+- [`12A_fair_play_privacy_moderation_administration_research.md`](research/12A_fair_play_privacy_moderation_administration_research.md) — the main report, 33 sections: the five-class baseline, the method and evidence hierarchy, benchmarking coverage, the fair-play foundations (clientless architecture, the 16-category source-of-truth table, the exploit taxonomy, the five evidence states, the value-and-standing versus conduct-sanction split, the six-way behavioural distinction and the eleven false-positive classes), the multi-account, collusion, privacy, information-classification, moderation, disciplinary, reporting, appeals, administrative-authority, separation-of-duties, emergency-authority, auditability, dependency, threat, failure, requirements and decision sections, the legal and operational dependency table, 32 recommendations, and the gate register with the executed-validation record.
+- [`12A_sources_and_benchmarks_register.md`](research/12A_sources_and_benchmarks_register.md) — **152** contiguous source rows in five registers, **40** benchmark mechanics, **18** comparator profiles, the retrieval-failure tables and the totals reconciliation.
+- [`12A_requirements_integration_and_risk_registers.md`](research/12A_requirements_integration_and_risk_registers.md) — **106** candidate requirements (`12A-CR-001`…`106`) in fifteen fields across all twenty brief categories, **30** twelve-field dependency rows over fifteen systems, **32** eighteen-field threat rows, **15** failure postures, **15** open questions, the 22-rejection quality review, the overlap audit against the fourteen pre-existing Prompt-12 `REQ-` rows and the seven corpus conflicts.
+
+**Decisions.** Fifteen ordinary design positions were taken autonomously under `D-014` and recorded as **D-163…D-177 / DD-211…DD-225**: the 12A/12B/12C split with the B-12 path reserved as `20_fair_play_and_player_protection.md`, the identifier policy, two-class enforcement, the clientless anti-cheat architecture, the five evidence states, the demotion of network evidence, the declared shared-context record, the manufactured-false-agency collusion test, the three-axis information classification, flow-and-outcome offence drafting, administrative authority by prohibition list, the tamper-evident spine with an actively-run verifier, per-category failure postures, the accepted critical residual and the prevention-heavy posture. The registers now hold **177** decisions and **225** design positions. Nine unresolved rows were opened — **UD-052…UD-060** — of which seven are owner-reserved and two are legal (`UD-055`, `UD-060`), taking the register to **60** rows at **28 Resolved / 3 Deferred / 29 Open**. `UD-040`–`UD-049`, `UD-050` and `UD-051` were **not** touched, and no owner-reserved decision was closed, reinterpreted or inferred.
+
+**Executed validation.**
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12A_validate_foundations.py` | `CHECKS: 35/35 passed; 0 failed`, inventory `sources=152 benchmark=40 comparators=18 candidates=106 dependencies=30 threats=32 postures=15 open-questions=15 recommendations=32 categories=11 · D=177 DD=225 UD=60 REQ max=763` | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `POSITIVE FIXTURES: 10/10 accepted`, `NEGATIVE FIXTURES: 15/15 rejected for the expected reason` | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --verbose` | 35 per-check lines, each reporting a measured count rather than a heading | 0 |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` (3,527 links found, 3,145 checked locally) — run standalone and again inside check `12A-34` | 0 |
+| `python docs/qa_backups/09_validate.py` | `370/370 checks passed — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `Checks run: 943`, all passed | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `[PASS] All 34 semantic checks passed with no review findings` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | `PASS: all B-10 structure, disposition, formula, register and boundary checks`; 73/73 negative fixtures rejected | 0 |
+| `python docs/qa_backups/11B_validate_b11.py`; `11C_validate_b11_workflows.py` | both report `RESULT: PASS` at the documentation level | 0 each |
+| the ten `verify_*` scripts (alliance ×2, city, diplomacy ×2, economy, market ×2, politics, warfare workflows) | all pass; politics `879/879`, warfare workflows `49/49` | 0 each |
+| `python docs/qa_backups/11A_validate_research.py` | `CHECKS: 30 EXECUTED: 30 FAILED: 1` — check 29 still asserts its research-era `REQ max 703`; pre-existing debt `D-1`, not modified | 1 |
+| `python docs/qa_backups/validate_final.py` | **10** failures, all frontier expectations that predate Prompt 12 (`11B` as next prompt, `REQ-001..703`, `DD-001..199`, `UD-001..049` twice, the acceptance-record and 27/4/18 UD counts, `UD-024`'s deferral and the 55/630/17/1 requirement counts). Recorded as debt `D-2`; none was weakened | 1 |
+
+**Acceptance gate result.** Twenty-two gates **P12A-01…P12A-22**, each with the eight fields the brief requires, close at **15 PASS · 7 PARTIAL · 0 FAIL · 0 BLOCKED · 0 NOT RUN · 0 NOT APPLICABLE**. The seven `PARTIAL` rows are the honest ceiling for an A-phase pass: benchmarking completeness (nine unread primaries), moderation and discipline (two irreconcilable sanction ladders the pass has no authority to settle), reporting and evidence plus auditability (the audit spine does not exist and the prototype table is unprotected), appeals (no operator publishes an overturn rate and `UD-059` is open), requirement closure (candidates only; 20 rows depend on an owner or legal decision), and independent reviewability (project-wide suite debt `D-1` and `D-2`).
+
+**Files changed.** Created: the three deliverables above, [`docs/qa_backups/12A_validate_foundations.py`](../qa_backups/12A_validate_foundations.py) and [`docs/qa_backups/12A_sync_docs.py`](../qa_backups/12A_sync_docs.py) (the one-shot live-status synchroniser, in the shape `11C_sync_docs.py` established — it rewrote 63 current-status claims). Updated: `docs/DECISIONS.md`, `docs/stage-2/04_approved_and_provisional_decisions.md`, `docs/stage-2/05_unresolved_design_decisions.md`, `docs/stage-2/03_requirements_traceability.md` (synchronisation note only), `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md`, `docs/stage-2/01_stage_2_prompt_roadmap.md`, `docs/stage-2/02_master_game_design_bible_outline.md`, this log (the §73 record plus its live-status header), the DD register's decision-count lead-in and the B-12 outline row. Six checkers had a hard-coded register frontier advanced to the value this pass created, with no expectation loosened and no check deleted: `docs/qa_backups/status_rules.py` (`CURRENT_SUBPROMPT` → `12A`, `11C`/`12A` completed, and the sub-prompt pattern extended to the `12` family — before it, `12A` was not a recognised sub-prompt token at all), `09_validate.py`, `test_decision_registers.py`, `test_next_action.py` (row 12 stops being a bare `Pending` row, and the 11C-as-live fixture became a stale-claim case with `12B` as the live case), `10B_validate_warfare.py` and `09B_validate_alliance_semantic.py` (C17 registers to D-177 / DD-225 / UD-060 at 38 Confirmed). `validate_final.py`'s ten pre-Prompt-12 assertions (`D-2`), 11A's check 29 (`D-1`) and the two broken Stage-1 sweep tools (`D-10`) were recorded, not repaired. No gameplay specification, prototype file or approved register row was modified and no file was deleted.
+
+**Git.** No Git operation was performed by this entry: nothing was staged, committed, pushed, branched, reverted, reset or cleaned, and no file was removed.
+
+**Limitations.** This is a documentation pass. No cheat detection, privacy enforcement, RLS behaviour, moderation tooling, authentication, appeal execution, audit-log tamper resistance or playability behaviour was tested, because none is implemented. The validator grades the research record; it cannot prove that a cited page still says what the row records, that a threat band is correct, or that any future control works. Nine sources were unreadable and are labelled as such; nineteen rows carry a disclosed non-URL reference. No number in this pass was measured.
+
+**Verdict.** **PARTIAL — Prompt 12A complete at the research and design-foundations level.** B-12's foundations are established, traceable and internally validated; the specification itself is not written. **Prompt 12B — B-12 rulebook and formula register — is the next sub-prompt; it has not started and is not authorized to start by this entry (D-002).** `UD-052`…`UD-060` and `UD-017`, `UD-040`–`UD-051` remain Open or Deferred and the nine new rows await decisions, and Prompt 14 calibration has not started.
+
+
+**CodeRabbit review remediation (2026-11-06).** Nine review findings were checked against the current files before any edit. All nine were still valid and were corrected in place; none required a specification or register value to change. (1) The `AI_CONTEXT.md` unresolved-decision index row now covers `UD-001…UD-060` at **28 Resolved / 3 Deferred / 29 Open** and states §6's 32-row non-resolved split, instead of the pre-12A 27/4/18 text. (2) The synchroniser's rule list gained the two residual claim shapes, and `PROJECT_PROGRESS.md`, `ROADMAP.md` and this log's live header now say **12A complete / 12B next**. (3) `demote_and_insert` is idempotent: a surface already carrying a 12A blockquote is returned unchanged, verified by a direct call test. (4) `check_33`'s negation exemption is scoped to the claim's own sentence, and fixture **12A-N16** proves that an earlier unrelated negation cannot excuse a later implementation claim. (5) `check_05` now keeps the full cited set for dangling references and builds a separate usage set after stripping each row's defining identifier; the register gained **§11**, a supporting-only index that states what each of the twenty previously unnamed rows supports and where. (6) `status_rules.py` sets `CURRENT_SUBPROMPT = "12B"` and `10B_validate_warfare.py` asserts the same value. (7) `test_next_action.py` and `test_decision_registers.py` assert 12B as next in progress rows 10 and 11. (8) The Bible outline's B-11 prompt cell and §5 summary record 11C and 12A complete with 12B next. (9) Every function in the two scripts created by this pass now carries a docstring; pre-existing test files were left untouched. Re-run after remediation: `12A_validate_foundations.py` **35/35, exit 0**; `--self-test` **10/10 positive and 19/19 negative, exit 0**; `09_validate.py` **370/370**; `test_next_action test_decision_registers` **39 tests OK**; `09A` **943 checks**; `09B` **34/34**; `10B` **1036 checks, 73/73 negative fixtures**; `11B` and `11C` PASS; all ten `verify_*` scripts exit 0; `validate_links.py` **0 unresolved**. `11A_validate_research.py` still exits 1 on its recorded `D-1` debt and `validate_final.py` still reports the same **10** pre-Prompt-12 failures (`D-2`); neither was weakened. No Git operation was performed.
+
+**Second CodeRabbit review remediation (2026-11-07).** Eight further findings were checked against the current files; all eight were valid and were corrected in place. (1) The "No fair-play rule … exists" sentence in the 12A status blocks is narrowed to "no **new B-12** rule was written by 12A" and now states that **B-03 already specifies the inherited enforcement rules** that B-12 must adopt rather than re-decide; the same correction was applied to `AI_CONTEXT.md`, `AI_HANDOFF.md`, `PROJECT_PROGRESS.md` (blockquote and row 12), `ROADMAP.md` and the Stage 2 handoff. (2) `check_19` returns a clear failure for an empty DD register and reports the captured declaration value instead of a tuple repr. (3) `run_fixtures` now adds every unexpected result to the problems collection with its fixture id, check id and expected/actual outcome, while keeping the diagnostic print. (4) `check_03` reads the Type token only from the Type cell (`c[3]`), so a token elsewhere cannot rescue an empty cell. (5) `check_33` now scopes negation to the claim's own sentence *or table cell*, and "only" no longer excuses a claim; fixtures **12A-N17** (staging-only claim) and **12A-N18** (negation in another cell) cover both cases. (6) `_gates` reads only the Result cell (column 6); fixture **12A-N19** leaves an illegal Result while placing a legal token in another cell and now rejects it. (7) `check_23`, `check_24` and `check_25` verify row lengths and matching threat halves before indexing, returning FAIL rather than raising; verified directly with a truncated integration row, a missing risk-control row and a short control row. (8) The roadmap status paragraph and table now record Prompt 12A complete and 12B next throughout, the progress-log Prompt 12 row moves from `19_fair_play_and_player_protection.md` / Pending to the reserved `20_` path with 12A complete, and the `09_validate.py` and `validate_final.py` pending-count expectations were advanced from 4 to 3 because row 12 is no longer Pending. Re-run after this round: `12A_validate_foundations.py` **35/35, exit 0**; `--self-test` **10/10 positive and 19/19 negative, exit 0**; `09_validate.py` **370/370**; `test_next_action test_decision_registers` **39 tests OK**; `09A` **943 checks**; `09B` **34/34**; `10B` **1036 checks, 73/73 negative fixtures**; `11B` and `11C` PASS; all ten `verify_*` scripts exit 0; `validate_links.py` **0 unresolved**; `11A` and `validate_final` retain only their recorded `D-1` and `D-2` failures (10, unchanged). No Git operation was performed. A planning collision remains visible rather than silently renumbered: B-12 reserves `20_fair_play_and_player_protection.md` while Prompt 13's guidance path is still `20_interface_and_player_journeys.md`; resolving that is a planning decision outside this remediation.
+
+**Third CodeRabbit review remediation (2026-11-07).** Nine further findings were checked against the current files; all nine were valid and were corrected in place. (1) `check_24` now requires the full 5.4 layout before reading a residual, so a row truncated before the residual column fails as short instead of having its outstanding-decision cell read as the residual; the short-row report is unchanged. (2) `check_24` now requires explicit `L1`–`L5` and `I1`–`I5` tokens in the assessment cells and a band word with a score on the 1–25 scale, while preserving the register's deliberate label/score overrides; four negative fixtures (`12A-N20`–`12A-N23`) cover a missing likelihood token, a band without a score, a score outside the scale and the truncated residual column. (3) `check_10`'s `12A-N04` fixture now removes only the verification-approach cell, keeping the statement and rationale intact, so the check fails for the intended reason. (4) `run_fixtures` now compares each negative fixture's failure detail with a declared expected reason, so a check that rejects for an unrelated cause is reported as a wrong-reason failure; `12A-N19` declares `illegal status`, isolating its gate-Result detection. (5) Progress-log row 10 now records Prompt 11 complete and Prompt 12B next; row 11 records 11C complete, keeps the pending owner acceptance of its PARTIAL verdict, and states that 12B authorization is pending. (6) `AI_CONTEXT.md`'s official stage plan now marks 10C complete, 11 complete, 12A complete and 12B next, retaining the separate authorization requirement. (7) `validate_final.py`'s pre-Prompt-12 frontiers were advanced to the current registers — `REQ-001..763`, `DD-001..225`, `UD-001..060`, the **28 Resolved / 3 Deferred / 29 Open** reconciliation, `UD-024` Resolved, the §6 inventory, `stage_2_next_prompt` `12` and the 55/688/19/1/0 requirement counts — with the row-10 assertion naming 12B and a new row-12 assertion; debt `D-2` is closed and no check was weakened or deleted. (8) The research report's fixture inventory now lists `12A-N16`–`12A-N23`, states 23 negative and 33 total fixtures, and keeps the ten clean fixtures accounted for. (9) `09_validate.py` and `validate_final.py` gained a row-level `log_status("12")` check for 12A complete / 12B next, with the pending-count check unchanged. Regression: the 12A validator passes 35/35 with 10/10 positive and 23/23 negative fixtures; `--self-test` passes; `09_validate.py` 371/371; the 39 unit tests OK; `09A` 943 checks; `09B` 34/34; `10B` 1,036 checks and 73/73 fixtures; `11B` and `11C` PASS; all ten `verify_*` scripts exit 0; the link gate reports 0 unresolved; `validate_final.py` now passes; and `11A_validate_research.py` still exits 1 on its pre-existing `REQ-703` assertion (`D-1`), unchanged by this remediation.
+
+**Fourth CodeRabbit review remediation (2026-11-07).** Five findings were checked against the current files; all five were valid and were corrected in place. (1) The three machine-readable STATUS blocks in `AI_CONTEXT.md`, `AI_HANDOFF.md` and `PROJECT_PROGRESS.md` now record `stage_2_next_prompt: 12B` rather than the bare `12`, so the declared value names the live sub-prompt instead of only its parent. (2) Every reader of that value was advanced with it: `09_validate.py`, `validate_final.py`, `09A_validate_alliance.py`, `09B_validate_alliance_semantic.py` (C18) and the 12A continuity check now accept `12B`; `12A_validate_foundations.py` already parsed the numeric prefix and continues to pass. (3) `test_next_action.py` expects `12B` in the real STATUS set and passes the three declarations through a new `continuity_problems()` helper that combines the stale-next-action and completed-sub-prompt detectors; `test_decision_registers.py` expects `12B` as well. (4) The Stage 2 handoff's closing 10C sentence no longer says "Prompt 11 has not started"; the Stage 2-not-complete, no-implementation, no-runtime-test and warfare-calibration status is unchanged. (5) The progress log's current-status header now records 11C and 12A complete and **Prompt 12B next and not started**, replacing the stale "11C is next" clause while leaving the surrounding status text intact. Regression: the 12A validator passes 35/35 with 10/10 positive and 23/23 negative fixtures; `09_validate.py` 371/371; the 39 unit tests OK; `09A` 943 checks; `09B` 34/34; `10B` 1,036 checks and 73/73 fixtures; `11B` and `11C` PASS; all ten `verify_*` scripts exit 0; the link gate reports 0 unresolved; `validate_final.py` passes; and `11A_validate_research.py` still exits 1 on its pre-existing `D-1` assertion, unchanged by this remediation. The affected legacy fixture tests were also checked: `test_09A_alliance_validator.py` passes all 43 tests, and the 09B C18 fixture (`test_59_next_prompt_changed_fails`) passes; the full 267-test 09B fixture suite was not run to completion because it re-executes the whole validator per test.
+
+---
+
+## 74. Prompt 12A-C1 — documentary reconciliation of counts, evidence access, source taxonomy and decision references (2026-11-07)
+
+**Scope.** A targeted corrective pass on Prompt 12A after an independent count audit. It rewrites no 12A deliverable from scratch, changes no approved mechanic, resolves no owner-reserved or legal decision, allocates no global `REQ-`, writes no B-12 rule, penalty, duration or permission, creates no Prompt 12B or 12C deliverable, and implements no security control. Documentation, validator and fixture work only.
+
+**Corrections applied, each verified against the current rows.**
+
+1. **Benchmark and comparator counts.** The canonical set is **40 `12A-BM` benchmark mechanisms** and **18 `12A-CMP` comparator profiles**. Report §5 now states `12A-BM-001`…`12A-BM-040` and `12A-CMP-01`…`12A-CMP-18`; earlier prose that said 32 and 12 is gone. The register's §10 totals table declares the same 40 and 18.
+2. **Confidence and access are separated and recomputed from the rows.** Across **153** registered evidence rows the leading-token confidence is `High` **65**, `Medium` **71**, `Low` **14**, `Unverified` **3**. Access is a different measurement: **140** rows read in full, **9** read partially or through extracts, **3** inaccessible or unreadable and **1** internal research finding, totalling 153. Nine rows are substantive retrieval failures, four carry a snippet-only flag and one is an absence finding; **13** rows were not read in full. The old “six rows” and “45 of 120 read rows” figures are removed; no requirement rests on a retrieval-failed row alone.
+3. **Source taxonomy.** `12A-RS-152` keeps its identifier and its absence conclusion but is now typed `RESEARCH FINDING (absence of evidence)`, classed internally as both `INTERNAL RESEARCH FINDING` and `ABSENCE-OF-EVIDENCE FINDING`, and explicitly denied an external URL or external-publication status. The type vocabulary now includes `RESEARCH FINDING` and drops the unused `RETRIEVAL-FAILED` token.
+4. **AGCM source registered as `12A-RS-153`, preserving `12A-RS-152`.** The row records the official AGCM press release of **8 October 2026** (retrieved **2026-11-07**), AGCM's lead role with the Norwegian and Danish consumer authorities, the action against Activision Blizzard UK and other Microsoft group companies, the “widespread infringement” question under Article 3(3) of Regulation (EU) 2017/2394, and the topics — virtual currencies, multiple currencies and bundles, dark patterns, parental controls and assistance when accounts are blocked. Its limitation states that this is an **ongoing coordinated action with no infringement finding and no outcome**, that relevance is conditional on product, monetisation model, population and jurisdiction, and that it creates **no automatic legal obligation**. Owner and legal-counsel authority remains `UD-017`.
+5. **Decision references corrected.** `D-176` / `DD-224` are the **accepted critical residual**; `D-177` / `DD-225` are the **prevention-heavy posture**. Gate `P12A-05` and the §33 boundary paragraph now cite `D-176` / `DD-224` for the residual and `D-177` / `DD-225` only for the posture. The earlier `D-165` network-evidence reference was also corrected to `D-168` / `DD-216`. Multi-account wording now uses the canonical sentence “Identity-layer multi-accounting cannot be reliably detected under the current fixed constraints”; absolute words such as “undetectable” are removed, and §8.4, §21 and the gate row distinguish **proving common identity** from using behavioural, transactional and outcome evidence against coordinated abuse.
+6. **Validator hardened without weakening any check.** `12A_validate_foundations.py` gains checks `12A-36`–`12A-45` for cross-document benchmark and comparator counts, confidence, access completeness, taxonomy, `RS-152` classification, `RS-153` registration and citation, `D-176`/`DD-224` references, absolute-wording prohibition and §1.5 access-date consistency. `check_08` now requires all nine retrieval-failure rows to carry a disclosure instead of counting any row that merely mentions “blocked”. Ten new negative fixtures `12A-N24`–`12A-N33` each corrupt one of those properties and declare the expected failure reason; `run_fixtures` rejects a fixture that fails for an unrelated cause. All prior checks and fixtures are retained.
+7. **The 22 gates were reassessed, not upgraded.** The tally stays **15 PASS / 7 PARTIAL / 0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. `P12A-03` remains PARTIAL because nine rows are substantive retrieval failures, no operator publishes an overturn rate and the AGCM action has no outcome; `P12A-08` remains PARTIAL on the unresolved sanction-ladder conflict; `P12A-09`, `P12A-10`, `P12A-12`, `P12A-16` and `P12A-22` remain PARTIAL with their owner, legal or implementation evidence still absent. No gate was raised because a validator passes.
+8. **Project documentation synchronized.** `AI_CONTEXT.md`, `AI_HANDOFF.md`, `PROJECT_PROGRESS.md`, `ROADMAP.md`, `00_stage_2_handoff.md`, `01_stage_2_prompt_roadmap.md`, `02_master_game_design_bible_outline.md`, the three 12A deliverables, `12A_sync_docs.py` and the 09B validator's status line now record **153** rows, **44/44** checks, **10/10** positive and **32/32** negative fixtures, and the 12A-C1 reconciliation. Prompt 12B remains the next prompt, has not started, and needs separate owner authorization once this reconciled foundation is accepted.
+
+**Outstanding obligations, deliberately not fixed here.** The feasibility prototype still grants `authenticated` a table-wide `UPDATE` on `feasibility.profiles` including `treasury`, with only a row-scoped policy. The designed column-level correction exists only in abandoned bytecode: there is no `0005` migration, no `tests/sql/` directory and no SQL permission test on disk. The prototype's `audit` table has no protective trigger and no delete revocation outside the player role; no tamper-evident implementation and no executed verification job exists. These are Stage 5 build obligations tracked by `12A-RK-007` and `12A-RK-026`; they are not claimed as fixed.
+
+**Validation actually run after the corrections (2026-11-07).** `12A_validate_foundations.py`: **CHECKS 45/45 passed**, inventory `sources=153 benchmark=40 comparators=18`, exit **0**. `--self-test`: **10/10 positive**, **33/33 negative rejected for the expected reason**, exit **0**. `09_validate.py`: **371/371**, exit **0**. `validate_final.py`: **ALL CHECKS PASSED**, exit **0**. `validate_links.py`: **Unresolved: 0** (3,535 links found, 3,153 checked locally, 382 external skipped, 29 anchors checked), exit **0**. Unit tests: **39 tests OK**, exit **0**. `09A`: **943 checks**, exit **0**. `09B`: **34/34**, exit **0**. `10B`: **1,036 checks and 73/73 fixtures**, exit **0**. `11B` and `11C`: PASS, exit **0** each. All ten `verify_*` scripts: exit **0**. `11A_validate_research.py`: exit **1** on its pre-existing `D-1` assertion, which expects a maximum of **REQ-703** and observes a maximum textual reference of **REQ-764**; that reference is reserved for Prompt 12B and is not allocated, so the canonical requirement frontier remains **REQ-763**. This pass did not alter or weaken the legacy check. The modified Python files compile. The 12A-C1-M1 micro-correction added `check_45` and fixture `12A-N33` for §1.5 access-date consistency and re-ran the suites with the results above.
+
+**Verdict.** **Documentary reconciliation complete; Prompt 12A remains complete at the research and design-foundations level.** This entry is not an acceptance, not an independent review and not evidence of implementation readiness; no runtime control, database permission, moderation workflow, appeal or audit verification was tested, because none is implemented. **Prompt 12B is still the next roadmap prompt, has not started, and requires separate owner authorization after the reconciled foundation is accepted.**
+
+## 75. Prompt 12B — B-12 fair play, privacy, moderation and administration: complete system specifications (2026-11-07)
+
+**Scope.** Prompt 12B converts the reconciled 12A research foundation into authoritative B-12 specifications. It writes rules, requirement records, formulas and acceptance gates; it writes no migration, grant, RLS policy, audit trigger, application code, screen, workflow or gameplay change. It resolves no owner-reserved or legal decision and does not authorize Prompt 12C.
+
+**Deliverables created (four documents plus one validator).**
+
+| Artefact | Content |
+|---|---|
+| [B-12 rulebook](../stage-2/20_fair_play_and_player_protection.md) | 344 normative rules across `FP` 35, `EVD` 42, `MA` 12, `CO` 10, `EX` 12, `PRV` 25, `MOD` 60, `ADM` 30, `COR` 18, `SEC` 40, `INT` 20, `FR` 15 and `GOV` 25; 16 violation classes `V-01`…`V-16` with 11 elements each; 9 privacy classes, 8 actor classes and 6 actions; 8 administrative roles with 11 fields; 15 failure postures; 20 cross-system contracts; Annex E rule inventory |
+| [B-12 formula and parameter register](../stage-2/20_fair_play_and_player_protection_formula_register.md) | 16 formulas `F-FP-001`…`F-FP-016`, 20 mandatory fields each; six value classes; 12 parameters `FP-P01`…`FP-P12`, none calibrated; four non-claims |
+| [B-12 requirement register](../stage-2/20_fair_play_and_player_protection_requirements.md) | `REQ-764`…`REQ-869` allocated one-to-one from `12A-CR-001`…`12A-CR-106`; 86 Provisional / 20 Open / 0 Approved / 0 Deferred; 106 rows in two halves covering all required fields |
+| [B-12 acceptance framework](../stage-2/20_fair_play_and_player_protection_acceptance.md) | 26 gates at 23 PASS / 3 PARTIAL / 0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE; ten-area coverage; requirement, cross-system and formula coverage; later-stage evidence; 12C handoff; validator specification |
+| [`12B_validate_b12.py`](../qa_backups/12B_validate_b12.py) | 62 document checks plus 12 positive and 22 negative fixtures; parses the four documents and the decisions, DD, UD, ledger and continuity registers |
+
+**Decisions and statuses.** Ten Category B decisions **D-178…D-187** are recorded and mirrored as **DD-226…DD-235**: one rule family; the sixteen-class taxonomy; the evidence-sufficiency matrix; the six-tier ladder; the eight-role catalogue; the privacy matrix; six correction transaction types with confirmed-only repetition; the one-appeal architecture; the `REQ-764`–`REQ-869` allocation; and the security boundary with Supabase/audit obligations and the known prototype defects. DD tallies become **130 Approved / 51 Provisional / 48 Confirmed / 2 Binding inherited / 2 Candidate / 1 Superseded / 1 Deferred = 235**; project decisions become **187**. Requirement counts become **55 Approved / 774 Provisional / 39 Open / 1 Deferred / 0 Proposed = 869**. `UD-017`, `UD-052`…`UD-060` and `UD-040`–`UD-051` remain Open; no owner or legal decision was closed.
+
+**Security and implementation boundary, stated not fixed.** The prototype still grants `authenticated` a table-wide `UPDATE` on `feasibility.profiles` including `treasury`; there is no `0005` profile-permission migration, no `tests/sql/` directory, no protective `audit` trigger and no executed verification job. B-12 specifies the obligations and discloses the defects; it does not correct them, and no document claims the grant is fixed, that tamper-evident protection exists, or that any control is running.
+
+### 75.1 Change manifest
+
+| File | Change |
+|---|---|
+| `docs/stage-2/20_fair_play_and_player_protection.md` | **Created** — B-12 rulebook v1.0 |
+| `docs/stage-2/20_fair_play_and_player_protection_formula_register.md` | **Created** — 16 formulas and 12 parameters |
+| `docs/stage-2/20_fair_play_and_player_protection_requirements.md` | **Created** — 106 requirement records |
+| `docs/stage-2/20_fair_play_and_player_protection_acceptance.md` | **Created** — 26-gate acceptance framework |
+| `docs/qa_backups/12B_validate_b12.py` | **Created** — 62 checks, 34 fixtures |
+| `docs/DECISIONS.md` | Added D-178…D-187; updated the last-updated header |
+| `docs/stage-2/04_approved_and_provisional_decisions.md` | Added DD-226…DD-235; tallies 235; version 3.19 |
+| `docs/stage-2/03_requirements_traceability.md` | Added `REQ-764`–`REQ-869` (106 rows); counts 869; version 1.37 |
+| `docs/stage-2/05_unresolved_design_decisions.md` | Frontier note only; every row stays Open; version 1.31 |
+| `docs/stage-2/02_master_game_design_bible_outline.md` | B-12 row now cites the four documents and the B-12 status |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row and split record updated; 12C next |
+| `docs/stage-2/00_stage_2_handoff.md` | 12B status block added; 12C next and not authorized |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §75 and the top status table |
+| `docs/AI_CONTEXT.md` | 12B status, four inventory rows, frontiers and counts |
+| `docs/AI_HANDOFF.md` | 12B status, decision list, 187 entries |
+| `docs/PROJECT_PROGRESS.md` | 12B status block and Prompt 12 row |
+| `docs/ROADMAP.md` | 12B status block, stage-2 row and last-updated record |
+| `docs/qa_backups/09_validate.py` | Frontier refresh to REQ-869 / DD-235 / 187 decisions / next 12C; counts 774/39 |
+| `docs/qa_backups/validate_final.py` | Same frontier refresh; counts 774/39 |
+| `docs/qa_backups/test_next_action.py` | Live sub-prompt 12C; row 10/11/12 expectations |
+| `docs/qa_backups/test_decision_registers.py` | `stage_2_next_prompt: 12C`; row expectations |
+| `docs/qa_backups/status_rules.py` | `12B` added to completed sub-prompts |
+| `docs/qa_backups/09A_validate_alliance.py` | Requirement rows 869; statuses 774/39; prompt regex 12C |
+| `docs/qa_backups/09B_validate_alliance_semantic.py` | Frontiers 869 / D-187 / DD-235; tallies 48/235; C25 scoped to Alliance rows |
+| `docs/qa_backups/12A_validate_foundations.py` | Frontier checks accept the later D-187 / DD-235 / REQ-869 state without weakening the 12A content checks |
+
+### 75.2 Validation actually run
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 62/62 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `12/12` positive and `22/22` negative fixtures accepted or rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py` | `45/45` checks after the frontier refresh; `10/10` positive and `33/33` negative fixtures | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 checks passed — ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/validate_final.py` | `VALIDATION: ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `Checks run: 943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `[PASS] All 34 semantic checks passed` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | `PASS`; 73/73 negative fixtures; CF-01/CF-02 clean | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` | `RESULT: PASS` | 0 |
+| `python docs/qa_backups/11C_validate_b11_workflows.py` | `RESULT: PASS` | 0 |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` (3,388 local links, 382 external skipped, 29 anchors) | 0 |
+| `verify_city/economy/market(+workflows)/politics/diplomacy(+workflows)/warfare/alliance(+workflows)` scripts | all pass: politics `879/879`, warfare workflows `49/49`, diplomacy `17 groups`, market `07C VALIDATION: ALL CHECKS PASSED`, others `ALL CHECKS PASSED` | 0 each |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 still expects the pre-12A `REQ-703` frontier; pre-existing debt `D-1`, not fixed or hidden here | 1 |
+
+Every `PASS` above is documentary. No runtime control, database permission, moderation workflow, appeal, audit protection or legal obligation was tested, because none is implemented.
+
+**Outstanding obligations, deliberately not fixed here.** The prototype privilege and audit defects named above; every Open requirement and UD; Prompt 12C itself, which is not started and not authorized; and legacy validator debt `D-1` (11A check 29) and `D-10` (the broken Stage-1 sweep tools). None is B-12 evidence and none is disguised as fixed.
+
+**Verdict.** **Prompt 12B is complete at the specification/documentation level only.** It supplies ten-area rules, formulas, requirements, decisions and acceptance gates; it does not implement, verify, deploy or release a control, does not resolve an owner or legal decision, and does not authorize Prompt 12C. **Specified ≠ implemented ≠ independently verified ≠ operating ≠ compliant.**
+
+## 76. Prompt 12B-C1 — formula corrections, integration traceability, prompt archival and closeout (2026-11-07)
+
+**Scope.** A targeted corrective pass on the completed Prompt 12B package. It corrects identified formula, parameter and integration-mapping defects, archives the original Prompt 12B instruction, records a policy-reading attestation, extends the validator and synchronizes the affected documents. It rewrites no completed specification unnecessarily, allocates no new requirement, closes no owner-reserved or legal decision, and implements no migration, grant, RLS policy, audit trigger or gameplay change. Prompt 12C remains not started and not authorized.
+
+**Autonomous decision policy reading attestation.** Canonical path: `docs/AUTONOMOUS_DECISION_POLICY.md` (absolute `C:\Users\suren\Downloads\Project X\docs\AUTONOMOUS_DECISION_POLICY.md`). The complete document (**version 1.0**, created 2026-10-23, D-014; **121 lines**) was read on **2026-11-07 at 14:46 IST** during Prompt 12B-C1. **Line-count method (reproducible):** `wc -l docs/AUTONOMOUS_DECISION_POLICY.md` = 121, independently confirmed by Python `len(text.splitlines())` = 121; the file is CRLF-terminated and ends with a trailing newline, so a reader that renders a phantom final empty line may display 122 — the authoritative count is 121. The 12B-C1 attestation originally stated 122; **12B-C1-R1 corrected it to 121** after re-reading the complete file on **2026-11-07 at 18:51 IST** and verifying the policy is unchanged (version 1.0; SHA-256 `697dd52d895ff897c498c1acb987535178da42e96bb3458297e762addb8ad479`). Confirmation: the full document was read; D-014 was followed throughout this pass; no Category A fixed constraint was changed; no owner-reserved or legal decision was closed; and the policy file itself was not modified. **Historical distinction:** the policy was also read during the earlier Prompt 12B session before specification work, but no timestamped attestation was recorded then, so that historical reading is asserted from the session record and is not independently timestamped. This attestation records the verifiable C1 reading and the R1 re-verification only and does not backdate compliance. If the policy is legitimately edited later, this version-specific attestation must be superseded by a new reading record rather than silently re-counted.
+
+**Corrections applied.**
+
+1. **F-FP-002 direction.** The 1.0 expression `min(max(V_law − V_obs, 0), B_i)` contradicted its own worked example (`V_law=100`, `V_obs=140`, `B_i=40` → claimed 40, actual 0). The intended semantics is removal of the observed excess, so the expression is corrected to `C = min(max(V_obs − V_law, 0), B_i)`, the boundary statement to `V_obs ≤ V_law → C = 0`, and five boundary examples added. A shortfall is a loss handled by `F-FP-015`, not by this removal formula.
+2. **F-FP-014 sign convention.** The ambiguous `O + L − C − R + P − X = Z` is replaced by the explicit signed-delta identity `Z = O + L + C + R + P + X + A`, where every term is the sum of signed ledger deltas of its `COR-001` type and `A` is `ADMIN_ADJUSTMENT`. Reversal, partial-reversal, duplicate-reversal, missing-original and failed-transaction behaviour is specified, with eight worked examples. `COR-003` is aligned to the same convention.
+3. **Repeat-violation double count.** `F-FP-001` no longer contains a repetition term; `F-FP-011` is documented as the sole bounded repetition adjustment. Examples recomputed (`SEV=5`; with one prior `SEV_R=6`). `MOD-039` states repetition is applied once and never increases economic correction.
+4. **Parameter completeness.** `w` (`F-FP-008`) and `f` (`F-FP-009`) are independently configurable and were unregistered; they are added as `FP-P13` and `FP-P14`, both Provisional, none approved. A formula-to-parameter mapping (§3.1) covers all 16 formulas and separates configurable parameters from derived inputs and structural constants. Parameter count is now 14.
+5. **Integration mapping.** The acceptance §5 table mis-assigned several B-systems. It is corrected to the canonical rulebook §16 associations (B-03→`INT-001`, B-04→`INT-003`, B-05→`INT-004`, B-06→`INT-005`, B-07→`INT-006`, B-08→`INT-007`, B-09→`INT-008`, B-10→`INT-009`, B-11 events→`INT-010`, B-11 rankings→`INT-011`, B-02 turn→`INT-013`, B-02 spine→`INT-014`). The ten-area matrix contract references are corrected to match.
+6. **Seven-field dependency traceability.** Rulebook §16.1 now states all seven Prompt 12B §13 fields for each of the 20 contracts; acceptance §5.2 adds the consolidated requirement/decision/status linkage. No new contract or B-system identifier was invented.
+7. **Prompt archival.** The complete original Prompt 12B instruction (36,010 bytes) is archived verbatim at `docs/prompts/prompt_12B_complete_system_specifications.md`, indexed in `docs/prompts/INDEX.md` with its SHA-256, and referenced from the Stage 2 prompt roadmap. No duplicate prompt file was created.
+8. **Acceptance reassessment.** Acceptance §2.1 records the evidence-based reassessment. The tally remains 23 PASS / 3 PARTIAL; `P12B-14`, `P12B-16` and `P12B-23` stay PARTIAL because their missing evidence is implementation or external ruling.
+
+### 76.1 Change manifest (12B-C1)
+
+| File | Change |
+|---|---|
+| `docs/stage-2/20_fair_play_and_player_protection_formula_register.md` | F-FP-001/002/008/009/011/014 corrected; FP-P13/P14 added; §3.1 mapping; counts updated |
+| `docs/stage-2/20_fair_play_and_player_protection.md` | COR-003 signed convention; MOD-039 repetition-once; §16.1 seven-field table |
+| `docs/stage-2/20_fair_play_and_player_protection_acceptance.md` | §2.1 reassessment; §3 contract refs; §5 canonical mapping and traceability; §6 counts |
+| `docs/prompts/prompt_12B_complete_system_specifications.md` | **Created** — verbatim original instruction |
+| `docs/prompts/INDEX.md` | **Created** — prompt archive index |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Archive reference added |
+| `docs/qa_backups/12B_validate_b12.py` | Checks 63–75 and fixtures P13–P25 / N23–N30 added; gate parsing scoped; parameter count 14 |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §76 |
+
+**Manifest completeness correction (12B-C1-R1).** The original §76.1 table above omitted five continuity files that Prompt 12B-C1 actually modified (each received a 12B-C1 status block and updated parameter/validator counts). They are recorded here rather than by rewriting the historical table: `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, and `docs/stage-2/00_stage_2_handoff.md`. The R1 follow-up corrections themselves are manifested in §77.1.
+
+### 76.2 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 75/75 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `25/25` positive, `30/30` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45` checks; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 checks passed — ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/validate_final.py` | `VALIDATION: ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `Checks run: 943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `[PASS] All 34 semantic checks passed` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | `PASS`; 73/73 negative fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` | `RESULT: PASS` | 0 |
+| `python docs/qa_backups/11C_validate_b11_workflows.py` | `RESULT: PASS` | 0 |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` (3,397 local, 382 external, 29 anchors; 84 files) | 0 |
+| ten `verify_*` number/workflow scripts | all `ALL CHECKS PASSED` / group PASS (politics 879/879, warfare 49/49) | 0 each |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, not altered | 1 |
+
+Every `PASS` is documentary. No runtime control, database permission, moderation workflow, appeal, audit protection or legal obligation was tested. The legacy 11A failure is preserved transparently and was not manipulated.
+
+**Outstanding obligations, unchanged.** The prototype `profiles` table-wide `UPDATE` including `treasury`, the missing `0005` migration, absent SQL permission tests, the unprotected `audit` table and the absent verification job remain unfixed and disclosed. `UD-017`, `UD-052`–`UD-060` and `UD-040`–`UD-051` remain Open. Legacy `D-1` (11A check 29) and `D-10` remain. Prompt 12C is not authorized.
+
+**Verdict.** **Prompt 12B-C1 corrective documentation work is complete at the specification level.** The identified mathematical and mapping defects are corrected and statically verified; no runtime control, security permission or legal obligation was implemented or tested. **Specified ≠ implemented ≠ independent audit ≠ operating.**
+
+## 77. Prompt 12B-C1-R1 — final documentation synchronization and validator closure (2026-11-07)
+
+**Scope.** A targeted closeout correction on Prompt 12B-C1. It synchronizes the remaining stale 12-parameter current-state references to the canonical 14-parameter register, corrects the policy-reading attestation's line count, completes the C1 change manifest, strengthens the 12B validator with cross-document and historical-protection checks, and archives the corrective prompts. It changes no approved formula, integration ID, requirement ID, decision or acceptance meaning; implements nothing; and does not authorize Prompt 12C.
+
+**Corrections applied.**
+
+1. **Acceptance parameter counts.** Gate `P12B-19` now cites `FP-P01`–`FP-P14`; §9.1 reports 14 parameters; the §11 acceptance statement reports 14 uncalibrated parameters. The gate's meaning and PASS status are unchanged.
+2. **AI_CONTEXT.** The B-12 formula-register inventory entry now reports 14 parameters `FP-P01`…`FP-P14`, naming `FP-P13` (report-cluster window) and `FP-P14` (action-class rate factor).
+3. **Attestation line count.** The §76 attestation's "122 lines" was incorrect. The live policy file is **121 lines** by `wc -l` and by Python `len(text.splitlines())` (CRLF, trailing newline; a renderer may show a phantom 122nd line). The attestation now states 121 with the reproducible method, the version (1.0) and SHA-256, and records the R1 complete re-read on **2026-11-07 at 18:51 IST**. The original C1 reading date (14:46 IST) is preserved; nothing is backdated. The policy file itself was not modified.
+4. **C1 manifest completeness.** A correction note under §76.1 records the five continuity files C1 actually changed but omitted (`AI_CONTEXT.md`, `AI_HANDOFF.md`, `PROJECT_PROGRESS.md`, `ROADMAP.md`, `00_stage_2_handoff.md`), without rewriting the historical table.
+5. **Validator.** Checks `12B-76`–`12B-81` added: canonical parameter set (E1), acceptance current-state synchronization (E2), AI_CONTEXT synchronization (E3), reproducible attestation line-count comparison (E4), manifest inclusion of `AI_CONTEXT.md` (E4), and historical §75 12-parameter record protection (E5). The stale-reference scan skips lines marked historical/reassessment; check `12B-81` positively requires the historical record to survive. Fixtures `12B-P26`–`12B-P31` and `12B-N31`–`12B-N38` added. No existing check or fixture was weakened.
+6. **Archival.** The operative Prompt 12B-C1 instruction and this Prompt 12B-C1-R1 instruction are archived verbatim under `docs/prompts/` and indexed with byte counts and SHA-256. The original Prompt 12B archive is unchanged.
+
+### 77.1 Change manifest (12B-C1-R1)
+
+| File | Change |
+|---|---|
+| `docs/stage-2/20_fair_play_and_player_protection_acceptance.md` | P12B-19 range, §9.1 count, §11 statement synchronized to 14 parameters |
+| `docs/AI_CONTEXT.md` | B-12 formula-register entry synchronized to 14 parameters / FP-P01…FP-P14 |
+| `docs/stage-2/06_stage_2_progress_log.md` | §76 attestation line count corrected; §76.1 completeness note; this §77 |
+| `docs/qa_backups/12B_validate_b12.py` | Checks 76–81; fixtures P26–P31 / N31–N38; historical-record protection |
+| `docs/prompts/INDEX.md` | C1 and R1 archive rows added |
+| `docs/prompts/prompt_12B-C1_formula_corrections_and_closeout.md` | **Created** — verbatim operative C1 instruction |
+| `docs/prompts/prompt_12B-C1-R1_final_documentation_synchronization.md` | **Created** — verbatim R1 instruction |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §77 |
+
+### 77.2 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 81/81 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `31/31` positive, `38/38` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | PASS; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. Every PASS is documentary; no runtime, database, security or production verification is claimed.
+
+**Outstanding obligations, unchanged.** Prototype `profiles` privilege and audit defects; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051`; the 20 Open requirements; legacy `D-1`/`D-10`; Prompt 12C not authorized. Acceptance remains 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`).
+
+**Verdict.** **Prompt 12B-C1-R1 is complete at the documentation/validator level.** Current-state parameter references are synchronized, the attestation is accurate and reproducible, the manifest is complete, and the validator detects the identified stale-reference defects while protecting historical records. No Prompt 12C work, production implementation, database security change or Git operation was performed.
+
+## 78. Prompt 12B-C1-R2 — validator completeness, adversarial mutation tests and final closeout (2026-11-07)
+
+**Scope.** A targeted validator-maintenance and documentation-closeout pass. It strengthens three checks that could pass on incomplete information, adds adversarial negative fixtures reproducing the audited bypasses, archives the R2 instruction, and synchronizes status. It rewrites no B-12 specification, changes no approved identifier, decision or acceptance meaning, implements nothing, and does not authorize Prompt 12C. The complete `AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0) was read in full during this task; D-014 followed.
+
+### 78.1 The three reproduced defects and their closure
+
+| Defect | Old check | Bypass mutation | Why the old check passed | Corrective implementation | New negative fixture | Demonstrated outcome |
+|---|---|---|---|---|---|---|
+| Acceptance gate incomplete range | `12B-77` | Gate range replaced with `FP-P01, FP-P02, FP-P14` | Old check only tested for `FP-P14` presence and a `FP-P12` endpoint, not the full set | `extract_param_ids` expands ranges/lists; `param_set_problems` compares against the canonical 14-ID set and names missing IDs | `12B-N39` (also `N40` missing FP-P13, `N41` missing FP-P14, `N42` missing FP-P07) | Rejected: `P12B-19 missing parameters: FP-P03 … FP-P13` |
+| AI_CONTEXT incomplete range | `12B-78` | FP-P13 removed while the 14-count and FP-P14 retained | Old check only tested `14 parameters` + `FP-P14` strings | Same canonical extraction applied to the B-12 inventory row only; missing/unexpected IDs reported | `12B-N43` (also `N44` range ends FP-P12, `N45` missing FP-P07) | Rejected: `AI_CONTEXT B-12 entry missing parameters: FP-P13` |
+| R1 manifest satisfied elsewhere | `12B-80` | `docs/AI_CONTEXT.md` removed from §77.1 but kept in §76.1 | Old check searched the whole log after §76.1, so a §76.1 entry satisfied it | Check scoped strictly to `### 77.1`…`### 77.2`; requires all eight R1-changed files as rows; empty/malformed manifest rejected | `12B-N37` and `12B-N46` (also `N47` emptied manifest) | Rejected: `R1 §77.1 manifest missing: docs/AI_CONTEXT.md (a §76.1 entry cannot satisfy §77.1)` |
+
+**Canonical extraction (correction D).** One helper, `extract_param_ids`, parses compact range notation (`FP-Paa`–`FP-Pbb` / `…`) into the full consecutive sequence and collects explicit IDs; reversed ranges are reported, not normalized. `param_set_problems` compares the result with `EXPECTED_PARAM_SET` (the 14 canonical IDs) and emits actionable missing/unexpected diagnostics. Checks `12B-77` and `12B-78` reuse it; no partial hard-coded list is duplicated.
+
+**Diagnostics and historical protection (corrections E/F).** Historical/reassessment lines are excluded from the current-state stale scan; `12B-81` positively requires the historical §75 12-parameter record to survive, and the new `12B-82` positively requires the C1 §76.1 manifest-completeness note to survive. Mutations run on in-memory copies (`copy.deepcopy`); live files are never corrupted by a fixture.
+
+### 78.2 Change manifest (12B-C1-R2)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | Canonical extraction helpers; checks 77/78/80 strengthened; check 82 added; fixtures P32 / N39–N48 added; existing fixture expectations updated to new diagnostics |
+| `docs/prompts/prompt_12B-C1-R2_validator_completeness.md` | **Created** — verbatim R2 instruction |
+| `docs/prompts/INDEX.md` | R2 archive row added |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §78 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §78; validator counts 82/32/48 |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R2 status block added; live validator counts updated |
+
+### 78.3 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 82/82 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `32/32` positive, `48/48` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | PASS; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. No tests were skipped. Every PASS is documentary; no runtime, database, security or production verification is claimed.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`); `REQ-764`–`REQ-869`, `D-178`–`D-187`, `DD-226`–`DD-235`, 16 formulas, 14 parameters, 20 INT contracts preserved; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051` remain Open; Prompt 12C not authorized.
+
+**Verdict.** **Prompt 12B-C1-R2 is COMPLETE at the validator/documentation level.** The three audited bypasses are demonstrably rejected by explicit negative fixtures, the full canonical parameter set is enforced in both the acceptance gate and AI_CONTEXT, and the R1 manifest is validated in its own section. C1/R1/R2 closeout is complete to the extent demonstrated by these tests; production implementation and owner/legal rulings remain outstanding.
+
+## 79. Prompt 12B-C1-R3 — duplicate-ID detection, stale-reference validation and final validator closure (2026-11-07)
+
+**Scope.** A targeted validator-maintenance and documentation-closeout pass closing the four additional bypasses found by independent mutation testing of R2. It rewrites no B-12 specification, changes no approved identifier, decision or acceptance meaning, implements nothing, and does not authorize Prompt 12C. The complete `AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0) was read in full during this task; D-014 followed.
+
+### 79.1 The four reproduced bypasses and their closure
+
+| Bypass | Check | Mutation | Why R2 passed | Correction | New fixture | Demonstrated outcome |
+|---|---|---|---|---|---|---|
+| Duplicate ID in acceptance gate | `12B-77` | added a second `FP-P01` to the complete P12B-19 range | R2 extracted identifiers into a set, erasing duplicate evidence | `extract_param_occurrences` preserves ordered occurrences; `compare_param_occurrences` reports duplicate frequency before any set comparison | `12B-N49` (also `N50` duplicate FP-P07, `N51` unexpected FP-P15) | Rejected: `P12B-19 contains duplicate parameter FP-P01 (×2)` |
+| Duplicate ID in AI_CONTEXT | `12B-78` | repeated `FP-P01` in the B-12 entry | set conversion erased the duplicate | same occurrence-preserving comparison on the entry | `12B-N52` (also `N53` duplicate FP-P07, `N54` unexpected FP-P15) | Rejected: `AI_CONTEXT B-12 entry #1 contains duplicate parameter FP-P01 (×2)` |
+| Stale range elsewhere in acceptance | `12B-77` | kept correct gate/§9 but inserted `Current formula-register range: FP-P01–FP-P12` elsewhere | R2 stale scan only matched the literal "12 parameters" text, not a stale range | `acceptance_stale_problems` scans every current-state range/enumeration in the document (excluding the dated §2.1 reassessment and genuinely historical lines) and compares each with the canonical set | `12B-N57` (also `N58` stale 12-count, `N59` fake-historical current claim) | Rejected: `stale current-state parameter range \`FP-P01\`–\`FP-P12\` in acceptance` |
+| Conflicting second AI_CONTEXT entry | `12B-78` | added a second current-state B-12 row reporting 12 parameters | R2 selected only the first matching row | check now collects all current-state B-12 inventory rows, requires exactly one, and validates each | `12B-N55` (also `N56` second entry with incomplete 14 claim) | Rejected: `AI_CONTEXT contains 2 conflicting current-state B-12 formula-register entries (expected exactly one)` |
+
+**Shared extraction (correction E).** `extract_param_occurrences` parses the first parameter representation (a comma/`and`-separated chain of IDs or compact ranges), expands ranges to their full consecutive sequence without double-counting endpoints, and returns an ordered occurrence list plus parse problems. `compare_param_occurrences` derives duplicate counts, missing IDs and unexpected IDs against `EXPECTED_PARAM_SET` (the canonical 14). A lone single-ID reference (e.g. an implementation-dependency cell) is not treated as a register-range claim. No partial hard-coded list is duplicated across checks.
+
+**Historical protection.** The current-state stale scan excludes the dated §2.1 reassessment block and lines marked historical/previously/originally/superseded — but a line that still says "current" is not excused by adding "historical" (`12B-N59` proves this). `12B-81` still requires the historical §75 12-parameter record to survive, and `12B-82` the C1 §76.1 note. No project-wide ban on the number 12 was introduced.
+
+### 79.2 Change manifest (12B-C1-R3)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | Occurrence-preserving extraction/comparison; checks 77/78 strengthened (duplicates, unexpected IDs, stale-range scan, conflicting entries); fixtures P33 / N49–N59 added; P27/P28 expectations updated to new diagnostics |
+| `docs/prompts/prompt_12B-C1-R3_duplicate_id_and_stale_reference_validation.md` | **Created** — verbatim R3 instruction |
+| `docs/prompts/INDEX.md` | R3 archive row added |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §79 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §79; validator counts 82/33/59 |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R3 status block added; live validator counts updated |
+
+### 79.3 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 82/82 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `33/33` positive, `59/59` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | PASS; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. No tests were skipped. Every PASS is documentary; no runtime, database, security or production verification is claimed.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`); `REQ-764`–`REQ-869`, `D-178`–`D-187`, `DD-226`–`DD-235`, 16 formulas, 14 parameters, 20 INT contracts preserved; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051` remain Open; Prompt 12C not authorized.
+
+**Verdict.** **Prompt 12B-C1-R3 is COMPLETE at the validator/documentation level.** All four newly identified bypasses and all three earlier R2 bypasses are rejected by explicit negative fixtures; duplicate, unexpected, missing and discontinuous identifiers are detected; stale current-state ranges and conflicting AI_CONTEXT entries are caught; historical records remain valid. C1/R1/R2/R3 closeout is complete to the extent demonstrated by these tests; production implementation and owner/legal rulings remain outstanding.
+
+## 80. Prompt 12B-C1-R4 — gate uniqueness, complete occurrence scanning, historical-section validation and canonical parameter extraction (2026-11-07)
+
+**Scope.** A targeted validator-hardening and documentation-closeout pass closing the seven additional bypasses found by independent mutation testing of R3. It rewrites no B-12 specification substantive content, changes no approved identifier, decision or acceptance meaning, implements nothing, and does not authorize Prompt 12C. The complete `AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0, SHA-256 `697dd52d…b8ad479`) was read; D-014 followed.
+
+**Canonical-source note.** The R4 instruction §8 lists "12 numerical parameters" among items to preserve. The canonical formula register actually defines **14** parameters (`FP-P01`–`FP-P14`, the last two added by 12B-C1). Per R4 §4 the canonical register is the source of truth, so the validator and all current-state documents preserve **14**; the "12" in the instruction is recorded here as an instruction discrepancy, not applied. No parameter was removed or added by R4.
+
+### 80.1 The seven reproduced defects and their closure
+
+| Defect | Check | Mutation | Why R3 passed | Correction | Fixture | Demonstrated outcome |
+|---|---|---|---|---|---|---|
+| 1 Duplicate P12B-19 row | `12B-77` | inserted a second identical gate row | first-match selection | gate rows collected from the §2 gate-register section; exactly one required | `12B-R4-01` | Rejected: `expected exactly one P12B-19 gate row, found 2` |
+| 2 Unexpected ID after semicolon | `12B-77` | `…FP-P14; FP-P15` | only the first comma-chain representation was scanned | `scan_param_occurrences` scans the whole row, formatted or not | `12B-R4-02` | Rejected: `P12B-19 unexpected parameters: FP-P15` |
+| 3 Duplicate ID after semicolon | `12B-77` | `…FP-P14; FP-P01` | first-chain extraction missed the extra occurrence | full occurrence counting before any set conversion | `12B-R4-03` | Rejected: `P12B-19 contains duplicate parameter FP-P01 (×2)` |
+| 4 Stale current claim inside §2.1 | `12B-77` | inserted `Current formula-register range: FP-P01–FP-P12` in §2.1 | whole §2.1 section was exempted | no section exempt; per-line historical context only; current claims scanned everywhere | `12B-R4-04` | Rejected: `stale current-state parameter range … in acceptance` |
+| 5 Unformatted stale range | `12B-77` | `Current formula-register range: FP-P01-FP-P12` (no backticks) | scanner required backticked ranges | range/ID regexes accept optional backticks and hyphen/en-dash/em-dash/ellipsis | `12B-R4-05` (also `N66` em-dash) | Rejected: `stale current-state parameter range FP-P01-FP-P12 …` |
+| 6 Unexpected ID outside AI_CONTEXT chain | `12B-78` | appended `Also FP-P15.` to the entry | only the first structured chain validated | whole-entry occurrence scan | `12B-R4-06` | Rejected: `AI_CONTEXT B-12 entry #1 unexpected parameters: FP-P15` |
+| 7 Duplicate ID outside AI_CONTEXT chain | `12B-78` | appended `Also FP-P01.` | first-chain extraction | whole-entry occurrence counting | `12B-R4-07` | Rejected: `AI_CONTEXT B-12 entry #1 contains duplicate parameter FP-P01 (×2)` |
+
+### 80.2 Canonical parameter extraction (architectural correction)
+
+The hard-coded `EXPECTED_PARAMS`/`EXPECTED_PARAM_SET` production globals were removed. `Model.rebuild()` now captures the raw ordered parameter IDs (`param_raw`) from the canonical formula register, including malformed tokens. `canonical_params(m)` validates presence, format (`FP-P\d{2}`) and uniqueness, and returns the authoritative ordered collection; a missing/empty register is a failure, never a fallback. `check_76` additionally requires the collection to be contiguous from `FP-P01`. `check_77`/`check_78` derive their expected set and count from this collection and compare full occurrence sequences (duplicates, missing, unexpected, out-of-order). `scan_param_occurrences` expands ranges without double-counting endpoints and counts every other occurrence regardless of punctuation. The AI_CONTEXT inventory entry was reworded so its sole parameter representation is the range (removing redundant bare-ID prose mentions that would otherwise read as duplicates); its substantive meaning is unchanged.
+
+### 80.3 Change manifest (12B-C1-R4)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | Canonical extraction; full-occurrence scanner; gate uniqueness; §2.1 current-claim scanning; unformatted/em-dash detection; checks 76/77/78 refactored; fixtures R4-01…R4-07 and N60–N66 added; two R3 ctx fixtures retargeted to the reworded entry |
+| `docs/AI_CONTEXT.md` | B-12 inventory entry reworded (sole range representation); R4 status block; live validator counts |
+| `docs/prompts/prompt_12B-C1-R4_gate_uniqueness_and_canonical_extraction.md` | **Created** — verbatim R4 instruction |
+| `docs/prompts/INDEX.md` | R4 archive row added |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §80 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §80; validator counts 82/33/73 |
+| `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R4 status block added; live validator counts updated; handoff notes the next audit is against the separate R4 instruction |
+
+### 80.4 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 82/82 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `33/33` positive, `73/73` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | PASS; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. No tests were skipped or timed out. The R1–R3 fixture suite (33 positive / 59 negative) ran unchanged before and after the R4 edits and continues to pass; R4 adds 14 negative fixtures (73 total). Every PASS is documentary; no runtime, database, security or production verification is claimed.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`); 344 rules, 106 requirements `REQ-764`–`REQ-869`, 16 formulas, 14 parameters, `D-178`–`D-187`, `DD-226`–`DD-235`, 20 INT contracts preserved; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051` remain Open; Prompt 12C not authorized. Supabase `profiles` privilege and audit-log obligations remain documented and unimplemented.
+
+**Verdict.** **Prompt 12B-C1-R4 is COMPLETE at the validator/documentation level.** All seven newly identified bypasses are rejected by explicit fixtures; the canonical register is the genuine source of truth; full occurrence scanning closes alternate-punctuation and extra-text bypasses; stale current claims are caught even inside §2.1 while historical references remain valid; all R1–R3 protections are preserved. Production implementation and owner/legal rulings remain outstanding.
+
+## 81. Prompt 12B-C1-R5 — malformed identifier detection, complete current-state scanning, canonical definition integrity and gate register hardening (2026-11-07)
+
+**Scope.** A targeted validator-hardening, adversarial-testing and documentation-synchronization pass closing the seven additional bypasses reproduced against the live validator (Project X (74) audit baseline). It rewrites no B-12 specification substantive content, changes no approved identifier, decision or acceptance meaning, implements nothing, and does not authorize Prompt 12C. The complete `AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0, SHA-256 `697dd52d…b8ad479`) was read; D-014 followed.
+
+**Canonical-source note.** The R5 instruction §8 again lists "12 numerical parameters" among items to preserve. The canonical formula register defines **14** FP-P parameters (`FP-P01`–`FP-P14`). Per R5 §4/§7 the canonical register is the source of truth, so the validator and current-state documents preserve **14**; the "12" is recorded as an instruction discrepancy, not applied. There is no separate 12-parameter collection in the live documentation.
+
+### 81.1 Independent reproduction and closure of the seven findings
+
+Each finding was first reproduced against the live validator (all returned PASS = bypass), then corrected and re-tested (all now REJECT with a specific diagnostic).
+
+| Defect | Reproduced mutation | Before | Correction | After (fixture) |
+|---|---|---|---|---|
+| 1 Malformed gate token | append `FP-PXX` to P12B-19 | PASS | `malformed_param_tokens` scans the FP-P namespace; check_77 gate diagnostic | REJECT `P12B-19 contains malformed parameter identifier(s): FP-PXX` (`R5-01`; also `N67` FP-P1, `N68` FP-P001, `N69` FP-P01X) |
+| 2 Stale individual IDs | `Current formula-register identifiers: FP-P01, FP-P12.` | PASS | register-claim lines scanned for individual-ID sets vs canonical | REJECT `stale current-state parameter identifiers …` (`R5-02`, `R5-03` backticked, `R5-12` partial) |
+| 3 Unformatted canonical duplicate | duplicate `FP-P14` row without backticks | PASS | `param_raw` extracts §3 definition first-cells regardless of backticks | REJECT `duplicate canonical parameter definition: FP-P14` (`R5-04`, `R5-10`) |
+| 4 Historical-label bypass | `Historical note: … now contains only FP-P01–FP-P12.` | PASS | meaning-based `is_historical_exempt` (historical marker AND no present-state marker) | REJECT `stale current-state parameter range …` (`R5-05`, `R5-20` mixed) |
+| 5 AI_CONTEXT narrow scan | unexpected `FP-P15` in b12 registry key | PASS | check_78 also scans the `b12_fair_play` current key for unexpected/malformed/count | REJECT `AI_CONTEXT b12_fair_play current entry unexpected parameters: FP-P15` (`R5-06`) |
+| 6 Malformed gate ID | add `P12B-19X` gate-like row | PASS | check_61 validates every gate-like first cell format + uniqueness | REJECT `malformed gate identifier(s): P12B-19X` (`R5-07`, `R5-15` P12B-19A) |
+| 7 Hard-coded count in check_45 | `len(m.params) == 14` | hard-coded | check_45 derives count from `canonical_params` and validates the register's declared count | PASS source-derived (`R5-08`); a changed canonical count desyncs the declaration and is detected |
+
+### 81.2 Canonical extraction and scanning architecture
+
+`Model.param_raw` now extracts the leading `FP-P` token of each §3 parameter-register definition row with or without backticks (explanatory mentions outside the definition table are not definitions). `canonical_params` validates presence/format/uniqueness; `check_76` enforces contiguity; `check_45` derives the count and validates the declared `**Parameters: N**` sentence. `scan_param_occurrences` preserves ordered occurrences (ranges expanded without double-counting endpoints); `compare_param_occurrences` reports duplicate/missing/unexpected/out-of-order before any set conversion. `malformed_param_tokens` flags any FP-P namespace token failing `FP-P\d{2}`. `acceptance_stale_problems` scans the whole acceptance document (including §2.1) for malformed tokens, count claims, ranges and individual-ID register assertions, with meaning-based historical exemption. `check_78` validates the inventory row plus the `b12_fair_play` current key. `check_61` validates gate-ID format and uniqueness. The fixture harness now supports positive fixtures that apply a mutation (used to prove historical/explanatory content is accepted).
+
+### 81.3 Change manifest (12B-C1-R5)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | Malformed-token detection; meaning-based historical classification; register-claim individual-ID scanning; canonical definition extraction unformatted; check_45 source-derived; check_61 gate format/uniqueness; check_78 full current B-12 scanning; positive-mutation fixture support; fixtures R5-01…R5-20 and N67–N69 added |
+| `docs/prompts/prompt_12B-C1-R5_malformed_id_and_canonical_integrity.md` | **Created** — verbatim R5 instruction |
+| `docs/prompts/INDEX.md` | R5 archive row added |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §81 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §81; validator counts 82/37/92 |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R5 current-status block added; outdated validator totals synchronized; historical R3/R4 results preserved as dated snapshots; handoff notes Project X (74) baseline, R5 current task, R5 prompt must accompany the fresh ZIP, independent adversarial audit still required, Prompt 12C unauthorized |
+
+### 81.4 Validation actually run (2026-11-07)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 82/82 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `37/37` positive, `92/92` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | PASS; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. No tests were skipped or timed out; no broad pytest run was attempted (targeted unittest suites used). The R1–R4 suite (33 positive / 73 negative) ran unchanged before and after the R5 edits and continues to pass; R5 adds 4 positive and 19 negative fixtures (37 / 92 total). Every PASS is documentary; no runtime, database, security or production verification is claimed, and no independent audit acceptance is claimed.
+
+### 81.5 Working-tree disruption and recovery (disclosed for audit)
+
+During R5 execution an external `git stash`/checkout operation (stash "Qoder 检出分支临时保存", HEAD `bdbdd14` initial snapshot) introduced stash-apply conflicts across 24 tracked files and cleanly deleted the 12A requirements/integration register. With owner authorization ("Take Stashed changes"), the conflicted files were restored directly from the stash blobs (the consistent advanced state: UD-001…UD-060, 28/3/29, REQ-869, DD-235, D-187, §81), the deleted `12A_requirements_integration_and_risk_registers.md` was restored from the stash, and the R5 current-status blocks/roadmap §81 citation were re-applied to the continuity files. The `10B_validate_warfare.py` frontier assertions, reverted to the 11C-era baseline by the checkout, were re-synchronized to the current frontier (UD 28/3/29; current sub-prompt 12B) — a frontier advance, not a weakening. No Git staging, commit or push was performed; the index still reflects the owner's in-progress stash workflow. All results in §81.4 were re-confirmed after recovery.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`); 344 rules, 106 requirements `REQ-764`–`REQ-869`, 16 formulas, 14 parameters, `D-178`–`D-187`, `DD-226`–`DD-235`, 20 INT contracts preserved; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051` remain Open; Prompt 12C not authorized. Supabase `profiles` privilege and audit-log obligations remain documented and unimplemented.
+
+**Verdict.** **Prompt 12B-C1-R5 is COMPLETE at the validator/documentation level.** All seven reproduced bypasses are rejected by explicit fixtures with specific diagnostics; malformed identifiers, stale individual claims, unformatted canonical duplicates, historical-label bypasses, narrow AI_CONTEXT scanning and malformed gate IDs are closed; check_45 is source-derived; all R1–R4 protections are preserved. Independent adversarial acceptance remains pending; production implementation and owner/legal rulings remain outstanding.
+
+## 82. Prompt 12B-C1-R6 — final validator hardening, full document-block parsing, semantic claim classification and complete canonical integrity (2026-11-08)
+
+**Scope.** The final planned corrective pass for Prompt 12B-C1. It hardens the validator architecture (complete document-block parsing, full occurrence accounting, semantic current/historical/explanatory classification, canonical definition integrity in table and prose, complete AI_CONTEXT entry scanning), adds adversarial fixtures, and synchronizes documentation. It rewrites no B-12 specification substantive content, changes no approved identifier/decision/acceptance meaning, implements nothing, and does not authorize Prompt 12C. The complete `AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0, SHA-256 `697dd52d…b8ad479`) was read; D-014 followed.
+
+**Canonical-source note.** The R6 instruction §9 again lists "12 numerical parameters" alongside "14 canonical FP-P parameters". The canonical formula register defines **14** FP-P parameters (`FP-P01`–`FP-P14`); there is no separate 12-parameter FP-P collection in the live documentation. Per R6 §5 the canonical register is the source of truth, so validation preserves 14; the "12" is recorded as an instruction discrepancy, not applied.
+
+### 82.1 Pre-implementation reproduction and closure of the six R5 bypasses
+
+Each was reproduced against the live complete validator (all accepted = bypass) before correction, then re-tested through the production checks (all rejected):
+
+| Defect | Reproduced mutation | Before | Correction | After |
+|---|---|---|---|---|
+| 1 AI_CONTEXT entry not fully scanned | continuation line with FP-P15 / duplicate FP-P01 / incomplete list | accepted | `check_78` parses the complete entry block (authoritative row + continuation lines until next row/heading/blank) plus the `b12_fair_play` key; whole-block occurrence accounting + per-statement collection claims | rejected (`R6-01/02/03`) |
+| 2 Acceptance stale-claim scanning incomplete | "parameter set includes FP-P01, FP-P12"; assertion split across lines | accepted | `logical_statements` joins continuation lines; `REGISTER_CLAIM_RE` expanded (parameter set, authoritative parameters, register parameters); per-statement collection-claim validation | rejected (`R6-04/05/07`) |
+| 3 Canonical prose definitions escape | prose "FP-P14 is also defined…"; "FP-P-01 = …" | accepted | `Model.param_raw` extracts §3 definition region as a structured document: table first cells AND ordinary-text definition records (`FP-P…` followed by `=`/`is`/`defined`/separator) | rejected (`R6-10/11`) |
+| 4 Historical classification keyword-heavy | "Historical note: … includes FP-P01, FP-P12" | accepted | `CURRENT_MARKERS` extended (includes/uses/consists); a historical qualifier with a present-tense assertion is evaluated as current | rejected (`R6-06`) |
+| 5 Malformed tokens not comprehensive | FP-P01_extra / FP-P. / FP-P-01 | accepted (or misclassified as duplicate) | `namespace_tokens` lexical scanner preserves raw token text; `scan_param_occurrences` refuses to extract a valid prefix from a malformed larger token | rejected as malformed (`R6-08/09`, `N70`) |
+| 6 Complete occurrence accounting | occurrences lost via line-only/first-match parsing | accepted | reusable `logical_statements`, `namespace_tokens`, `scan_param_occurrences`, `compare_param_occurrences`; ordered occurrences validated before set conversion | rejected (`R6-02/17/18`) |
+
+### 82.2 Architecture
+
+- **Document-block parsing:** `logical_statements(text)` joins prose continuation lines into logical statements while keeping table rows and headings as separate boundaries; `check_78` builds the complete B-12 entry block structurally; the canonical §3 definition region is parsed as a structured document.
+- **Occurrence model:** `namespace_tokens(text)` returns `(raw, normalized, is_valid, start)` for every FP-P candidate, excluding valid-range spans and retaining original token text; trailing sentence punctuation is stripped for classification only. `scan_param_occurrences` expands ranges without double-counting endpoints and skips IDs embedded in malformed candidates. `compare_param_occurrences` reports duplicate/missing/unexpected/out-of-order before any set conversion.
+- **Classification:** `is_historical_exempt` requires genuine historical context AND no present-state marker; collection claims (`REGISTER_CLAIM_RE`) are validated against the canonical ordered collection; explanatory mentions of canonical IDs remain valid; non-canonical IDs in current content are rejected.
+- **Canonical source-of-truth:** `canonical_params` derives the ordered collection from actual §3 definition records (table + prose), validates format/uniqueness; `check_76` enforces contiguity; `check_45` derives the count and validates the declared `**Parameters: N**` sentence. No hard-coded production fallback remains.
+
+### 82.3 Change manifest (12B-C1-R6)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | `namespace_tokens`, `logical_statements`; refactored `scan_param_occurrences`, `malformed_param_tokens`, `is_historical_exempt`, `acceptance_stale_problems`, `check_78`; canonical prose extraction in `Model.rebuild`; fixtures R6-01…R6-30 and N70; P28 diagnostic wording updated |
+| `docs/prompts/prompt_12B-C1-R6_full_document_block_and_semantic_validation.md` | **Created** — verbatim R6 instruction (36,689 bytes; LF/UTF-8) |
+| `docs/prompts/INDEX.md` | R6 row + reproducible checksum convention |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §82 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row cites §82; validator counts 82/45/115 |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R6 current-status block; live validator counts updated; historical R3/R4/R5 totals retained as dated snapshots |
+
+### 82.4 Validation actually run (2026-11-08)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 82/82 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `45/45` positive, `115/115` negative rejected for the expected reason | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45`; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 — ALL CHECKS PASSED` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34 PASS` | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | `1036 — PASS`; 73/73 fixtures | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` / `11C_validate_b11_workflows.py` | PASS | 0 |
+| ten `verify_*` scripts | all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | `Unresolved: 0` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 executed, 1 failed` — legacy check 29 expects `REQ-703`; pre-existing `D-1`, preserved | 1 |
+
+`validate_final.py` is re-run after this entry and the roadmap citation are added; its result is recorded in the final delivery report. No tests were skipped or timed out; no broad pytest run was attempted (targeted unittest suites used). The R1–R5 suite (37 positive / 92 negative) ran unchanged and continues to pass; R6 adds 8 positive and 23 negative fixtures (45 / 115 total). Every PASS is documentary; no runtime, database, security or production verification is claimed, and no independent audit acceptance is claimed.
+
+### 82.5 Git state (read-only inspection, no changes)
+
+Branch `main`, HEAD `bdbdd14` ("Initial complete Nation Supremacy project snapshot"). The working tree has **no conflict markers** (R5 resolved the content), but the Git index still carries 24 unmerged `UU`/`DU` entries from the owner's prior stash workflow. Per R6 §10 no staging/commit/push/merge/rebase/reset/checkout/stash or conflict resolution was performed; the index is reported exactly as observed and left untouched. R6 changes are confined to authorized validator/archive/synchronization files.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`); 344 rules, 106 requirements `REQ-764`–`REQ-869`, 16 formulas, 14 canonical FP-P parameters, `D-178`–`D-187`, `DD-226`–`DD-235`, 20 INT contracts preserved; `UD-017`, `UD-052`–`UD-060`, `UD-040`–`UD-051` remain Open; Prompt 12C not authorized. Supabase `profiles` privilege and audit-log obligations remain documented and unimplemented.
+
+**Verdict.** **Prompt 12B-C1-R6 is COMPLETE at the implementation/documentation level.** All six independent R5 bypasses are rejected by the production validator through reusable document-block parsing and complete occurrence accounting; canonical definitions in table and prose are extracted; current/historical/explanatory classification is semantic; the complete AI_CONTEXT entry is scanned; gate integrity and source-derived counting are preserved; all R1–R5 protections remain operational. Independent R6 acceptance remains pending; production implementation and owner/legal rulings remain outstanding.
+
+## 83. Prompt 12B-C1-R7 — final structural validation, complete AI_CONTEXT entry integrity, semantic assertion parsing and canonical definition discovery (2026-11-09)
+
+**Scope.** A targeted corrective pass on the Prompt 12B-C1 validator-hardening sequence after R6 failed independent acceptance. It replaces line-selected and keyword-selected parsing with structural document parsing, semantic statement classification and occurrence-level accounting; makes the canonical register the only production source of truth for the FP-P collection; runs every fixture through the complete check registry; adds an end-to-end subprocess mutation audit; and synchronizes documentation. It rewrites no B-12 specification substantive content, changes no approved identifier, decision or acceptance meaning, closes no PARTIAL gate, implements nothing, and does not authorize Prompt 12C. The complete `docs/AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0, SHA-256 `697dd52d…db8ad479`) was read in full before the work; D-014 was followed: parsing architecture, fixture design, diagnostic wording and documentation layout were decided autonomously as Category B and recorded here, with no owner-reserved or legal-dependent decision touched.
+
+**Audited baseline.** `Project X (76).zip` is the previous independently audited snapshot. Its bundled validator reported 82/82 checks, 45/45 positive and 115/115 negative fixtures with exit 0, and all 30 numbered R6 fixtures passed; independent mutation testing nevertheless demonstrated eight further bypasses. R7 is the corrective response to those eight. **Independent R7 acceptance is pending** and is not claimed here. R6's own implementation totals (82/45/115) remain historical R6 results, not current results.
+
+### 83.1 Pre-implementation reproduction of the eight R7 bypasses
+
+Each mutation was applied to an isolated copy of the live corpus and executed against the **complete 82-check production validator** (every registered check, not a helper) before any correction. Seven of the eight were accepted outright (exit 0). The eighth, R7-04, was accepted in all three faithful constructions of "additional continuation text containing a parameter assertion"; one stronger construction (a conflicting chain on the line immediately after the authoritative inventory row) was already caught by R6's block-level duplicate accounting and is recorded as covered by R6 rather than as a bypass.
+
+| ID | Mutation | Result against the pre-R7 production validator |
+|---|---|---|
+| R7-01 | duplicate `FP-P01` inside the current `b12_fair_play` entry | **accepted — bypass** |
+| R7-02 | current B-12 entry states no parameter representation at all | **accepted — bypass** |
+| R7-03 | incomplete current assertion in a paragraph separated from the entry row | **accepted — bypass** |
+| R7-04 | continuation of the status entry / blank-line-separated continuation / status blockquote, each stating a conflicting collection | **accepted — bypass (all three variants)** |
+| R7-05 | additional B-12 parameter inventory row naming no register file | **accepted — bypass** |
+| R7-06 | incomplete current collection asserted inside acceptance §2.1 | **accepted — bypass** |
+| R7-07 | `Historical record: the B-12 formula parameters remain FP-P01 and FP-P12.` | **accepted — bypass** |
+| R7-08 | duplicate canonical definition carried in a Markdown heading | **accepted — bypass** |
+
+### 83.2 Corrections
+
+| Defect | Root cause found in the live file | R7 correction | Evidence |
+|---|---|---|---|
+| 1 — AI_CONTEXT entry parsed by selected lines | `check_78` selected one table row plus directly-adjacent non-table lines and read the `b12_fair_play:` line as a single line; duplicates, ordering, missing representations, extra inventory rows and paragraphs outside that slice were invisible | `iter_blocks()` parses the whole document into headings, table rows, list items, key entries, paragraphs, blockquotes and code with line spans; `b12_entry_blocks()` builds the entry transitively from the status record and the register row plus every attached block; the entry then requires exactly one authoritative register entry, at least one complete representation in the status record, and per-representation plus cross-representation occurrence comparison | `12B-R7-01/02/03/04/05`, `12B-R7-N01`–`N06`, `N13`–`N15` |
+| 2 — acceptance claims matched by a phrase whitelist | `REGISTER_CLAIM_RE` was a fixed keyword alternation and `acceptance_stale_problems` skipped any statement it did not recognize, so "The current parameter list is …", "The B-12 inventory contains …" and any unlisted wording escaped | claims are detected structurally: a range, a count claim, a collective noun with an equative predicate (verb or colon) positioned **before** the enumeration, or a present-state reference to the entry/register/inventory locus; every detected representation is compared with the full ordered canonical collection, and a representation that cannot be decided is reported as ambiguous instead of skipped | `12B-R7-06`, `12B-R7-N07`, `N09`–`N12`, `N27`, `12B-85` |
+| 3 — keyword historical exemption | `is_historical_exempt(low)` exempted any statement containing a historical word and lacking a short current-marker list, so `remain` — and any unlisted present-state verb — let a present claim escape | classification is clause-governed: the clause preceding the enumeration decides tense; a present-state predicate in that clause always wins; exemption requires a date, a past-tense predicate or an explicit supersession; the seven classes are current-assertion, historical, superseded, explanatory, canonical-definition, malformed-candidate and ambiguous | `12B-R7-07`, `12B-R7-N13`, `12B-86`, positives `12B-R7-P09`/`P10` |
+| 4 — canonical headings skipped | `Model.rebuild()` iterated the §3 region and discarded every line beginning with `#`, so a definition carried in a heading was never a candidate | `canonical_region_blocks()` determines the region boundary structurally and reports an undeterminable boundary; `canonical_definitions()` inspects every block kind (table first cell, heading, list item, paragraph, definition list), keeps malformed candidates as failures, rejects duplicates across formats, rejects definition records outside the boundary, and never counts a plain mention as a definition | `12B-R7-08`, `12B-R7-N16`–`N23`, `12B-84` |
+| 5 — occurrence accounting lost before comparison | scanning reduced matches to sets or to first matches, so a token split across a wrapped line, a token followed by punctuation, or a valid prefix inside a larger malformed token disappeared or was misreported | `scan_occurrences()` returns an `Occurrence` per token carrying source, section heading path, line, span, original raw text, normalised identifier, form (`range`/`standalone`/`malformed`), statement, structural context, classification, order and outcome; ranges expand before any set is built; maximal-munch candidates plus a preceding-character contamination test prevent prefix extraction; containment is measured on the identifier body so trailing punctuation cannot hide a range endpoint; document order is restored by span before comparison | `12B-R7-N03`/`N04`/`N05`/`N08`, `12B-83` |
+| 6 — the fixture harness proved a helper, not the validator | `run_fixtures` executed only the single named check per fixture, so an aggregate pass said nothing about the complete validator | `evaluate()` deep-copies the corpus, applies the mutation, rebuilds and runs **all 87 checks**; a positive fixture requires zero failures and zero exceptions; a negative fixture requires the named check to fail with the expected reason and requires that no check raised | all 212 fixtures |
+| 7 — no independent-style end-to-end proof | mutations were applied only to in-memory strings | `--mutation-audit` copies every file the validator reads into an isolated tree, writes the mutated file, runs this validator as a subprocess and asserts the exit code plus the rejecting check and reason (23 audited mutations: 19 rejected for the intended reason, 4 legitimate variants still accepted) | `MUTATION AUDIT: 23/23` |
+
+### 83.3 Architecture now in the production path
+
+- **Structural parsing:** `Block`, `iter_blocks()`, `split_statements()`. Block kinds are heading, table-row, list-item, key-entry, paragraph, blockquote and code. Continuation and indented lines join the block they continue; a heading is a block, never a discarded line.
+- **Occurrence model:** `Occurrence`, `scan_occurrences()`, `occurrence_stream()`; `namespace_tokens()`, `malformed_param_tokens()` and `scan_param_occurrences()` are thin wrappers over the same scanner, so there is one lexical path rather than parallel regular expressions. Lookup sets are built only after occurrence-level validation.
+- **Semantics:** `classify_statement()`, `is_historical_exempt()` (now delegated), `representation_problems()`, `param_representation()`, `acceptance_current_problems()`, `b12_entry_blocks()`.
+- **Canonical truth:** `canonical_region_blocks()`, `canonical_definitions()`, `canonical_params()` reading the records discovered by `Model.rebuild()`. The ordered collection, the expected identifier sequence, the expected count and the expected unique set all derive from the register: no fixed list, no hidden duplicate expectation, no silent fallback and no reliance on the number 14. `check_45` keeps its source-derived count behaviour, and the separate Prompt 12B "12 numerical parameters" metric stays distinct from the FP-P collection.
+- **Strict versus explanatory scope:** inside the AI_CONTEXT B-12 entry a statement that adds an identifier to the enumeration extends the authoritative representation, so a duplicate cannot escape; a well-formed explanatory mention of a canonical identifier remains valid in both documents. The acceptance document legitimately restates the collection in several sections, so cross-section duplicate accounting is applied per representation there rather than document-wide.
+
+### 83.4 Change manifest (12B-C1-R7)
+
+| File | Change |
+|---|---|
+| `docs/qa_backups/12B_validate_b12.py` | `Block`/`Occurrence` models; `iter_blocks`, `split_statements`, `scan_occurrences`, `occurrence_stream`, `leading_index`, `after_token`; rewritten `namespace_tokens`, `malformed_param_tokens`, `scan_param_occurrences`, `is_historical_exempt`, `logical_statements`; new `classify_statement`, `representation_problems`, `param_representation`, `acceptance_current_problems`, `b12_entry_blocks`, `canonical_region_blocks`, `canonical_definitions`; rewritten `Model.rebuild()` parameter extraction, `canonical_params`, `check_76`, `check_77`, `check_78`; new checks `12B-83`–`12B-87` (87 checks); fixtures now run the complete registry via `evaluate`; `--mutation-audit`; 8 named R7 fixtures, 30 further negative fixtures and 14 positive fixtures (212 fixtures in total) |
+| `docs/prompts/prompt_12B-C1-R7_final_structural_validation_and_canonical_integrity.md` | **Created** — verbatim R7 instruction (25,689 bytes; LF/UTF-8; SHA-256 `010bbd0f…ed4f7`) |
+| `docs/prompts/INDEX.md` | R7 row with path, date, source, size and SHA-256; checksum convention extended to R7 |
+| `docs/stage-2/06_stage_2_progress_log.md` | This §83 |
+| `docs/stage-2/20_fair_play_and_player_protection_acceptance.md` | §9.1 check groups extended to `12B-87`; §9.2 fixture totals plus the complete-registry and subprocess-audit wording updated. Gate rows, rule counts and the three PARTIAL classifications untouched |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md`, `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md`, `docs/stage-2/01_stage_2_prompt_roadmap.md` | R7 current-status entry added; the synchronized `b12_fair_play:` status line and live validator counts updated; R1–R6 dated totals preserved as historical snapshots |
+
+### 83.5 Validation actually run (2026-11-09)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 87/87 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `59/59` positive accepted and `153/153` negative rejected for the expected reason, each through the complete registry; `CHECKS: 87/87` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --mutation-audit` | `MUTATION AUDIT: 23/23` handled by the production validator as a subprocess (19 rejected for the intended reason, 4 legitimate variants accepted); 0 wrong | 0 |
+| `python docs/qa_backups/12A_validate_foundations.py --self-test` | `45/45` checks; `10/10` positive, `33/33` negative | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 checks passed — ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/09A_validate_alliance.py` | `Checks run: 943 — PASS` | 0 |
+| `python docs/qa_backups/09B_validate_alliance_semantic.py` | `34/34` semantic checks passed | 0 |
+| `python docs/qa_backups/10B_validate_warfare.py` | `Checks run: 1036 — PASS`; `73/73` negative fixtures rejected | 0 |
+| `python docs/qa_backups/11B_validate_b11.py` | `61/61` checks; `16/16` positive, `44/44` negative | 0 |
+| `python docs/qa_backups/11C_validate_b11_workflows.py` | `31/31` checks; `8/8` positive, `17/17` negative | 0 |
+| ten `verify_*` scripts | alliance, alliance-workflows, city, diplomacy, diplomacy-workflows, economy, market, market-workflows, politics (`879/879`), warfare-workflows (`49/49`) — all PASS | 0 each |
+| `python docs/qa_backups/validate_links.py` | link gate passed; self-test `11/11` | 0 |
+| `python -m unittest test_next_action test_decision_registers` | `Ran 39 tests … OK` (run from `docs/qa_backups`) | 0 |
+| `python -m unittest test_09A_alliance_validator` | `Ran 43 tests in 17.891s — FAILED (failures=1)`; the one failure is stale fixture text, independently disproven above | 1 |
+| `python -m unittest test_09B_alliance_semantic_validator` | `Ran 267 tests in 2912.500s — FAILED (failures=3)`; all three are stale alliance-era fixture premises, root-caused below | 1 |
+| four-module combined unit run | `Ran 349 tests in 2655.762s — FAILED (failures=4)`, all four inside the alliance modules | 1 |
+| `python docs/qa_backups/validate_final.py` | `VALIDATION: ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/11A_validate_research.py` | `30 EXECUTED, 1 FAILED` — legacy check 29 still expects `REQ-703`; pre-existing `D-1` frontier debt, unchanged by R7 and not repaired here | 1 |
+
+Every 12B run completed: the checks, both fixture classes and the subprocess mutation audit all finished with exit 0, and no fixture was skipped. Alliance unit-test outcomes are recorded below exactly as observed, with each failure root-caused rather than smoothed over. `python -m unittest test_09A_alliance_validator` runs **43 tests in 17.9s with 1 failure**, `test_40_disagreement_on_next_prompt`, whose fixture mutates the string `stage_2_next_prompt: 11` — a value that no longer exists in the corpus (the registered next prompt is `12C`), so the mutation is a no-op and the validator correctly reports nothing. The failure is **pre-existing stale test data, not an R7 regression and not a lost protection**: re-running the alliance validator against an isolated copy in which the value really is changed to `09C` produces `Checks run: 943`, `FAIL: 1 problem(s) — 8-handoff :: AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C or 12/12A/12B/12C as the active prompt`, so cross-file STATUS disagreement is still detected. `python -m unittest test_09B_alliance_semantic_validator` completed in the background after this entry was first written: **267 tests in 2912.500s, FAILED (failures=3)**, and every one of the three is a stale alliance-era premise rather than a lost protection. `test_49_req591_deferral_removed_fails` sets REQ-591's status cell to `**Provisional**`, but the corpus already records it as Provisional (the requirements tracker states that REQ-014 and REQ-591 moved to Provisional because B-10 now specifies military combat), so the mutation is a no-op. `test_54_missing_decision_fails` expects the `[C17]` diagnostic to read `D-001..D-142` while the decision register legitimately spans `D-001..D-187`, and the deletion **is** still detected, as `[C06] AX-01` through `AX-09 references non-existent D id D-138`. `test_59_next_prompt_changed_fails` anchors on `stage_2_next_prompt: 10B`, a value that no longer exists. The combined four-module run observed **349 tests in 2655.762s, 4 failures** — these three plus the `test_09A` case above — and none of the 39 continuity/decision-register tests failed. R7 changed no alliance document, no decision register and no requirement tracker, so none of these was repaired here: correcting another prompt family's stale test fixtures is outside the authorized R7 file scope and would alter behaviour the Prompt 09 and Prompt 10 owners still rely on. The R6 regression baseline (82 checks, 45 positive, 115 negative, all 30 numbered R6 fixtures and the seven numbered R4 fixtures) ran unchanged and still passes: every earlier fixture keeps its original id, target check and expected reason, and no earlier check was weakened or removed. Two diagnostics were **strengthened**, not relaxed, and the reason is recorded: `check_76` now separates a missing identifier from a reordered one (a reordered register can no longer be reported as merely "non-contiguous"), and the R6/R4 AI_CONTEXT reason strings are now asserted through the complete registry instead of through one isolated check.
+
+### 83.6 Git state (read-only inspection, nothing modified)
+
+Branch `main`, HEAD `bdbdd14` ("Initial complete Nation Supremacy project snapshot"), up to date with `origin/main`. The working tree still carries the owner's prior unmerged index state — `UU` entries for the continuity files, several validators and the Stage 2 registers, plus `DU` entries for `12A_sync_docs.py`, `12A_validate_foundations.py` and the two `12A` research files — and no conflict markers exist in the file contents. Per R7 §1 nothing was staged, committed, pushed, merged, rebased, reset, checked out, stashed or resolved; `git status` was inspected read-only and the index left exactly as found.
+
+**Acceptance and governance, unchanged.** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`) / 0 FAIL / 0 BLOCKED; 344 rules, 106 requirements `REQ-764`–`REQ-869`, 16 formulas, 14 canonical FP-P parameters as extracted from the register, `D-178`–`D-187`, `DD-226`–`DD-235` and 20 `INT-` contracts preserved; `UD-017`, `UD-052`–`UD-060` and `UD-040`–`UD-051` remain Open; no owner-reserved decision was closed and no provisional requirement was approved. Outstanding production obligations remain documented and unimplemented: the authenticated table-wide `UPDATE` on `feasibility.profiles`, the missing corrective migration `0005`, the absent `tests/sql/` permission tests, the unprotected `audit` table (no protective trigger), unverified production tamper-evidence and no production audit-digest verification job. **Prompt 12C is not started and remains unauthorized.**
+
+## 84. Prompt 12B-C1-R8-D — formal deferral of R8, residual-defect preservation and project progression authorization (2026-11-10)
+
+**Scope.** A governance and deferral record only. It preserves the owner's decision that **R8 is deferred**, states the R7 result accurately, keeps the five independently demonstrated validator bypass classes on the record as known residual weaknesses, and confirms that nothing was corrected, implemented, accepted or closed. No validator code, fixture, formula, requirement, acceptance gate or specification was changed. `docs/AUTONOMOUS_DECISION_POLICY.md` (121 lines, version 1.0) was read in full before the work, and D-014 was followed: the record's layout and wording are Category B documentation, while the deferral itself is an owner decision and is transcribed here rather than reinterpreted. No `D-`, `DD-` or `UD-` identifier was allocated and `D-001..D-187` is unchanged, because this is a status and deferral record, not a new design decision.
+
+**Audited baseline for the deferral.** The independent audit of `Project X (77)` reported **five further bypass classes** in the R7 validator even though its registered checks and fixtures reported success. That audit is the basis of the owner's decision; it is **not** an audit performed by this pass, and this section does not re-run, re-derive or confirm its findings. `Project X (76)` remains the baseline recorded by R7; `Project X (77)` is the snapshot on which R7 failed independent acceptance. No new archive or ZIP is produced here.
+
+### 84.1 R7 status, preserved without conversion
+
+| Item | Recorded status |
+|---|---|
+| R7 implementation | **RETAINED** |
+| Registered validator checks | **87/87 PASS** |
+| Positive fixtures | **59/59 PASS** |
+| Negative fixtures | **153/153 PASS** |
+| Subprocess mutation audit | **23/23 PASS** |
+| Eight R6 regression reproductions | **REJECTED** (by the retained R7 implementation) |
+| R7 independent acceptance | **NOT ACCEPTED** |
+| Five independently discovered bypass classes | **KNOWN RESIDUAL WEAKNESSES** |
+
+Registered test success is **not** independent acceptance. The four R7 figures describe the validator's own checks, fixtures and audit cases executed against the corpus they were written for; they say nothing about a bypass class designed from outside that set. Both statements hold at once and neither is converted into the other.
+
+### 84.2 The five known residual weaknesses
+
+Preserved in the owner's wording. These labels (`R8-D-W1`…`R8-D-W5`) are record markers, not specification or acceptance identifiers.
+
+| Label | Residual weakness (owner's wording) | Recorded state |
+|---|---|---|
+| `R8-D-W1` | Unrecognized incomplete current-state parameter assertions | KNOWN RESIDUAL WEAKNESS — not corrected |
+| `R8-D-W2` | AI_CONTEXT block-boundary parsing weakness | KNOWN RESIDUAL WEAKNESS — not corrected |
+| `R8-D-W3` | Canonical register table parsing weakness | KNOWN RESIDUAL WEAKNESS — not corrected |
+| `R8-D-W4` | Unicode malformed identifier suffix detection weakness | KNOWN RESIDUAL WEAKNESS — not corrected |
+| `R8-D-W5` | Multiline malformed identifier suffix detection weakness | KNOWN RESIDUAL WEAKNESS — not corrected |
+
+The specimen mutations and file or line references that demonstrated these classes were reported through the independent audit of `Project X (77)` and are **not present in this repository**; they are not reconstructed, replaced with paraphrases, re-executed or claimed here. If the owner supplies them, they can be appended to this table without changing any recorded fact. No root-cause analysis, fix, fixture or coverage expansion was performed for any of the five, and none is described as corrected anywhere in this project.
+
+### 84.3 Deferral terms
+
+| Term | Record |
+|---|---|
+| R8 status | **DEFERRED BY OWNER** |
+| Decision date | 2026-11-10 |
+| Reason | Avoid endless validator-hardening cycles and prioritize actual game development |
+| Reopening condition | Explicit owner authorization only |
+| Automatic reopening | **PROHIBITED** |
+| Unsolicited additional R8 correction prompts | **PROHIBITED** |
+| Relationship to the five weaknesses | The deferral accepts known residual weakness; it is **not** approval, correction or dismissal of the five classes |
+
+No R8 implementation and no R8 correction prompt was created. This section is the only R8 record; no row was added to `docs/prompts/INDEX.md`, because the R8-D instruction is a governance instruction rather than a corrective prompt, and creating an "R8 prompt" file would contradict the prohibition above.
+
+### 84.4 Governance state preserved
+
+- **12B-C1: NOT CLOSED.** R7 is retained; independent acceptance was not achieved; no artificial acceptance or closure is recorded.
+- **Acceptance:** 23 PASS / 3 PARTIAL (`P12B-14`, `P12B-16`, `P12B-23`) / 0 FAIL / 0 BLOCKED — unchanged; no gate was reassessed, renamed or reclassified.
+- **Specification content:** 344 rules, 106 requirements `REQ-764`–`REQ-869` (86 Provisional / 20 Open), 16 formulas, 14 canonical parameters, `D-178`–`D-187` / `DD-226`–`DD-235` and 20 `INT-` contracts — unchanged.
+- **Open decisions:** `UD-017`, `UD-040`–`UD-051` and `UD-052`–`UD-060` remain Open or Deferred exactly as recorded; no owner-reserved decision was closed, no provisional requirement approved and no legal-dependent question resolved.
+- **Prompt 12C:** not started, not authorized; no 12C deliverable, workflow, journey or acceptance artifact exists.
+- **Security obligations, outstanding and unclaimed:** authenticated table-wide `UPDATE` on `feasibility.profiles` including `treasury`; missing corrective migration `0005`; missing SQL permission tests; missing protective audit-log trigger; unverified production tamper-evident audit implementation; unverified operating audit-digest job.
+- **Progression:** the next development task requires separate owner authorization. No stage was initiated, selected or expanded by this record.
+
+### 84.5 Documentation changed
+
+| File | Change |
+|---|---|
+| `docs/stage-2/06_stage_2_progress_log.md` | This §84; the header `Last updated` record and prompt row 12 |
+| `docs/stage-2/01_stage_2_prompt_roadmap.md` | Prompt 12 row records the R8 deferral and cites §84 |
+| `docs/AI_CONTEXT.md`, `docs/AI_HANDOFF.md`, `docs/PROJECT_PROGRESS.md` | R8-D current-status block added above the R7 block; the R7 block marked superseded; the `b12_fair_play:` status clause extended identically in all three files |
+| `docs/ROADMAP.md`, `docs/stage-2/00_stage_2_handoff.md` | R8-D current-status block added; the R7 block marked superseded; the Stage 2 handoff's next-action paragraph records the deferral |
+
+No validator file, fixture registry, formula, requirement, acceptance gate, rulebook, formula register or prompt archive was modified.
+
+### 84.6 Validation actually run (2026-11-10)
+
+| Command | Actual result | Exit |
+|---|---|---|
+| `python docs/qa_backups/12B_validate_b12.py` | `CHECKS: 87/87 passed; 0 failed` | 0 |
+| `python docs/qa_backups/12B_validate_b12.py --self-test` | `POSITIVE FIXTURES: 59/59 accepted`; `NEGATIVE FIXTURES: 153/153 rejected for the expected reason`; `CHECKS: 87/87 passed; 0 failed` | 0 |
+| `python docs/qa_backups/validate_final.py` | `VALIDATION: ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/09_validate.py` | `371/371 checks passed` — `ALL CHECKS PASSED` | 0 |
+| `python docs/qa_backups/validate_links.py` | `Links checked locally: 3415`; `External links skipped: 382`; `Anchors checked: 29`; `Unresolved: 0` | 0 |
+| `sha256sum docs/qa_backups/12B_validate_b12.py` before and after the pass | `854549b9928ffa7618c680b1be4c932641bbf6648352445fcdaafdff6cbb8ea3` in both readings — the validator file is byte-identical, so no validator implementation was modified | — |
+
+These runs verify document consistency and continuity only. They do **not** execute any R8 audit case, do not test the five residual weaknesses and are **not** independent acceptance; that is exactly why R7's 87/87 does not contradict the audit's five bypass classes.
+
+### 84.7 Git state (read-only inspection, nothing modified)
+
+Branch `main`, HEAD `bdbdd14` ("Initial complete Nation Supremacy project snapshot"). The working tree still carries the owner's prior unmerged index state — **20 `UU` and 4 `DU` entries, the same 24 unmerged entries observed by R6 and R7** — plus seven untracked artifacts created by earlier prompts and one pre-existing modification to `docs/qa_backups/10B_validate_warfare.py`. Nothing was staged, committed, pushed, merged, rebased, reset, checked out, stashed or resolved; `git status` was inspected read-only and the index left exactly as found. The R8-D edits touch only files already inside the unmerged set.
+
+**Verdict.** **Prompt 12B-C1-R8-D is COMPLETE as a governance record.** R7's implementation is retained at 87/87 checks, 59/59 positive and 153/153 negative fixtures with the 23/23 subprocess mutation audit, while its independent acceptance is **NOT ACCEPTED**; the eight R6 reproductions remain rejected; the five bypass classes reported by the independent audit of `Project X (77)` are preserved as known residual weaknesses and are not corrected; **R8 is DEFERRED BY OWNER** with reopening only on explicit owner authorization; **12B-C1 remains NOT CLOSED**; the three PARTIAL gates, every owner-reserved decision and every security obligation are unchanged; **Prompt 12C is not authorized**; no validator code was modified; and no R8 correction was performed.
+
+**Verdict.** **Prompt 12B-C1-R7 is COMPLETE at the implementation and documentation level.** The eight reproduced bypasses are rejected by the complete production validator for their intended reasons, in-process through the fixture registry and again as a subprocess against isolated file copies; the AI_CONTEXT B-12 entry, the acceptance document and the canonical register are parsed structurally; every relevant identifier occurrence is accounted for with provenance and classification; historical classification cannot disguise a present-state assertion; ambiguous authoritative records fail closed; legitimate historical, superseded and explanatory content still passes; the canonical register is the sole source of truth for the derived collection; and all R1–R6 protections and fixtures remain operational. What R7 does **not** establish: independent audit acceptance (pending — the owner must supply the next ZIP together with this archived R7 instruction), any runtime, database, security or legal verification, and any authorization to begin Prompt 12C.

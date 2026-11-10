@@ -350,7 +350,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
 
     ud_row = next((line for line in ud.splitlines() if line.startswith("| UD-032 |")), "")
     check("**Resolved**" in ud_row and "Option (a)" in ud_row, "7-registers", "UD-032 is not recorded as Resolved Option A")
-    check("**28 Resolved**, **3 Deferred to a future prompt**, **20 Open**" in ud, "7-registers", "unresolved-decision counts are not 28/3/20")
+    check("**28 Resolved**, **3 Deferred to a future prompt**, **29 Open**" in ud, "7-registers", "unresolved-decision counts are not 28/3/29")
     for number in range(40, 50):
         row = next((line for line in ud.splitlines() if line.startswith(f"| UD-{number:03d} |")), "")
         check("| Open |" in row or "Open" in row, "7-registers", f"UD-{number:03d} is no longer Open")
@@ -958,7 +958,9 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-04 (Prompt 10C): the live prompt advanced to 11 when 10C closed.
     # 2026-11-04 (Prompt 11A): Prompt 11 then split, and 11A research closed, so
     # the live sub-prompt is 11B. The 10-family completion facts are unchanged.
-    check('CURRENT_SUBPROMPT = "11C"' in status_rules, "10-continuity", "status_rules.py does not set 11C as the current sub-prompt")
+    # 2026-11-07 (12B/C1–R5): the frontier advanced through 11C and 12A to 12B;
+    # the current sub-prompt milestone is 12B (12C remains unauthorized).
+    check('CURRENT_SUBPROMPT = "12B"' in status_rules, "10-continuity", "status_rules.py does not set 12B as the current sub-prompt")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 

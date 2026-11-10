@@ -548,8 +548,8 @@ if all(blocks):
         fail.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     if one.get("stage_2") != "IN PROGRESS":
         fail.append(f"STATUS: stage_2 is {one.get('stage_2')!r}, expected IN PROGRESS")
-    if one.get("stage_2_next_prompt") != "11B":
-        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 11B")
+    if one.get("stage_2_next_prompt") != "12C":
+        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 12C")
     op_state = one.get("operations_points", "")
     if not (op_state.startswith("Approved") and "D-015" in op_state and "provisional" in op_state.lower()):
         fail.append(f"STATUS: Operations Points state is {op_state!r}, expected the D-015 model with provisional values")
@@ -576,8 +576,8 @@ for label, name in stage2_files.items():
 if (DOCS / "stage-2" / stage2_files["trace"]).exists():
     tr = rd(DOCS / "stage-2" / stage2_files["trace"])
     ids_ = re.findall(r"^\| (REQ-\d{3}) ", tr, re.M)
-    if ids_ != [f"REQ-{i:03d}" for i in range(1, 704)]:
-        fail.append(f"tracker requirement IDs: {len(ids_)} rows, expected REQ-001..703")
+    if ids_ != [f"REQ-{i:03d}" for i in range(1, 870)]:
+        fail.append(f"tracker requirement IDs: {len(ids_)} rows, expected REQ-001..869")
     rows_ = [ln for ln in tr.splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
     if any(not re.search(r"\| (?:0[2-9]|1[0-5])[ABC]? \||\| all \|", ln) for ln in rows_):
         fail.append("tracker contains a requirement with no assigned prompt")
@@ -587,8 +587,8 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 199:
-        fail.append("design register does not carry DD-001..DD-199")
+    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 235:
+        fail.append("design register does not carry DD-001..DD-235")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -599,8 +599,8 @@ if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
         fail.append("design register does not record DD-019 -> DD-033 with provisional OP values")
 if (DOCS / "stage-2" / stage2_files["unresolved"]).exists():
     ur = rd(DOCS / "stage-2" / stage2_files["unresolved"])
-    if len(re.findall(r"^\| UD-\d{3} \|", ur, re.M)) != 49:
-        fail.append("unresolved register does not carry UD-001..UD-049")
+    if len(re.findall(r"^\| UD-\d{3} \|", ur, re.M)) != 60:
+        fail.append("unresolved register does not carry UD-001..UD-060")
 if (DOCS / "stage-2" / stage2_files["log"]).exists():
     lg = rd(DOCS / "stage-2" / stage2_files["log"])
     if "Prompt 03 checkpoint" not in lg or "Prompt 04 checkpoint" not in lg or "Prompt 05 checkpoint" not in lg or "Prompt 06A" not in lg or "Prompt 06B" not in lg:
@@ -637,10 +637,16 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
     if ("10A research complete" not in log_status("10")
             or "10B specification complete" not in log_status("10")
             or "Prompt 10C complete" not in log_status("10")
-            or "Prompt 11 next" not in log_status("10")):
-        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 11 next")
-    if lg.count("| Pending |") != 4:
-        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 4 (rows 12-15; row 11 records 11A complete)")
+            or "Prompt 12C next" not in log_status("10")):
+        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 12C next")
+    # 2026-11-07 (Prompt 12A review remediation): row 12 must say 12A is
+    # complete at the research/design-foundations level and 12B is next.
+    if ("12a complete at the research/design-foundations level" not in log_status("12").lower()
+            or "12b complete at the specification" not in log_status("12").lower()
+            or "12c next" not in log_status("12").lower()):
+        fail.append("Stage 2 progress log row 12 does not record 12A complete, 12B complete and 12C next")
+    if lg.count("| Pending |") != 3:
+        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 3 (rows 13-15; rows 11-12 record their sub-prompts complete)")
 
 # 7e-2. Phase 09B acceptance, Prompt 09C completion at the specification level
 # and downstream alignment (2026-11-03). Acceptance and 09C completion are
@@ -681,7 +687,7 @@ for uid in [f"UD-{i:03d}" for i in range(40, 50)]:
     status = cells[8] if len(cells) >= 9 else ""
     if not row or not status.startswith("Open"):
         fail.append(f"{uid} is not preserved as Open")
-if "**27 Resolved**" not in ur or "**4 Deferred to a future prompt**" not in ur or "**18 Open**" not in ur:
+if "**28 Resolved**" not in ur or "**3 Deferred to a future prompt**" not in ur or "**29 Open**" not in ur:
     fail.append("UD register counts changed during the acceptance record")
 
 roadmap01 = rd(DOCS / "stage-2" / "01_stage_2_prompt_roadmap.md")
@@ -826,6 +832,8 @@ _WORDS["one hundred and forty-three"] = 143
 _WORDS["one hundred and fifty-one"] = 151
 _WORDS["one hundred and five"] = 105
 _WORDS["one hundred and eight"] = 108
+_WORDS["one hundred and seventy-seven"] = 177
+_WORDS["one hundred and eighty-seven"] = 187
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):
@@ -872,19 +880,20 @@ if ur_doc.exists():
     ur = rd(ur_doc)
     urows = {m.group(1): ln for ln in ur.splitlines()
              if (m := re.match(r"\| (UD-\d{3}) \|", ln))}
-    expected_ids = [f"UD-{i:03d}" for i in range(1, 50)]
+    expected_ids = [f"UD-{i:03d}" for i in range(1, 61)]
     if sorted(urows) != expected_ids:
-        fail.append(f"unresolved register IDs are not UD-001..UD-049: {len(urows)} rows")
+        fail.append(f"unresolved register IDs are not UD-001..UD-060: {len(urows)} rows")
     resolved = {"UD-001", "UD-002", "UD-003", "UD-004", "UD-008", "UD-010",
                 "UD-011", "UD-014", "UD-015", "UD-016", "UD-018", "UD-019",
                 "UD-020", "UD-021", "UD-025", "UD-027", "UD-028", "UD-029",
                 "UD-030", "UD-009", "UD-013", "UD-033", "UD-012", "UD-039",
-                "UD-032"}
-    deferred = {"UD-022": "13", "UD-023": "13", "UD-024": "11",
+                "UD-032", "UD-024", "UD-034", "UD-035"}
+    deferred = {"UD-022": "13", "UD-023": "13",
                 "UD-031": "12"
                 }
     open_ud = ["UD-005", "UD-006", "UD-007", "UD-017", "UD-026", "UD-036",
-               "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049"]
+               "UD-037", "UD-038", "UD-040", "UD-041", "UD-042", "UD-043", "UD-044", "UD-045", "UD-046", "UD-047", "UD-048", "UD-049",
+               "UD-050", "UD-051", "UD-052", "UD-053", "UD-054", "UD-055", "UD-056", "UD-057", "UD-058", "UD-059", "UD-060"]
     def _ud_status(row: str) -> str:
         cells = [c.strip() for c in row.strip().strip("|").split("|")]
         return cells[8] if len(cells) >= 9 else ""
@@ -904,8 +913,8 @@ if ur_doc.exists():
         u6 = re.findall(r"^\| `?(UD-\d{3})`? \|", ur[ur.index("## 6."):], re.M)
         if u6 != non_resolved:
             fail.append(f"§6 inventory disagrees with non-resolved rows: {u6}")
-    if "**27 Resolved**" not in ur or "**4 Deferred to a future prompt**" not in ur or "**18 Open**" not in ur:
-        fail.append("unresolved register does not state the reconciling 27/4/18 counts")
+    if "**28 Resolved**" not in ur or "**3 Deferred to a future prompt**" not in ur or "**29 Open**" not in ur:
+        fail.append("unresolved register does not state the reconciling 28/3/29 counts")
 
 for did in [f"D-{i:03d}" for i in range(24, 31)]:
     drow = next((ln for ln in dec.splitlines() if ln.startswith(f"| {did} |")), "")
@@ -928,7 +937,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-if ("DD-001" not in ctx04 or "DD-199" not in ctx04) or ("D-001" not in ctx04 or "D-151" not in ctx04):
+if ("DD-001" not in ctx04 or "DD-235" not in ctx04) or ("D-001" not in ctx04 or "D-187" not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")
@@ -960,8 +969,8 @@ if tr_doc.exists():
             if key in cell:
                 counts[key] += 1
                 break
-    if counts != {"Approved": 55, "Provisional": 630, "Open": 17, "Deferred": 1, "Proposed": 0}:
-        fail.append(f"requirements status counts are {counts}, expected 55/630/17/1/0")
+    if counts != {"Approved": 55, "Provisional": 774, "Open": 39, "Deferred": 1, "Proposed": 0}:
+        fail.append(f"requirements status counts are {counts}, expected 55/774/39/1/0")
 
 # 7i. Stage 2 Prompt 03 specification (2026-10-24) ---------------------------
 b03_doc = DOCS / "stage-2" / "09_account_onboarding_nation_creation_and_progression.md"
