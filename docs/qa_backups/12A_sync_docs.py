@@ -20,12 +20,8 @@ ALL = SURFACES + [ROOT / "docs" / "stage-2" / n for n in
 
 COMPLETE = ("**Prompt 12A — fair play, privacy, moderation and administration: research, "
             "evidence, requirements and design foundations — is complete at the research and "
-<<<<<<< HEAD
             "design-foundations level (2026-11-06; reconciled 2026-11-07 by the 12A-C1 pass; "
             "log §§73–§74)**")
-=======
-            "design-foundations level (2026-11-06; log §73)**")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 # Longest first: each rule rewrites one live-status claim shape.
 RULES = [
@@ -70,7 +66,6 @@ RULES = [
 ]
 
 BLOCKQUOTE = (
-<<<<<<< HEAD
     "> **12A status (2026-11-06; reconciled 2026-11-07 by the 12A-C1 pass — the dated entries "
     "in progress-log §§56–§74 hold the history):** **Prompt 12A — Fair play, privacy, moderation "
     "and administration: research, evidence, requirements and design foundations — is COMPLETE "
@@ -78,15 +73,6 @@ BLOCKQUOTE = (
     "are [the B-12 research report]({P}research/12A_fair_play_privacy_moderation_administration_"
     "research.md) (33 sections), [the source and benchmark register]({P}research/"
     "12A_sources_and_benchmarks_register.md) (153 source rows, 40 benchmark mechanics, 18 "
-=======
-    "> **12A status (2026-11-06; current — the dated entries in progress-log §§56–§73 hold the "
-    "history):** **Prompt 12A — Fair play, privacy, moderation and administration: research, "
-    "evidence, requirements and design foundations — is COMPLETE at the research and "
-    "design-foundations level (documentation only).** Its three deliverables are "
-    "[the B-12 research report]({P}research/12A_fair_play_privacy_moderation_administration_"
-    "research.md) (33 sections), [the source and benchmark register]({P}research/"
-    "12A_sources_and_benchmarks_register.md) (152 source rows, 40 benchmark mechanics, 18 "
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     "comparator profiles) and [the requirements, integration and risk registers]({P}research/"
     "12A_requirements_integration_and_risk_registers.md) (106 candidate requirements, 30 "
     "twelve-field dependency rows, 32 threat rows, 15 failure postures, 15 open questions). "
@@ -95,7 +81,6 @@ BLOCKQUOTE = (
     "and remain Open**, and no owner-reserved decision was resolved. No global `REQ-` was "
     "allocated: **`REQ-763` remains the frontier and `REQ-764` is reserved for Prompt 12B**. The "
     "independent validator [`docs/qa_backups/12A_validate_foundations.py`]"
-<<<<<<< HEAD
     "({QA}12A_validate_foundations.py) passes **45/45** checks with **10/10** positive and "
     "**33/33** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
     "0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. **The 12A-C1 corrective pass "
@@ -117,20 +102,6 @@ BLOCKQUOTE = (
     "executed verification job exists. The prototype is not security-verified.** **Prompt 12B "
     "— B-12 rulebook and formula register — remains next in the roadmap, has not started, and "
     "requires separate owner authorization once this reconciled foundation is accepted.**\n")
-=======
-    "({QA}12A_validate_foundations.py) passes **35/35** checks with **10/10** positive and "
-    "**23/23** negative fixtures, and the 22 acceptance gates close at **15 PASS / 7 PARTIAL / "
-    "0 FAIL / 0 BLOCKED / 0 NOT RUN / 0 NOT APPLICABLE**. B-12's canonical rulebook path "
-    "**`stage-2/20_fair_play_and_player_protection.md` is reserved, not created** (D-163/DD-211). "
-    "**No new B-12 fair-play rule, penalty, duration, permission, moderation workflow or schema "
-    "was written by 12A, and no implementation exists; B-03 already specifies the inherited "
-    "enforcement rules — pair restrictions, shared-network review, preservation orders, "
-    "retention and appeals — that B-12 must adopt rather than re-decide. The Supabase "
-    "prototype's client-writable `profiles.treasury` column and its unprotected `audit` table "
-    "remain open defects, and the prototype is not security-verified.** **Prompt 12B — B-12 "
-    "rulebook and formula register — is next in the "
-    "roadmap, has not started, and is not authorized to start by this prompt.**\n")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 
 def build_blockquote(prefix: str, qa: str) -> str:

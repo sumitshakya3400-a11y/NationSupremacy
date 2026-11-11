@@ -16,17 +16,12 @@ This file records **evidence**, not rules. Nothing here approves a Nation Suprem
 
 | Namespace | Meaning | Range |
 |---|---|---|
-<<<<<<< HEAD
 | `12A-RS-###` | One registered evidence row: an external research source, an internal research finding or an absence-of-evidence finding | `12A-RS-001` … `12A-RS-153` in §2–§6, contiguous with no gaps |
-=======
-| `12A-RS-###` | One external research source row | `12A-RS-001` … `12A-RS-152` in §2–§6, contiguous with no gaps |
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 | `12A-BM-###` | One benchmark **mechanism** entry — a comparison of an underlying design, not a feature list | `12A-BM-001` … `12A-BM-040` |
 | `12A-CMP-##` | One comparator-platform profile | `12A-CMP-01` … `12A-CMP-18` |
 
 This file creates **no** global `REQ-`, `D-`, `DD-`, `UD-`, `SEC-`, `TH-`, `ST-` or `OSQ-` identifier. Stage-1 Report 08's namespaces are reused **by reference only** and never renumbered. Every `12A-` identifier carries a letter segment between the two hyphens, so it cannot be confused with Stage-1 Report 5's internal section labels of the form `§12A-9`.
 
-<<<<<<< HEAD
 ### 1.3 Source class and source-type vocabularies (mandatory on every row)
 
 **Source class** distinguishes who produced the evidence. It is separate from the confidence rating, which measures how well the row was read.
@@ -38,18 +33,11 @@ This file creates **no** global `REQ-`, `D-`, `DD-`, `UD-`, `SEC-`, `TH-`, `ST-`
 | `ABSENCE-OF-EVIDENCE FINDING` | A finding that a specific piece of evidence could not be retrieved anywhere the pass searched; it records an absence, not a measurement | `12A-RS-152` |
 
 `12A-RS-152` belongs to both internal classes: it is an internal research finding whose content is an absence-of-evidence finding. That dual label is deliberate; it is **not** an external citation and must never be counted as one. The type column uses these tokens:
-=======
-### 1.3 Source-type vocabulary (mandatory on every row)
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 | Type | Meaning | Weight |
 |---|---|---|
 | `LEGISLATION` | Treaty, regulation, directive, statutory code | Highest for obligations; jurisdiction-conditional |
-<<<<<<< HEAD
 | `REGULATOR` | Supervisory-authority guidance, enforcement decisions, codes, press releases | High for interpretation; binding only where it quotes an obligation |
-=======
-| `REGULATOR` | Supervisory-authority guidance, enforcement decisions, codes | High for interpretation; binding only where it quotes an obligation |
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 | `STANDARDS` | IETF, OWASP, NIST, ISO/IEC and similar catalogues | High for method; voluntary unless contractually invoked |
 | `OFFICIAL-OPERATOR` | The operator of the system described, about its own product | High for **what that product does**; zero for how well it works |
 | `OFFICIAL-VENDOR` | Platform or infrastructure documentation | High for platform mechanics and limits |
@@ -58,12 +46,8 @@ This file creates **no** global `REQ-`, `D-`, `DD-`, `UD-`, `SEC-`, `TH-`, `ST-`
 | `INDUSTRY` | Conference session or named-practitioner engineering write-up | Medium; self-reported |
 | `TERTIARY` | Encyclopaedic or aggregator content | Context only |
 | `COMMUNITY` | Player or third-party reporting | Reported experience, not verified fact |
-<<<<<<< HEAD
 | `ACADEMIC` | Student or non-refereed academic work | Context only |
 | `RESEARCH FINDING` | This pass's own internal finding, including an absence-of-evidence finding; not an external publication | The pass's own search log or analysis; never a substitute for an external citation |
-=======
-| `RETRIEVAL-FAILED` | Could not be read in this environment | **Metadata only — never load-bearing** |
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 ### 1.4 Confidence vocabulary
 
@@ -71,15 +55,9 @@ This file creates **no** global `REQ-`, `D-`, `DD-`, `UD-`, `SEC-`, `TH-`, `ST-`
 
 ### 1.5 Access date and retrieval honesty
 
-<<<<<<< HEAD
 The original corpus — `12A-RS-001` through `12A-RS-152` — was accessed **2026-11-06**. `12A-RS-153` was added and retrieved on **2026-11-07**, and its own date cell records that later retrieval. Individual retrieval dates in each row remain authoritative; this paragraph does not overwrite them. Machine retrieval was refused by several primary authorities; the refusals are recorded in §9 and the affected rows are downgraded rather than quietly dropped. In particular, **GDPR article numbering was read from a non-commercial mirror of the Official Journal text and independently corroborated inside regulator PDFs** (EDPB Guidelines 01/2025 and 9/2022) and a vendor DPA; it was **not** read from EUR-Lex, which returned an empty HTTP 202 body. Any claim resting on a blocked primary source is marked `Low` or `Unverified`.
 
 **Reference capture is not uniform, and this register does not pretend it is.** Nineteen of the 153 rows carry a title-and-publisher reference with no URL: two are cross-references to another row that holds the link (`12A-RS-122`, `12A-RS-123`), fifteen state `URL not captured in this pass` because they were read as search-index excerpts or through a text-extraction proxy, one (`12A-RS-037`) is an index record only, and one (`12A-RS-152`) is this pass's own search log. Every such row says so in its own reference cell rather than presenting an unverified link; four further rows are cited by arXiv identifier and carry the resolver link for it. The `12A-03` validator check enforces that each row is either a live URL or one of these explicit disclosures.
-=======
-All rows were accessed **2026-11-06**. Machine retrieval was refused by several primary authorities; the refusals are recorded in §9 and the affected rows are downgraded rather than quietly dropped. In particular, **GDPR article numbering was read from a non-commercial mirror of the Official Journal text and independently corroborated inside regulator PDFs** (EDPB Guidelines 01/2025 and 9/2022) and a vendor DPA; it was **not** read from EUR-Lex, which returned an empty HTTP 202 body. Any claim resting on a blocked primary source is marked `Low` or `Unverified`.
-
-**Reference capture is not uniform, and this register does not pretend it is.** Nineteen of the 152 rows carry a title-and-publisher reference with no URL: two are cross-references to another row that holds the link (`12A-RS-122`, `12A-RS-123`), fifteen state `URL not captured in this pass` because they were read as search-index excerpts or through a text-extraction proxy, one (`12A-RS-037`) is an index record only, and one (`12A-RS-152`) is this pass's own search log. Every such row says so in its own reference cell rather than presenting an unverified link; four further rows are cited by arXiv identifier and carry the resolver link for it. The `12A-03` validator check enforces that each row is either a live URL or one of these explicit disclosures.
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 ### 1.6 Three corrections this research made to its own starting premises
 
@@ -280,12 +258,8 @@ EUR-Lex refused direct fetching (empty HTTP 202) throughout, so the Digital Serv
 | `12A-RS-149` | NIST SP 800-86 — Guide to Integrating Forensic Techniques into Incident Response — https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf | 2006 | STANDARDS (government guidance) | Forensic readiness is "identification, collection, examination, and analysis of data **while preserving the integrity of the information and maintaining a strict chain of custody** for the data"; "Because electronic logs and other records can be altered or otherwise manipulated, organizations should be prepared… to **demonstrate the integrity** of such records"; "Although it may not be feasible to record every event… having a record of the major events and actions taken helps ensure that nothing has been overlooked" | Dated; expressly not legal advice | The professional standard behind `12A-CR-064` and `12A-CR-065` — and it explicitly accepts selective recording | Evidence artefacts need capture time, actor, source and integrity reference; the "not every event" clause is the sanctioned basis for the `CR-090` tiering rule | High |
 | `12A-RS-150` | Trustworthy High-Performance Multiplayer Games with Trust-but-Verify Protocol Sensor Validation — Joens, Jillepalli & Sheldon, *Sensors* (MDPI), via PMC — https://pmc.ncbi.nlm.nih.gov/articles/PMC11280899/ | 2024 | PEER-REVIEWED | Reports false positives when legitimate users deviate from assumed behaviour — actions such as "rage-clicking" being misdetected as exploits | Lab-scale; not an operator false-positive rate | Empirical support for the project's own invariant that behavioural deviation is not proof | Anomaly signals may only **raise** an investigation; a sanction needs a second independent signal (`12A-CR-004`) | High |
 | `12A-RS-151` | Detecting Cheaters for Multiplayer Games — Yeung & Yan — https://prof-jeffyan.github.io/nime06.pdf | 2006 | PEER-REVIEWED | "Experiments show that not only we can effectively detect cheaters, but the **false positive rate is extremely low**" — in a deliberately server-authoritative log-based setting | Small-N and dated; not generalisable to kernel-mode environments | Nation Supremacy **is** the server-authoritative setting this method assumed | The most defensible detection class here is server-side rule-violation evidence from the ledger, not statistical outlier mining | Medium |
-<<<<<<< HEAD
 | `12A-RS-152` | Cross-operator review of published appeal and overturn statistics — this pass's own search log, no external URL | 2026-11-06 (this pass) | RESEARCH FINDING (absence of evidence) | **No** official appeal success or overturn rate was retrievable for Valve, Riot, Blizzard, Bungie, Niantic, Epic, Jagex, Lichess or Chess.com; the circulated Chess.com "0.03 %" figure is third-party only | An absence, not a measurement; internal to this pass and not an external publication | Almost nobody publishes this, so publishing it is a genuine differentiator and is cheap from an append-only spine | Strengthens `12A-CR-105` and `12A-CR-104`; the scope decision remains `UD-058` | High (as an absence finding) |
 | `12A-RS-153` | EU-level coordinated actions in the gaming sector — Italian Competition Authority (AGCM) leads action on Microsoft group video games — https://en.agcm.it/en/media/press-releases/2026/10/EU-level-coordinated-actions-in-the-gaming-sector-The-Italian-Competition-Authority-is-leading-action-in-relation-to-Microsoft-group-video-games | 2026-10-08 (retrieved 2026-11-07) | REGULATOR | AGCM press release dated Rome, 8 October 2026: AGCM is the lead authority, with the consumer-protection authorities of Norway and Denmark, in a coordinated Consumer Protection Cooperation action against Activision Blizzard UK Limited and other Microsoft group companies; the action seeks to establish whether a "widespread infringement" under Article 3(3) of Regulation (EU) 2017/2394 has occurred, concerning transparency and fairness in in-game virtual currencies, purchases made through multiple currencies and bundles, dark patterns, inadequate parental controls and a lack of assistance when accounts are blocked; earlier national investigations concerned Diablo Immortal and Call of Duty | Announcement of an **ongoing** coordinated action only: no infringement finding, no tested evidence and no outcome; relevance to Nation Supremacy depends on the actual product, monetisation model, player population and applicable jurisdictions, and creates no automatic legal obligation; owner and legal-counsel authority remains `UD-017` | Regulatory context for virtual-currency transparency, bundles, dark patterns, parental controls and blocked-account assistance; conditional on the same features and jurisdictions being present | Cite only as consumer-protection watchlist context; do not infer a legal duty or a final finding, and keep monetisation/consumer-protection exposure separate from conduct moderation | High |
-=======
-| `12A-RS-152` | Cross-operator review of published appeal and overturn statistics — this pass's own search log, no external URL | 2026-11-06 (this pass) | Research finding (an absence) | **No** official appeal success or overturn rate was retrievable for Valve, Riot, Blizzard, Bungie, Niantic, Epic, Jagex, Lichess or Chess.com; the circulated Chess.com "0.03 %" figure is third-party only | An absence, not a measurement | Almost nobody publishes this, so publishing it is a genuine differentiator and is cheap from an append-only spine | Strengthens `12A-CR-105` and `12A-CR-104`; the scope decision remains `UD-058` | High (as an absence finding) |
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 ### 6.2 What Register E changed in the design
 
@@ -438,19 +412,13 @@ Recorded so that no later prompt treats these as settled, and so that a future p
 | Register B — multi-account | 23 | `12A-RS-043` … `12A-RS-065` | — |
 | Register C — collusion and market abuse | 14 | `12A-RS-066` … `12A-RS-079` | — |
 | Register D — privacy and data protection | 41 | `12A-RS-080` … `12A-RS-120` | — |
-<<<<<<< HEAD
 | Register E — moderation, appeals, administration, auditability | 33 | `12A-RS-121` … `12A-RS-153` | — |
 | **All five registers** | **153** | contiguous, no gaps, no duplicates | `High` **65** · `Medium` **71** · `Low` **14** · `Unverified` **3** |
-=======
-| Register E — moderation, appeals, administration, auditability | 32 | `12A-RS-121` … `12A-RS-152` | — |
-| **All five registers** | **152** | contiguous, no gaps, no duplicates | `High` **64** · `Medium` **71** · `Low` **14** · `Unverified` **3** |
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 | Benchmark mechanisms | 40 | `12A-BM-001` … `12A-BM-040` | one row per trade-off comparison |
 | Comparator profiles | 18 | `12A-CMP-01` … `12A-CMP-18` | — |
 
 Confidence is counted at the **leading token** of the cell. Eleven rows carry a deliberately compound rating to avoid overstating a partially read source — for example `High (quote) / Medium (ladder detail)` at `12A-RS-125`, `High (content); jurisdiction conditional` at `12A-RS-133`, `High (text); Unverified (applicability)` at `12A-RS-134`, and `High (alleged facts); Unverified (outcome)` at `12A-RS-139` — and those nuances are part of the record, not noise.
 
-<<<<<<< HEAD
 ### 10.1 Evidence-access classification (separate from confidence)
 
 Confidence answers "how strong is this row for the claim?"; access answers "how much of the source was actually read?" They are deliberately different measurements. One mutually exclusive access class is assigned per row; the snippet and retrieval-failure tags are **overlapping flags**, so their counts are subsets, not additional rows.
@@ -471,11 +439,6 @@ The 13 rows not read in full are therefore `12A-RS-017`, `-021`, `-022`, `-030`,
 Nine sources carry a retrieval failure in substance (`12A-RS-017`, `-021`, `-022`, `-030`, `-039`, `-077`, `-127`, `-129`, `-132`) and none of them supports a requirement on its own. Of the 106 candidate requirements in the companion register, **61** cite at least one external source identifier in their evidence field and **45** rest on internal project evidence — which is correct for the 46 rows whose status is `Restates approved policy`, since an approved decision is itself the source.
 
 These totals are recomputed from the rows by `12A_validate_foundations.py` checks `12A-02`, `12A-03`, `12A-16`, `12A-17` and the reconciliation checks `12A-36`–`12A-44`, and are not asserted here.
-=======
-Nine sources carry a retrieval failure in substance (`12A-RS-017`, `-021`, `-022`, `-030`, `-039`, `-077`, `-127`, `-129`, `-132`) and none of them supports a requirement on its own. Of the 106 candidate requirements in the companion register, **61** cite at least one external source identifier in their evidence field and **45** rest on internal project evidence — which is correct for the 46 rows whose status is `Restates approved policy`, since an approved decision is itself the source.
-
-These totals are recomputed from the rows by `12A_validate_foundations.py` checks `12A-02`, `12A-03`, `12A-16` and `12A-17`, and are not asserted here.
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 ## 11. Supporting-only sources
 

@@ -548,13 +548,8 @@ if all(blocks):
         fail.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     if one.get("stage_2") != "IN PROGRESS":
         fail.append(f"STATUS: stage_2 is {one.get('stage_2')!r}, expected IN PROGRESS")
-<<<<<<< HEAD
     if one.get("stage_2_next_prompt") != "12C":
         fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 12C")
-=======
-    if one.get("stage_2_next_prompt") != "12B":
-        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 12B")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     op_state = one.get("operations_points", "")
     if not (op_state.startswith("Approved") and "D-015" in op_state and "provisional" in op_state.lower()):
         fail.append(f"STATUS: Operations Points state is {op_state!r}, expected the D-015 model with provisional values")
@@ -581,13 +576,8 @@ for label, name in stage2_files.items():
 if (DOCS / "stage-2" / stage2_files["trace"]).exists():
     tr = rd(DOCS / "stage-2" / stage2_files["trace"])
     ids_ = re.findall(r"^\| (REQ-\d{3}) ", tr, re.M)
-<<<<<<< HEAD
     if ids_ != [f"REQ-{i:03d}" for i in range(1, 870)]:
         fail.append(f"tracker requirement IDs: {len(ids_)} rows, expected REQ-001..869")
-=======
-    if ids_ != [f"REQ-{i:03d}" for i in range(1, 764)]:
-        fail.append(f"tracker requirement IDs: {len(ids_)} rows, expected REQ-001..763")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     rows_ = [ln for ln in tr.splitlines() if re.match(r"\| REQ-\d{3} \|", ln)]
     if any(not re.search(r"\| (?:0[2-9]|1[0-5])[ABC]? \||\| all \|", ln) for ln in rows_):
         fail.append("tracker contains a requirement with no assigned prompt")
@@ -597,13 +587,8 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-<<<<<<< HEAD
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 235:
-        fail.append("design register does not carry DD-001..DD-235")
-=======
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 225:
-        fail.append("design register does not carry DD-001..DD-225")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
+    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 245:
+        fail.append("design register does not carry DD-001..DD-245 contiguously")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -652,7 +637,6 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
     if ("10A research complete" not in log_status("10")
             or "10B specification complete" not in log_status("10")
             or "Prompt 10C complete" not in log_status("10")
-<<<<<<< HEAD
             or "Prompt 12C next" not in log_status("10")):
         fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 12C next")
     # 2026-11-07 (Prompt 12A review remediation): row 12 must say 12A is
@@ -661,15 +645,6 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
             or "12b complete at the specification" not in log_status("12").lower()
             or "12c next" not in log_status("12").lower()):
         fail.append("Stage 2 progress log row 12 does not record 12A complete, 12B complete and 12C next")
-=======
-            or "Prompt 12B next" not in log_status("10")):
-        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 12B next")
-    # 2026-11-07 (Prompt 12A review remediation): row 12 must say 12A is
-    # complete at the research/design-foundations level and 12B is next.
-    if ("12A complete at the research/design-foundations level" not in log_status("12")
-            or "12B next and not started" not in log_status("12")):
-        fail.append("Stage 2 progress log row 12 does not record 12A complete and 12B next")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     if lg.count("| Pending |") != 3:
         fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 3 (rows 13-15; rows 11-12 record their sub-prompts complete)")
 
@@ -858,10 +833,8 @@ _WORDS["one hundred and fifty-one"] = 151
 _WORDS["one hundred and five"] = 105
 _WORDS["one hundred and eight"] = 108
 _WORDS["one hundred and seventy-seven"] = 177
-<<<<<<< HEAD
 _WORDS["one hundred and eighty-seven"] = 187
-=======
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
+_WORDS["one hundred and ninety-seven"] = 197
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):
@@ -965,11 +938,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-<<<<<<< HEAD
-if ("DD-001" not in ctx04 or "DD-235" not in ctx04) or ("D-001" not in ctx04 or "D-187" not in ctx04):
-=======
-if ("DD-001" not in ctx04 or "DD-225" not in ctx04) or ("D-001" not in ctx04 or "D-177" not in ctx04):
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
+if ("DD-001" not in ctx04 or "DD-245" not in ctx04) or ("D-001" not in ctx04 or "D-197" not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")
@@ -1001,13 +970,8 @@ if tr_doc.exists():
             if key in cell:
                 counts[key] += 1
                 break
-<<<<<<< HEAD
     if counts != {"Approved": 55, "Provisional": 774, "Open": 39, "Deferred": 1, "Proposed": 0}:
         fail.append(f"requirements status counts are {counts}, expected 55/774/39/1/0")
-=======
-    if counts != {"Approved": 55, "Provisional": 688, "Open": 19, "Deferred": 1, "Proposed": 0}:
-        fail.append(f"requirements status counts are {counts}, expected 55/688/19/1/0")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 # 7i. Stage 2 Prompt 03 specification (2026-10-24) ---------------------------
 b03_doc = DOCS / "stage-2" / "09_account_onboarding_nation_creation_and_progression.md"

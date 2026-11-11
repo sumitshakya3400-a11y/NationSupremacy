@@ -266,7 +266,7 @@ No formula is approved for implementation. A structural formula is a fixed algeb
 | Protective trigger and append-only behaviour on the audit table | Stage 5 | `P12B-14`, `P12B-16` | Requires schema work outside 12B scope |
 | Ledger conservation test against `F-FP-014` | Stage 5 | `P12B-12` | No ledger test harness exists |
 | Case-record and evidence-store schema | Stage 5 | `P12B-13` | Schema is out of scope |
-| Moderation, appeal and emergency workflows | Prompt 12C | `P12B-08`, `P12B-10` | 12C is not authorized and its deliverables are prohibited here |
+| Moderation, appeal and emergency workflows | Prompt 12C | `P12B-08`, `P12B-10` | At the 12B baseline 12C was unauthorized and its deliverables were prohibited in 12B's own documents; the owner subsequently authorized Prompt 12C and its documentation deliverables are complete (§8 and [`20_fair_play_and_player_protection_workflows.md`](20_fair_play_and_player_protection_workflows.md), [`…_integration.md`](20_fair_play_and_player_protection_integration.md), [`…_edge_cases_acceptance.md`](20_fair_play_and_player_protection_edge_cases_acceptance.md)), which still supplies no 12B evidence: specified acceptance tests are not executed production tests, and 12C owner acceptance remains pending |
 | Disclosure-safe screens and response shapes | Prompt 13 | `P12B-07`, `P12B-18` | Interface design belongs to Prompt 13 |
 | Calibrated weights, durations and caps | Prompt 14 / owner | `P12B-03`, `P12B-09`, `P12B-19` | 12B must not invent numbers |
 | Legal and owner rulings on the 20 Open rows | Owner/counsel | `P12B-05`, `P12B-10`, `P12B-21` | 12B may not close owner-reserved decisions |
@@ -275,7 +275,7 @@ No formula is approved for implementation. A structural formula is a fixed algeb
 
 ## 8. Prompt 12C handoff
 
-Prompt 12C is **not started and not authorized**. If authorized, it must add:
+*(Recorded at the 12B baseline, 2026-11-07: at that date Prompt 12C was **not started and not authorized**, and this section stated what it would have to add if ever authorized. That boundary statement is preserved and still means that no 12B document authorizes any later prompt.)* **Current state (2026-11-11):** the owner subsequently authorized Prompt 12C and its documentation work is complete — [`20_fair_play_and_player_protection_workflows.md`](20_fair_play_and_player_protection_workflows.md) (10 `FPJ-` journeys, 52 `FPW-` workflows), [`20_fair_play_and_player_protection_integration.md`](20_fair_play_and_player_protection_integration.md) (the twenty `INT-` contracts reused with none added, the thirty `12A-INT-` dependencies mapped, `C-01`/`C-02` and 10 `FPG-` gaps) and [`20_fair_play_and_player_protection_edge_cases_acceptance.md`](20_fair_play_and_player_protection_edge_cases_acceptance.md) (100 `FPE-` edge cases, 378 `FPA-` specifications, the 106-row `REQ-764`…`REQ-869` ledger with 0 orphans, 20 `P12C-` gates at 16 `PASS` / 2 `PARTIAL` / 2 `BLOCKED`) — so the six obligations below are now answered by specified documents, **not** by implemented or executed software, and owner acceptance of the 12C specification set remains pending. As specified, 12C had to add:
 
 1. Player and moderator journeys for reporting, investigation, decision, sanction, correction, appeal, emergency action and restoration — with entry conditions, states, failure paths and exit conditions.
 2. A workflow library for each moderation, administrative, correction and audit operation, including authority, evidence state, idempotency and audit event.

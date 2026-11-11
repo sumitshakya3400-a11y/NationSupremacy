@@ -107,11 +107,7 @@ class StaleNextActionTests(unittest.TestCase):
                     # Prompt 11 family at the design level, so the live prompt was 12.
                     # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt
                     # is now 12B.
-<<<<<<< HEAD
                     self.assertEqual(status_next_prompt(text), "12C")
-=======
-                    self.assertEqual(status_next_prompt(text), "12B")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
         texts = {p.name: p.read_text(encoding="utf-8", errors="replace")
                  for p in files if p.name in status_files}
         self.assertEqual(continuity_problems(texts), [])
@@ -241,32 +237,20 @@ class CurrentStateConsistencyTests(unittest.TestCase):
         self.assertEqual(pending, [f"{i:02d}" for i in range(13, 16)])
         row12 = next(row for row in rows if row[0] == "12")
         self.assertIn("12A COMPLETE at the research and design-foundations level", row12[2])
-<<<<<<< HEAD
         self.assertIn("12B SPECIFICATION COMPLETE", row12[2])
         self.assertIn("Prompt 12C is next", row12[2])
-=======
-        self.assertIn("Prompt 12B is next, has not started", row12[2])
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
         row10 = next(row for row in rows if row[0] == "10")
         self.assertIn("10B specification complete", row10[2])
         self.assertIn("Prompt 10C complete", row10[2])
         # 2026-11-06 (Prompt 12A): 12A closed at the research level, so row 10
         # must name 12B as the live sub-prompt instead of presenting 12 as next.
-<<<<<<< HEAD
         self.assertIn("Prompt 12C is next", row10[2])
-=======
-        self.assertIn("Prompt 12B is next", row10[2])
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
         row11 = next(row for row in rows if row[0] == "11")
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11[2])
         self.assertIn("11C complete at the specification/documentation level", row11[2])
-<<<<<<< HEAD
         self.assertIn("Prompt 12C next and not started", row11[2])
-=======
-        self.assertIn("Prompt 12B next and not started", row11[2])
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
         # A research pass must never be described as a written rulebook.
         self.assertIn("b-11 rulebook at the specification level", row11[2].lower())
         self.assertNotRegex(
@@ -476,12 +460,8 @@ class SubPromptStatusTests(unittest.TestCase):
         # not be. The 12 family also had to join the sub-prompt pattern first:
         # before it, "12A" was not a recognised sub-prompt token at all.
         self.assertEqual(len(subprompt_status_problems(live)), 1)
-<<<<<<< HEAD
         self.assertEqual(subprompt_status_problems("Prompt 12C is the next intended task."), [])
         self.assertEqual(len(subprompt_status_problems("Prompt 12B is the next intended task.")), 1)
-=======
-        self.assertEqual(subprompt_status_problems("Prompt 12B is the next intended task."), [])
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
         self.assertEqual(len(subprompt_status_problems("Prompt 12A is the next intended task.")), 1)
 
 if __name__ == "__main__":

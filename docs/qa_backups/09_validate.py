@@ -404,13 +404,8 @@ if blocks:
     else:
         failures.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     checks_ref[0] += 1
-<<<<<<< HEAD
     if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12C":
         print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12C")
-=======
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12B":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12B")
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -490,10 +485,8 @@ WORDS["one hundred and fifty-one"] = 151
 WORDS["one hundred and sixty-one"] = 161
 WORDS["one hundred and sixty-two"] = 162
 WORDS["one hundred and seventy-seven"] = 177
-<<<<<<< HEAD
 WORDS["one hundred and eighty-seven"] = 187
-=======
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
+WORDS["one hundred and ninety-seven"] = 197
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -526,11 +519,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
       "tracker states that zero validations have been executed")
 
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
-<<<<<<< HEAD
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 236)], "design register carries DD-001..DD-235", str(len(dd_rows)))
-=======
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 226)], "design register carries DD-001..DD-225", str(len(dd_rows)))
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 246)], "design register carries DD-001..DD-245 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -578,30 +567,19 @@ check("**ACCEPTED" in log_status("09")
       "progress log row 09 records Phase 09B accepted, 09C complete, 10A complete and 10B complete", log_status("09"))
 check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
-<<<<<<< HEAD
       and "Prompt 12C next" in log_status("10"),
       "progress log row 10 records 10B complete, 10C complete and Prompt 12C next", log_status("10"))
-=======
-      and "Prompt 12B next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 12B next", log_status("10"))
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 # 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
 # pending count, so a row that silently regresses to "Pending" or to 12A-live
 # fails here even though the count of bare Pending rows is unchanged. The
 # status cell must *begin* with the 12A completion text, so a cell that names
 # some other state first cannot borrow 12A's completion from later in the cell.
 status12 = log_status("12").replace("**", "")
-<<<<<<< HEAD
 low12 = status12.lower()
 check(low12.startswith("12a complete at the research/design-foundations level")
       and "12b complete at the specification" in low12
       and "12c next" in low12,
       "progress log row 12 records 12A complete, 12B complete and 12C next", log_status("12"))
-=======
-check(status12.startswith("12A complete at the research/design-foundations level")
-      and "12B next and not started" in status12,
-      "progress log row 12 records 12A complete and 12B next", log_status("12"))
->>>>>>> 41111204d70371e7c649798db9f60eb5ef9f4cf3
 
 # 15f. The *current* next action (2026-10-23 micro-correction) ----------------
 # Section 14 proves Prompt 02 is mentioned somewhere. This section proves no
