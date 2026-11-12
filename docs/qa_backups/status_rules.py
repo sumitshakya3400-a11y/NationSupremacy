@@ -113,7 +113,7 @@ def stale_next_actions(text: str, current_prompt: int = 4) -> list[str]:
 # claim is attributed to a sub-prompt only up to the next sub-prompt mention,
 # so "07B is complete; 07C is next" is never read as a 07B claim.
 
-CURRENT_SUBPROMPT = "12B"
+CURRENT_SUBPROMPT = "13B"
 # 2026-10-29: Prompt 08 is split too, so 08A joins the completed set.
 # 2026-10-30: 08B is complete as well, so it is caught the same way, and
 # 08C closes the set.
@@ -141,10 +141,20 @@ CURRENT_SUBPROMPT = "12B"
 # "12A" was not a recognised sub-prompt token at all.
 # 2026-11-06 (Prompt 12A closure): 12A joins the completed set, so the live
 # sub-prompt is 12B and a sentence naming 12A as next is now stale.
+# 2026-11-07 (Prompt 12B): the B-12 specification closed, so 12B joins the set.
+# 2026-11-10 (Prompt 12C): the 12C workflows, integration and acceptance
+# companions closed the 12 family at the specification/documentation level, so
+# 12C joins the completed set and the live prompt is Prompt 13.
+# 2026-11-11 (Prompt 13A): Prompt 13 is split into 13A research, architecture
+# and design foundations and 13B screen and component specifications, the same
+# shape as the 10, 11 and 12 families. 13A is complete at the research level, so
+# it joins the completed set and the live sub-prompt becomes 13B — which is why
+# the SUBPROMPT token range now reaches the 13 family.
 COMPLETED_SUBPROMPTS = ("07A", "07B", "07C", "08A", "08B", "08C", "09A", "09B", "09C",
-                        "10A", "10B", "10C", "11A", "11B", "11C", "12A", "12B")
+                        "10A", "10B", "10C", "11A", "11B", "11C", "12A", "12B", "12C",
+                        "13A")
 
-SUBPROMPT = re.compile(r"\b((?:0[789]|1[0-2])[A-C])\b")
+SUBPROMPT = re.compile(r"\b((?:0[789]|1[0-3])[A-C])\b")
 
 NEXT_TASK_CLAIM = re.compile(
     r"\b(?:is|remains|stays)\s+(?:still\s+)?the\s+next(?:\s+(?:intended|outstanding|authorized))?"

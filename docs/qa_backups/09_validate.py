@@ -404,8 +404,11 @@ if blocks:
     else:
         failures.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     checks_ref[0] += 1
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "12C":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 12C")
+    # 2026-11-11 (Prompt 13A): the frontier advanced through 12C (owner-accepted
+    # 2026-11-11) and the 13A research pass, so the live sub-prompt is 13B. The
+    # rule itself is unchanged — the STATUS block must still name one live prompt.
+    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "13B":
+        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 13B")
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -487,6 +490,9 @@ WORDS["one hundred and sixty-two"] = 162
 WORDS["one hundred and seventy-seven"] = 177
 WORDS["one hundred and eighty-seven"] = 187
 WORDS["one hundred and ninety-seven"] = 197
+# 2026-11-11 (Prompt 13A): D-198…D-205 move the recorded count to 205; the older
+# spellings stay in the map because historical status blocks still use them.
+WORDS["two hundred and five"] = 205
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -519,7 +525,9 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
       "tracker states that zero validations have been executed")
 
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 246)], "design register carries DD-001..DD-245 contiguously", str(len(dd_rows)))
+# 2026-11-11 (Prompt 13A): DD-246…DD-253 are the mirrored 13A positions, so the
+# contiguous expectation advances; the check still derives the list from the file.
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 254)], "design register carries DD-001..DD-253 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -556,7 +564,9 @@ check("**Complete**" in log_status("07"), "progress log marks Prompt 07 complete
 # and only 12–15 stay pending.
 # 2026-11-06 (Prompt 12A): row 12 is no longer a bare Pending row, so only
 # 13–15 stay pending.
-check(log.count("| Pending |") == 3, "progress log keeps Prompts 13-15 pending", str(log.count("| Pending |")))
+# 2026-11-11 (Prompt 13A): row 13 records the 13A completion, so only 14–15 stay
+# pending. The count is still derived from the log, not asserted as prose.
+check(log.count("| Pending |") == 2, "progress log keeps Prompts 14-15 pending", str(log.count("| Pending |")))
 check(all(k in next((ln for ln in log.splitlines() if ln.startswith("| 08 |")), "")
           for k in ("**08A complete**", "**08B complete**", "**08C complete**")),
       "progress log row 08 records 08A, 08B and 08C complete", "row 08")
@@ -567,8 +577,10 @@ check("**ACCEPTED" in log_status("09")
       "progress log row 09 records Phase 09B accepted, 09C complete, 10A complete and 10B complete", log_status("09"))
 check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
-      and "Prompt 12C next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 12C next", log_status("10"))
+      # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted,
+      # so row 10 must name 13B as the live prompt instead of 12C.
+      and "Prompt 13B next" in log_status("10"),
+      "progress log row 10 records 10B complete, 10C complete and Prompt 13B next", log_status("10"))
 # 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
 # pending count, so a row that silently regresses to "Pending" or to 12A-live
 # fails here even though the count of bare Pending rows is unchanged. The
@@ -578,8 +590,11 @@ status12 = log_status("12").replace("**", "")
 low12 = status12.lower()
 check(low12.startswith("12a complete at the research/design-foundations level")
       and "12b complete at the specification" in low12
-      and "12c next" in low12,
-      "progress log row 12 records 12A complete, 12B complete and 12C next", log_status("12"))
+      # 2026-11-11 (Prompt 13A): 12C completed on 2026-11-10 and the owner
+      # accepted it on 2026-11-11, so row 12 records the completion, not a claim
+      # that 12C is still unstarted.
+      and "12c complete at the specification" in low12,
+      "progress log row 12 records 12A complete, 12B complete and 12C complete", log_status("12"))
 
 # 15f. The *current* next action (2026-10-23 micro-correction) ----------------
 # Section 14 proves Prompt 02 is mentioned somewhere. This section proves no

@@ -639,8 +639,13 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C16]", "REQ-535")
 
     def test_49_req591_deferral_removed_fails(self):
+        # 2026-11-12 (Prompt 13A verification): the fixture used to *set* the cell
+        # to `**Provisional**`, which has been REQ-591's real status since Prompt
+        # 10B moved it, so the mutation was a no-op and C16 could not fire. It now
+        # introduces the regression the check is written to catch: reverting the
+        # row to Deferred.
         self.set_row_cell(
-            "stage-2/03_requirements_traceability.md", "REQ-591", 3, "**Provisional**"
+            "stage-2/03_requirements_traceability.md", "REQ-591", 3, "**Deferred**"
         )
         self.assert_failure(run_checks(self.root), "[C16]", "REQ-591")
 
@@ -677,7 +682,11 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
 
     def test_54_missing_decision_fails(self):
         self.delete_row("DECISIONS.md", "D-138")
-        self.assert_failure(run_checks(self.root), "[C17]", "D-001..D-142")
+        # 2026-11-12 (Prompt 13A verification): the expected message string is the
+        # C17 frontier label, which moves with the register (D-142 → D-187 → D-197
+        # → D-205). The defect being proven — a gap in the decision sequence must
+        # be reported — is unchanged.
+        self.assert_failure(run_checks(self.root), "[C17]", "D-001..D-205")
 
     def test_55_dd_tally_regression_fails(self):
         self.modify(
@@ -707,7 +716,12 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         self.assert_failure(run_checks(self.root), "[C18]", "specification-level qualifier")
 
     def test_59_next_prompt_changed_fails(self):
-        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 12B", "stage_2_next_prompt: 09")
+        # 2026-11-12 (Prompt 13A verification): the mutation target is the live
+        # STATUS value, which advanced 12B → 12C → 13B; against the old string the
+        # replace was a no-op, so the fixture proved nothing. The defect being
+        # proven — a STATUS block naming a closed prompt as live must fail — is
+        # unchanged.
+        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 13B", "stage_2_next_prompt: 09")
         self.assert_failure(run_checks(self.root), "[C18]", "stage_2_next_prompt")
 
     # ------------------------------------------------------------------

@@ -524,9 +524,12 @@ class AllianceValidatorTests(unittest.TestCase):
             path = root / "AI_CONTEXT.md"
             text = read(path)
             # 2026-11-07 (Prompt 12A review remediation): 12A is complete and
-            # 12B is the registered next sub-prompt, so disagreement is a
+            # 12B was the registered next sub-prompt, so disagreement is a
             # STATUS block pointing elsewhere.
-            write(path, text.replace("stage_2_next_prompt: 12B", "stage_2_next_prompt: 09C"))
+            # 2026-11-11 (Prompt 13A): the live value is 13B, so the mutation
+            # targets it; 09C is a closed historical sub-prompt and must still be
+            # rejected as the active prompt.
+            write(path, text.replace("stage_2_next_prompt: 13B", "stage_2_next_prompt: 09C"))
 
         self.assert_fails("neg40", mutate)
 

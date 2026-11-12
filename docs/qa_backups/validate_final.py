@@ -548,8 +548,8 @@ if all(blocks):
         fail.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     if one.get("stage_2") != "IN PROGRESS":
         fail.append(f"STATUS: stage_2 is {one.get('stage_2')!r}, expected IN PROGRESS")
-    if one.get("stage_2_next_prompt") != "12C":
-        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 12C")
+    if one.get("stage_2_next_prompt") != "13B":
+        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 13B")
     op_state = one.get("operations_points", "")
     if not (op_state.startswith("Approved") and "D-015" in op_state and "provisional" in op_state.lower()):
         fail.append(f"STATUS: Operations Points state is {op_state!r}, expected the D-015 model with provisional values")
@@ -587,8 +587,8 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 245:
-        fail.append("design register does not carry DD-001..DD-245 contiguously")
+    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 253:
+        fail.append("design register does not carry DD-001..DD-253 contiguously")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -637,16 +637,19 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
     if ("10A research complete" not in log_status("10")
             or "10B specification complete" not in log_status("10")
             or "Prompt 10C complete" not in log_status("10")
-            or "Prompt 12C next" not in log_status("10")):
-        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 12C next")
+            or "Prompt 13B next" not in log_status("10")):
+        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 13B next")
     # 2026-11-07 (Prompt 12A review remediation): row 12 must say 12A is
     # complete at the research/design-foundations level and 12B is next.
+    # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted
+    # on 2026-11-11, so row 12 must record the whole 12 family as complete and
+    # must not still name 12C as the live next sub-prompt.
     if ("12a complete at the research/design-foundations level" not in log_status("12").lower()
             or "12b complete at the specification" not in log_status("12").lower()
-            or "12c next" not in log_status("12").lower()):
-        fail.append("Stage 2 progress log row 12 does not record 12A complete, 12B complete and 12C next")
-    if lg.count("| Pending |") != 3:
-        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 3 (rows 13-15; rows 11-12 record their sub-prompts complete)")
+            or "12c complete at the specification" not in log_status("12").lower()):
+        fail.append("Stage 2 progress log row 12 does not record 12A, 12B and 12C complete")
+    if lg.count("| Pending |") != 2:
+        fail.append(f"Stage 2 progress log pending count is {lg.count('| Pending |')}, expected 2 (rows 14-15; rows 11-13 record their sub-prompts complete)")
 
 # 7e-2. Phase 09B acceptance, Prompt 09C completion at the specification level
 # and downstream alignment (2026-11-03). Acceptance and 09C completion are
@@ -753,11 +756,15 @@ outline_map = {
     "B-10": "17_warfare_and_settlements.md",
     "B-11": "18_world_events_and_progression.md",
     "B-12": "19_fair_play_and_player_protection.md",
-    "B-13": "20_interface_and_player_journeys.md",
-    "B-14": "21_formulas_and_balance.md",
-    "B-15": "22_master_game_design_bible.md",
-    "B-18": "22_master_game_design_bible.md",
-    "B-19": "23_stage_2_completion_report.md",
+    # 2026-11-11 (Prompt 13A, D-198): the `20_` serial is authored by the B-12
+    # family, so the four remaining planned parts moved one serial forward. The
+    # pre-D-198 names survive only inside the outline's dated 2026-11-03 mapping
+    # note, which labels them superseded.
+    "B-13": "21_interface_and_player_journeys.md",
+    "B-14": "22_formulas_and_balance.md",
+    "B-15": "23_master_game_design_bible.md",
+    "B-18": "23_master_game_design_bible.md",
+    "B-19": "24_stage_2_completion_report.md",
 }
 for part, filename in outline_map.items():
     if f"`{filename}`" not in ol:
@@ -835,6 +842,7 @@ _WORDS["one hundred and eight"] = 108
 _WORDS["one hundred and seventy-seven"] = 177
 _WORDS["one hundred and eighty-seven"] = 187
 _WORDS["one hundred and ninety-seven"] = 197
+_WORDS["two hundred and five"] = 205
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):
@@ -938,7 +946,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-if ("DD-001" not in ctx04 or "DD-245" not in ctx04) or ("D-001" not in ctx04 or "D-197" not in ctx04):
+if ("DD-001" not in ctx04 or "DD-253" not in ctx04) or ("D-001" not in ctx04 or "D-205" not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")

@@ -902,9 +902,12 @@ def check_31(m: Model) -> tuple[bool, str]:
     missing_keys = sorted(required - set(first))
     if missing_keys:
         return False, f"required keys absent: {missing_keys}"
-    if not first["stage_2_next_prompt"].startswith("12"):
+    # 2026-11-11 (Prompt 13A): the frontier moved through 12C (owner-accepted) to
+    # the 13 family, so the machine-checked milestone values advance with it. The
+    # agreement rule itself is unchanged: the three files must say the same thing.
+    if not first["stage_2_next_prompt"].startswith("13"):
         return False, f"stage_2_next_prompt is '{first['stage_2_next_prompt']}'"
-    if not re.fullmatch(r"D-001\.\.D-1(?:77|87)", first["decisions_range"]):
+    if not re.fullmatch(r"D-001\.\.D-205", first["decisions_range"]):
         return False, f"decisions_range is '{first['decisions_range']}'"
     return True, (f"the {len(required)} required status keys agree; next prompt "
                   f"{first['stage_2_next_prompt']}, range {first['decisions_range']}")

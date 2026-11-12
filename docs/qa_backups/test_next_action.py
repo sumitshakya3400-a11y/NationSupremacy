@@ -106,8 +106,10 @@ class StaleNextActionTests(unittest.TestCase):
                     # 2026-11-06 (Prompt 11C): the 11C companion closed the whole
                     # Prompt 11 family at the design level, so the live prompt was 12.
                     # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt
-                    # is now 12B.
-                    self.assertEqual(status_next_prompt(text), "12C")
+                    # was 12B; 12C then closed it on 2026-11-10 (owner-accepted
+                    # 2026-11-11) and Prompt 13 split, so 13A closed on 2026-11-11
+                    # and the live sub-prompt is 13B.
+                    self.assertEqual(status_next_prompt(text), "13B")
         texts = {p.name: p.read_text(encoding="utf-8", errors="replace")
                  for p in files if p.name in status_files}
         self.assertEqual(continuity_problems(texts), [])
@@ -231,26 +233,36 @@ class CurrentStateConsistencyTests(unittest.TestCase):
             r"prompt 09c[^.\n]{0,80}(?:implemented|functioning|released|deployed)",
         )
         # 2026-11-06 (Prompt 12A): row 12 stops being a bare Pending row because
-        # 12A closed at the research/design-foundations level, so only 13-15 stay
+        # 12A closed at the research/design-foundations level.
+        # 2026-11-11 (Prompt 13A): row 13 stops being a bare Pending row because
+        # 13A closed at the research/design-foundations level, so only 14-15 stay
         # Pending.
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
-        self.assertEqual(pending, [f"{i:02d}" for i in range(13, 16)])
+        self.assertEqual(pending, [f"{i:02d}" for i in range(14, 16)])
+        row13 = next(row for row in rows if row[0] == "13")
+        self.assertIn("13A COMPLETE at the research and design-foundations level", row13[2])
+        self.assertIn("Prompt 13B is next", row13[2])
+        # A research pass must never be presented as a built interface.
+        self.assertNotRegex(
+            row13[2].lower(),
+            r"prompt 13a[^.\n]{0,80}(?:implemented|functioning|released|deployed|built)",
+        )
         row12 = next(row for row in rows if row[0] == "12")
         self.assertIn("12A COMPLETE at the research and design-foundations level", row12[2])
         self.assertIn("12B SPECIFICATION COMPLETE", row12[2])
-        self.assertIn("Prompt 12C is next", row12[2])
+        self.assertIn("Prompt 12C is complete at the specification/documentation level", row12[2])
 
         row10 = next(row for row in rows if row[0] == "10")
         self.assertIn("10B specification complete", row10[2])
         self.assertIn("Prompt 10C complete", row10[2])
-        # 2026-11-06 (Prompt 12A): 12A closed at the research level, so row 10
-        # must name 12B as the live sub-prompt instead of presenting 12 as next.
-        self.assertIn("Prompt 12C is next", row10[2])
+        # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted,
+        # so row 10 must record the completion rather than the old "12C is next".
+        self.assertIn("Prompt 12C is now complete at the specification/documentation level", row10[2])
 
         row11 = next(row for row in rows if row[0] == "11")
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11[2])
         self.assertIn("11C complete at the specification/documentation level", row11[2])
-        self.assertIn("Prompt 12C next and not started", row11[2])
+        self.assertIn("superseded on 2026-11-10 when Prompt 12C completed", row11[2])
         # A research pass must never be described as a written rulebook.
         self.assertIn("b-11 rulebook at the specification level", row11[2].lower())
         self.assertNotRegex(
@@ -460,7 +472,13 @@ class SubPromptStatusTests(unittest.TestCase):
         # not be. The 12 family also had to join the sub-prompt pattern first:
         # before it, "12A" was not a recognised sub-prompt token at all.
         self.assertEqual(len(subprompt_status_problems(live)), 1)
-        self.assertEqual(subprompt_status_problems("Prompt 12C is the next intended task."), [])
+        # 2026-11-10 (Prompt 12C) and 2026-11-11 (owner acceptance, recorded by
+        # Prompt 13A): 12C closed the 12 family, so naming it as the live next
+        # task is now the same defect 12A and 12B were added to catch, while the
+        # genuinely live sub-prompt 13B must not be flagged.
+        self.assertEqual(len(subprompt_status_problems("Prompt 12C is the next intended task.")), 1)
+        self.assertEqual(subprompt_status_problems("Prompt 13B is the next intended task."), [])
+        self.assertEqual(len(subprompt_status_problems("Prompt 13A is the next intended task.")), 1)
         self.assertEqual(len(subprompt_status_problems("Prompt 12B is the next intended task.")), 1)
         self.assertEqual(len(subprompt_status_problems("Prompt 12A is the next intended task.")), 1)
 

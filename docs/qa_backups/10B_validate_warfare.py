@@ -960,7 +960,10 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # the live sub-prompt is 11B. The 10-family completion facts are unchanged.
     # 2026-11-07 (12B/C1–R5): the frontier advanced through 11C and 12A to 12B;
     # the current sub-prompt milestone is 12B (12C remains unauthorized).
-    check('CURRENT_SUBPROMPT = "12B"' in status_rules, "10-continuity", "status_rules.py does not set 12B as the current sub-prompt")
+    # 2026-11-11 (Prompt 13A): the frontier advanced through 12C (owner-accepted
+    # 2026-11-11) and the 13A research pass, so the live sub-prompt is 13B. No
+    # 10-family completion fact changed; only the milestone constant moved.
+    check('CURRENT_SUBPROMPT = "13B"' in status_rules, "10-continuity", "status_rules.py does not set 13B as the current sub-prompt")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 

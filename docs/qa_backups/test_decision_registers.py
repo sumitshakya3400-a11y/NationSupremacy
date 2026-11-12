@@ -175,9 +175,12 @@ class HandoffTests(unittest.TestCase):
         # sub-prompt recorded in every STATUS block is 11C.
         # 2026-11-06 (Prompt 11C): the 11C workflow/acceptance companion closed the
         # Prompt 11 family at the design level, so every STATUS block recorded 12.
-        # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt is 12B.
+        # 2026-11-06 (Prompt 12A): 12A closed, so the live sub-prompt was 12B.
+        # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted
+        # on 2026-11-11, Prompt 13 split, and 13A closed at the research level, so
+        # every STATUS block now records 13B as the live sub-prompt.
         for path in (DOCS / "AI_CONTEXT.md", DOCS / "AI_HANDOFF.md", DOCS / "PROJECT_PROGRESS.md"):
-            self.assertRegex(read(path), r"stage_2_next_prompt:\s*12C\b", path.name)
+            self.assertRegex(read(path), r"stage_2_next_prompt:\s*13B\b", path.name)
         progress = read(DOCS / "PROJECT_PROGRESS.md")
         self.assertRegex(progress, r"\| 04 \| Economy[^\n]*\| \*\*Complete\*\*")
         self.assertRegex(progress, r"\| 05 \| Cities[^\n]*\| \*\*Complete\*\*")
@@ -205,7 +208,9 @@ class HandoffTests(unittest.TestCase):
         self.assertIn("10B specification complete", row10)
         self.assertIn("Prompt 10C complete", row10)
         # 2026-11-06 (Prompt 12A): 12A closed, so row 10 must name Prompt 12B.
-        self.assertIn("Prompt 12C is next", row10)
+        # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and the owner accepted
+        # it on 2026-11-11, so row 10 must record that completion and name 13B.
+        self.assertIn("Prompt 12C is now complete at the specification/documentation level", row10)
         # 2026-11-05: the Stage 2 Prompt 11 row records 11A's research closure
         # and names 11B as live, without claiming a B-11 rulebook.
         row11 = next((ln for ln in progress.splitlines()
@@ -214,7 +219,7 @@ class HandoffTests(unittest.TestCase):
         self.assertIn("11A COMPLETE at the research/design-foundations level", row11)
         # 2026-11-06 (Prompt 11C): 11C is complete, not "next and not started".
         self.assertIn("11C complete at the specification/documentation level", row11)
-        self.assertIn("Prompt 12C next and not started", row11)
+        self.assertIn("superseded on 2026-11-10 when Prompt 12C completed", row11)
         self.assertIn("B-11 rulebook at the specification level", row11)
 
 
