@@ -1,7 +1,7 @@
 # 13A — UI design principles, visual direction and application architecture
 
 **Prompt:** Stage 2 Prompt 13A — UI research, architecture and design foundations (Deliverables A and B).
-**Created:** 2026-11-11. **Status:** design foundations; **no implementation, no visual asset, no component built** (roadmap Prompt-13 guardrail: "Specifications only — no frontend code in Stage 2").
+**Created:** 2026-11-11. **Reconciled:** 2026-11-12 (Prompt 13A-C1 semantic cross-reference reconciliation). **Status:** design foundations; **no implementation, no visual asset, no component built** (roadmap Prompt-13 guardrail: "Specifications only — no frontend code in Stage 2").
 **Authority basis:** [13A Politics & War UI research](13A_politics_and_war_ui_research.md) (evidence) · the accepted B-02…B-12 rulebooks (requirements) · [AUTONOMOUS_DECISION_POLICY.md](../../AUTONOMOUS_DECISION_POLICY.md) (D-014) · decisions **D-198…D-205**.
 **Companions:** [master screen inventory](13A_master_screen_inventory.md) · [responsive and design-system foundations](13A_responsive_and_design_system_foundations.md) · [requirements, open questions and acceptance](13A_ui_requirements_open_questions_and_acceptance.md)
 
@@ -20,10 +20,10 @@ Derived from the project's own priority order (policy §4: constraints → secur
 | ID | Principle | Consequence for the UI |
 |---|---|---|
 | `13A-PR-01` | **The turn is the heartbeat** | Every authenticated surface communicates the two-hour UTC cadence: countdown to next boundary, which phase an action lands in (P0–P7), and whether it is queued, reserved or settled. Nothing may imply real-time urgency (DP-002; no attendance rewards, AP-001). |
-| `13A-PR-02` | **Legibility before density, density before decoration** | The data-rich genre is embraced (P&W's density is the genre norm, `13A-FND-026`) but each screen must pass the 60-second comprehension test inherited from Report 07 §15.6 and DP-004. Progressive disclosure, never hidden state. |
+| `13A-PR-02` | **Legibility before density, density before decoration** | The data-rich genre is embraced (P&W's long-page density is an observed norm, `13A-FND-003/027`) but each screen must pass the 60-second comprehension test inherited from Report 07 §15.6 and DP-004. Progressive disclosure, never hidden state. |
 | `13A-PR-03` | **Every number states what kind of number it is** | The six number types (ECN-177; D-056) are a UI law: current, reserved/committed, submitted order, forecast, completed transaction, historical record are visually distinct registers; a forecast is never rendered with current-state weight (URB-152, DIP-155). |
-| `13A-PR-04` | **Explain, don't teach-around** | Rule explanation lives in-context (definitions, cause chains, previews — `13A-DR-007`), because the benchmark shows knowledge spilling off-platform and that spilling is a player-frustration source (F-010, `13A-FND-029`). |
-| `13A-PR-05` | **Transparency by rule, opacity by design** | What may be disclosed is decided by visibility classes (TR-021, D-027 k=5, PRV/B-12, WAR-148–150, D-030), never by convenience. Relations transparent, intent opaque (DP-004 boundary). Suppressed aggregates display their suppression state informatively (`13A-DR-005`). |
+| `13A-PR-04` | **Explain, don't teach-around** | Rule explanation lives in-context (definitions, cause chains, previews — `13A-DR-010`), because the benchmark shows knowledge spilling off-platform and that spilling is a player-frustration source (F-010, `13A-FND-029`). |
+| `13A-PR-05` | **Transparency by rule, opacity by design** | What may be disclosed is decided by visibility classes (TR-021, D-027 k=5, PRV/B-12, WAR-148–150, D-030), never by convenience. Relations transparent, intent opaque (DP-004 boundary). Suppressed aggregates display their suppression state informatively (`13A-DR-006`). |
 | `13A-PR-06` | **Absence is a supported mode** | Re-entry surfaces (digest, inbox, "since you last looked") are first-class; every consequential settlement produces a readable explanation whether or not the player watched it (TR-089 digest-first; REQ-022 re-entry summary; F-015/F-016 class). |
 | `13A-PR-07` | **One grammar across all systems** | The P&W strength (`13A-FND-024`) formalized: one table/filter/pagination idiom, one status vocabulary, one action lifecycle display (`13A-BP-004`), so learning one screen transfers to all. Consistency is a fairness feature: misreading a state is a player-harm vector. |
 | `13A-PR-08` | **Serious tone, plural paths** | The atmosphere is a professional geopolitical *administration* surface — nation records, ledgers, treaties — not arcade chrome; and no path (economic, diplomatic, military, cultural-deferred) may be visually privileged over another (DP-001; CX-5). |
@@ -32,10 +32,10 @@ Derived from the project's own priority order (policy §4: constraints → secur
 
 | ID | Principle | Note |
 |---|---|---|
-| `13A-PR-09` | Confirmation-first | Irreversible or boundary-effective actions show exact effect, cost, cooldown and named failure path before commit (`13A-DR-008`). |
-| `13A-PR-10` | The disabled control explains itself | "Why not" text before the click, not after the error (08C §12.7; CN show-unaffordable pattern `13A-BP-024`). |
+| `13A-PR-09` | Confirmation-first | Irreversible or boundary-effective actions show exact effect, cost, cooldown and named failure path before commit (`RRL-006`, `WAR §12.3`, `08C §12.3`; `13A-DR-009`, `13A-DR-018`). |
+| `13A-PR-10` | The disabled control explains itself | "Why not" text before the click, not after the error (08C §12.7; CN show-unaffordable pattern `13A-BP-028`). |
 | `13A-PR-11` | State never lives only in the UI | Server truth drives presentation; the UI may show pending intent but never grants permission by render (URB-135; consistency audit §4.11). |
-| `13A-PR-12` | Colour + glyph + text for every status | Accessibility redundancy is law (`13A-DR-015`); the P&W colour-only columns are an inherited defect to avoid. |
+| `13A-PR-12` | Colour + glyph + text for every status | Independent NS accessibility requirement (`13A-DR-015`, `DMP-164`, `REQ-321`, WCAG 2.2 AA design intent); bounded against `13A-FND-017/031` (P&W tables pair `Alliance` text with `Color` columns, while visual CSS swatch redundancy is unverified). |
 | `13A-PR-13` | Deep-link everything | Every object (nation, alliance, war, treaty, offer, proposal, event instance) has a stable addressable view — P&W's most durable structural asset (`13A-FND-001/023`). |
 | `13A-PR-14` | Long-session comfort | Dense default views, persistent context strip, low-glare readable palette direction; keyboard navigation and visible focus from the start (§ design-system doc). |
 | `13A-PR-15` | Nothing political happens off-screen — and nothing happens off-screen at all | Every rule that can produce a player-facing consequence must have a screen or digest that discloses it ("Done when: every Stage 2 rule has a place a player can see and act on it", roadmap Prompt 13). |
@@ -62,11 +62,11 @@ A single register of tones, each defined semantically and re-used everywhere (fu
 - `warning` — degradation, low stability/approval bands, maintenance-lacking chains (`UNMAINTAINED`), protection expiry approaching.
 - `danger` — active loss, sanctioned state, FAILED-turn player-facing notice (TR-080).
 - `locked/denied` — permission, pair-restriction, political-state (`TRANSITION`/`CRISIS`) or security block *with reason* (NET-023 player-visible pair status; MOD/EVD claim vocabulary `suspected / under review / confirmed / inconclusive` is reserved for B-12 notices and may not be reused for game states — FP-033/EVD-009).
-- `suppressed` — k=5 non-disclosure state with its explanation (`13A-DR-005`).
+- `suppressed` — k=5 non-disclosure state with its explanation (`13A-DR-006`).
 
 ## 4. Global application structure (Deliverable B / 7.1)
 
-**The shell (D-201).** One browser application frame, present in every game state including logged-out previews (validated against `13A-BP-001/025`):
+**The shell (D-201).** One browser application frame, present in every game state including logged-out previews (validated against `13A-BP-001` / `13A-SRC-017`):
 
 ```
 +---------------------------------------------------------------+
@@ -77,7 +77,7 @@ A single register of tones, each defined semantically and re-used everywhere (fu
 | D. Search / quick-go  (typeahead to objects & screens)        |
 +---------------------------------------------------------------+
 | E. Breadcrumb / context line (object hierarchy + governing    |
-|    rule anchor, 13A-DR-021)                                   |
+|    rule anchor, 13A-DR-009/010)                               |
 | F. PRIMARY CONTENT AREA — one screen; internal tabs for       |
 |    same-object views                                          |
 | G. CONTEXT PANEL (right, persistent where screen width         |
@@ -88,13 +88,13 @@ A single register of tones, each defined semantically and re-used everywhere (fu
 ```
 
 - **A** carries persistent strategic information (the P&W resource-strip lesson at zero-state: the frame never collapses). NS contents are visibility-class-checked (e.g. exact treasury is class-P private; band display permitted where rules allow).
-- **C** is presentation-tier over the existing notification events (no new notification channel; REQ-731; `13A-DR-023`): counts and priority, never new facts.
+- **C** is presentation-tier over the existing notification events (no new notification channel; REQ-731; `13A-DR-011`): counts and priority, never new facts.
 - **D** is quick navigation only (§5); deep-link targets come from `SCR` registry.
 - **G** keeps cross-system context visible while acting (e.g. composing a trade offer shows pair history within visibility limits; declaring war shows protection/treaty blocks) — the situational-awareness function P&W serves with its profile pages, served here *per task*.
-- **Help and support access (instruction 7.1):** every screen carries the in-context explanation affordance (`13A-PR-04`) and a "governing rule" anchor (`13A-DR-021`); account-level support/report/appeal entry points sit in the shell footer/account menu regardless of current screen (B-12 intake surfaces, MOD-002/013).
-- **Administration surfaces live outside this shell** with separate role-gated entry (`13A-DR-018`; ADM reviewer views) — ordinary players never traverse admin chrome and admin views never replace the player shell (least privilege, D-042; no "admin view" in diplomacy per DIP-121 discipline).
+- **Help and support access (instruction 7.1):** every screen carries the in-context explanation affordance (`13A-PR-04`) and a "governing rule" anchor (`13A-DR-009/010`); account-level support/report/appeal entry points sit in the shell footer/account menu regardless of current screen (B-12 intake surfaces, MOD-002/013).
+- **Administration surfaces live outside this shell** with separate role-gated entry (`13A-DR-013`; ADM reviewer views) — ordinary players never traverse admin chrome and admin views never replace the player shell (least privilege, D-042; no "admin view" in diplomacy per DIP-121 discipline).
 
-**Why this supports long sessions:** the countdown + alert bar + inbox compress the "check-in" loop to seconds; the context panel avoids page ping-pong for one decision cycle; the frame's stability means the player's mental map (where am I, what changed, what's pending) is answerable without re-reading (answering `13A-FND-027/032/038`).
+**Why this supports long sessions:** the countdown + alert bar + inbox compress the "check-in" loop to seconds; the context panel avoids page ping-pong for one decision cycle; the frame's stability means the player's mental map (where am I, what changed, what's pending) is answerable without re-reading (NS `13A-DR-001` / `13A-DR-005` / `13A-DR-018` answering `13A-FND-026/027` logged-out catalogue and long-page density observations).
 
 ## 5. Navigation architecture (Deliverable B / 7.2)
 
@@ -122,7 +122,7 @@ Rationale vs P&W: keeps its flat findability (`13A-FND-023`) but replaces the 12
 - **Contextual side panel** (shell G) for related objects; never carries data above its visibility class.
 - **Cross-system links** are first-class object links: any nation/alliance/war/treaty/offer/event identifier renders as a link to its view subject to permissions (the deep-link grammar from `13A-FND-001`).
 - **Search/quick-go:** two modes only — jump-to-object (typeahead over IDs/names) and jump-to-screen (command palette of section destinations). *Not* a full-text engine; the corpus that would need indexing doesn't exist (§13A-OQ-009).
-- **Inbox/queue** is a destination, not a modal: ordered by due-boundary, grouped by type, each row deep-links to its action screen (`13A-DR-003`).
+- **Inbox/queue** is a destination, not a modal: ordered by due-boundary, grouped by type, each row deep-links to its action screen (`13A-DR-001`).
 
 ### 5.3 Overlays discipline
 
@@ -137,11 +137,11 @@ High-level behaviour only; per-screen states are 13B work. Grounded in existing 
 | State | Shell behaviour | Rule anchors |
 |---|---|---|
 | **Loading** | Frame renders skeleton *within* the persistent shell; no full-page spinner that hides context | PR-02 |
-| **Empty (new nation)** | Real frame with zeros ("awaiting first turn" NAT-016), guided objectives panel, no stub UI | `13A-BP-025`, D-063 start, ONB windows |
+| **Empty (new nation)** | Real frame with zeros ("awaiting first turn" NAT-016), guided objectives panel, no stub UI | `13A-BP-001`, `13A-SRC-017` (`0.00` real frame), D-063 start, ONB windows |
 | **Empty (no data in section)** | Explanation of why it's empty + what would populate it + governing rule link | `13A-PR-10` |
 | **Error / failed request** | Named failure code from the owning system's catalogue + player-language cause + safe retry (idempotency SEC-014 discipline; "unknown — retrying" TR-075) | B-02/B-07/B-08/B-09/B-10/B-11 catalogues |
 | **Permission-denied** | Distinct from error: state *kind* of restriction (role, visibility class, pair restriction, political state, suspension) with the disclosure text the owning rules mandate — never more precise than the rules allow (NET-050 no public accusation; PRV-019) | D-034 states, REQ-553/645 |
-| **Blocked-by-rule** | Disabled control + inline reason + link to rule ("requires 60-turn cooldown since…") — the CN show-with-reason pattern (`13A-BP-024`) | PR-10 |
+| **Blocked-by-rule** | Disabled control + inline reason + link to rule ("requires 60-turn cooldown since…") — the CN show-with-reason pattern (`13A-BP-028`) | PR-10 |
 | **Disconnected / stale** | Explicit "data as of slot N" staleness label; reads allowed where visibility permits; writes clearly disabled | TR-049 published/readable; cadence honesty |
 | **Action success** | Receipt view: submitted state, where it lands in the phase order (P-phase badge), and what will *not* change until the boundary | B-02 §17 timing contract; ECN-134-138 |
 | **Pending action** | Persistently visible in inbox + on its object page with `pending` tone; cancellable exactly where rules allow, with the cancellation state named | three-class contract; MKT/DIP lifecycles |
@@ -154,5 +154,5 @@ High-level behaviour only; per-screen states are 13B work. Grounded in existing 
 
 - The **War Operations Board** (owner-only, B-10 visibility) and the **restricted Alliance management interface** (management/coordination only, no military command, no member OP spending, no private war visibility) remain *separate surfaces*; the shell offers both but never merges data across them (roadmap Prompt-13 boundary paragraph; AX-18; UD-047/UD-049 preserved).
 - **Screen ≠ rule:** every presentation duty here traces to an existing rule; where no rule authorizes a disclosure, the disclosure does not exist (`13A-PR-15` runs one way: rules create surfaces; surfaces never create rules — 16 audit §4.11).
-- **No chat, no Discord, no external coordination surfaces** (D-133; `13A-BP-020`): announcements/notice-board candidates remain governed by UD-049 and ALL-162..168, i.e. UI may present what B-09 allows, nothing more.
-- **Accessibility and responsive** obligations attach at architecture level (§4 layout priorities; see companion document) because retrofitting them is the documented failure mode of the benchmark generation (`13A-FND-026`).
+- **No chat, no Discord, no external coordination surfaces** (D-133; `13A-BP-017`): announcements/notice-board candidates remain governed by UD-049 and ALL-162..168, i.e. UI may present what B-09 allows, nothing more.
+- **Accessibility and responsive** obligations attach at architecture level (§4 layout priorities; see companion document) from day one (`13A-DR-012`, `13A-DR-015`): visual CSS swatch redundancy and P&W mobile rendering were unverified in logged-out HTML (`13A-FND-031`, `13A-SRC-036`), while Cyber Nations shipped a mobile-friendly mode later via opt-in update (`13A-SRC-029`).

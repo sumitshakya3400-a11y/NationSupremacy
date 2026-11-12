@@ -1,7 +1,7 @@
 # 13A — Responsive-design foundations and design-system foundations
 
 **Prompt:** Stage 2 Prompt 13A (Deliverables E and F).
-**Created:** 2026-11-11. **Status:** foundations only — **no CSS, no framework, no component implementation**; 13B writes component and screen specifications against these rules.
+**Created:** 2026-11-11. **Reconciled:** 2026-11-12 (Prompt 13A-C1 semantic cross-reference reconciliation; Prompt 13A-C1-R1 accessibility-evidence reconciliation). **Status:** foundations only — **no CSS, no framework, no component implementation**; 13B writes component and screen specifications against these rules.
 **Companions:** [research register](13A_politics_and_war_ui_research.md) · [principles and architecture](13A_ui_design_principles_and_architecture.md) · [screen inventory](13A_master_screen_inventory.md) · [requirements and acceptance](13A_ui_requirements_open_questions_and_acceptance.md)
 
 ---
@@ -17,7 +17,7 @@ Fixed constraint (AI_CONTEXT §2; owner Category A): Nation Supremacy is **a bro
 
 ### 1.2 Benchmark reading
 
-P&W is the **desktop-oriented genre reference** (`13A-FND-026`): dense tables, minimal adaptation, evidence of mobile menu toggles only via changelog code notes (`13A-SRC-036`, low confidence). The genuinely relevant mobile lesson comes from the supplementary register: Cyber Nations shipped an explicitly **user-selectable** mobile-friendly rendering with per-profile opt-in/opt-out (`13A-SRC-029`, 2025-04-04) — proof that this genre's audiences span phones and that an adaptive *mode*, not a shrunken page, is viable. Nation Supremacy therefore treats responsive layout as a first-class design axis from day one, while recording the CN-style user override as a provisional question (`13A-OQ-014`).
+P&W is a **desktop-oriented genre reference** (`13A-FND-003/027`): dense tables, long stacked pages, minimal logged-out adaptation observed, and evidence of mobile menu toggles only via changelog code notes (`13A-SRC-036`, low confidence). The genuinely relevant mobile lesson comes from the supplementary register: Cyber Nations shipped an explicitly **user-selectable** mobile-friendly rendering with per-profile opt-in/opt-out (`13A-SRC-029`, 2025-04-04) — proof that this genre's audiences span phones and that an adaptive *mode*, not a shrunken page, is viable. Nation Supremacy therefore treats responsive layout as a first-class design axis from day one, while recording the CN-style user override as a provisional question (`13A-OQ-014`).
 
 ### 1.3 Device-class requirements (13A-RD register)
 
@@ -55,8 +55,8 @@ Namespaces: rules `13A-DS-###`; component families are named but not specified (
 
 Navigation: global section bar · overflow menu · breadcrumb bar · in-page tabs · object links (identifier → deep-link with peek `OVL-05`) · quick-go palette.
 Containers: panel · card · section register (the six-number-type register, PR-03) · stat strip.
-Data: **table grammar** (`13A-BP-004`: header row, filter row, saved views, range pagination "0–N of M" mirroring the benchmark's honest counts) · card-list fallback (RD-04) · chart primitives (line for over-time, bar for resource rows per CN lesson `13A-BP-022`, band displays only where a rule defines bands, e.g. WAR-085…088 four bands) · Network View canvas with list alternate · countdown component (turns + UTC boundary, PR-01).
-Actions: button ladder (primary/secondary/tertiary/destructive) · form controls with inline validation · confirmation dialog (`OVL-01/02`) · reason popover (`OVL-03`) · disabled-with-explanation state (PR-10) · cooldown-on-control pattern (`13A-BP-011`).
+Data: **table grammar** (`13A-BP-004`: header row, filter row, saved views, range pagination "0–N of M" mirroring the benchmark's honest counts) · card-list fallback (RD-04) · chart primitives (line for over-time, bar for resource rows per CN lesson `13A-BP-026`, band displays only where a rule defines bands, e.g. WAR-085…088 four bands) · Network View canvas with list alternate · countdown component (turns + UTC boundary, PR-01).
+Actions: button ladder (primary/secondary/tertiary/destructive) · form controls with inline validation · confirmation dialog (`OVL-01/02`) · reason popover (`OVL-03`) · disabled-with-explanation state (PR-10) · cooldown-on-control pattern (`13A-BP-010`, `13A-DR-009`).
 Feedback: banners (political state banner DMP-268 is *the* pattern instance) · toasts (`OVL-06`) · alert bar counts · progress/queued indicators (three-class timing contract displayed) · suppression notice (`OVL-07`) · claim-vocabulary badge (`OVL-08`).
 Overlays: modal · drawer/sheet · peek card — with the architecture document's overlays discipline enforced as a lint-able rule later.
 
@@ -77,21 +77,21 @@ Every game-system state vocabulary maps 1:1 onto the shell tone register (archit
 | Military strength | **bands, never exact** where rules say bands (WAR-085…088); charts for own nation; others see only disclosed aggregates (WAR-150) |
 | Diplomatic relations | edge labels = treaty *type tokens* like the benchmark's filter legend (`13A-SRC-010`), posture shown per direction; pending acts visible only per D-030 |
 | Rankings | named lists with denominator + window (WEP-324); no "live" ticking (WEP-325); no composite headline (WEP-361/362) |
-| Historical trends | over-time charts anchored to class-P/S retention boundary, labelled (`13A-DR-013`) |
+| Historical trends | over-time charts anchored to class-P/S retention boundary, labelled (`13A-DR-020`) |
 | Resource quantities | capacity vs holding bars with reserved overlay segment; whole-unit/basis-point vocabulary per D-045/D-064 |
 | Timelines | election/campaign dates always `campaign_open_turn`-anchored (D-106/D-107 wording law); protection windows as states + expiry turn, not countdowns alone |
 | Reports | battle/war/trade receipts: two-sided complete records (ECON-013 lineage), conservation-visible accounting (WAR-109f…m impairment basis stated where shown) |
-| Strategic comparisons | comparison canvas restricted to visibility-legal inputs (k=5 aware; `13A-DR-022`); differences displayed as facts with sources, never as predicted verdicts |
+| Strategic comparisons | comparison canvas restricted to visibility-legal inputs (k=5 aware `13A-DR-006`; `13A-DR-020`; `13A-BP-020`); differences displayed as facts with sources, never as predicted verdicts |
 | **Anti-misleading rules (all charts)** | truncated axes flagged; "0" never drawn where truth is `suppressed`/`insufficient`/`unknown`; averages shown with sample-count context (MKT-110); every chart title carries units and time window; dual-axis charts banned |
 
 ### 2.7 Accessibility foundations (target: WCAG 2.2 AA as *design* intent, verified later — **no compliance claim is made or can be made without implementation**)
 
 | ID | Requirement |
 |---|---|
-| `13A-DS-07` | Full keyboard operability of every action path (genre power users automate via tools — `13A-FND-012` — so a keyboard-first surface also serves fairness; focus order follows reading order, modals trap and restore focus) |
+| `13A-DS-07` | Full keyboard operability of every action path (focus order follows reading order; modals trap and restore focus; **evidence classification:** `INDEPENDENT_ACCESSIBILITY_REQUIREMENT` supported by NS accessibility principles `13A-PR-14`, `DMP-164` / `REQ-321` equity intent, and WCAG 2.2 AA design intent — P&W authenticated keyboard navigation was not observed) |
 | `13A-DS-08` | Visible focus indicator tokenized at ≥3:1 against adjacent colours (design intent) |
 | `13A-DS-09` | Contrast: text and essential graphics to AA thresholds as *specified tokens*; brand palette selection (`13A-OQ-001`) must pass before adoption |
-| `13A-DS-10` | Colour-independence: every status = colour + glyph + text (PR-12; fixes the benchmark's colour-only affiliation columns `13A-FND-037`) |
+| `13A-DS-10` | Colour-independence: every status = colour + glyph + text (`13A-PR-12`, `13A-DR-015`, `DMP-164`, `REQ-321`; bounded against `13A-FND-017/031`, where fetched P&W tables pair `Alliance` text with `Color` columns and visual CSS swatch redundancy is unverified) |
 | `13A-DS-11` | Every form control has a programmatic label; error identification by text linked to the field; the six-number-type and band vocabularies have defined screen-reader announcements (numbers read with units) |
 | `13A-DS-12` | Tables have proper header/row-scope semantics; card fallbacks preserve the same accessible structure; charts require a text/table alternative panel (the data exists server-side — this is disclosure, not decoration) |
 | `13A-DS-13` | Motion: none is gameplay; transitions respect reduced-motion; countdown updates are polite live-regions, never constant announcements |
