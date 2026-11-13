@@ -1182,7 +1182,7 @@ Independent Prompt 13 completeness audit; final cross-system acceptance; complet
 
 ### 30.4 Next action
 
-The next planned phase is Prompt 13C, which requires separate explicit owner authorization. Until then, B-13 stands as a complete specification package awaiting owner review. No frontend implementation is authorized by any statement in this file.
+**Post-acceptance update (2026-11-13).** Prompt 13B and Prompt 13C are OWNER ACCEPTED (D-233); Prompt 13B-C1 and Prompt 13B-C1-R1 are COMPLETE and Prompt 13C-C1 is COMPLETE AND INDEPENDENTLY VERIFIED. At original 13B completion the next planned phase was Prompt 13C, which required separate owner authorization; that state is superseded by this update. **Prompt 13D is NOT STARTED / NOT AUTHORIZED.** No frontend implementation is authorized by any statement in this file.
 
 ### 30.5 Ultimate acceptance test — self-assessment
 

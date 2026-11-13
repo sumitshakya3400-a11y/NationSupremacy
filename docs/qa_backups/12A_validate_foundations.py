@@ -907,7 +907,7 @@ def check_31(m: Model) -> tuple[bool, str]:
     # agreement rule itself is unchanged: the three files must say the same thing.
     if not first["stage_2_next_prompt"].startswith("13"):
         return False, f"stage_2_next_prompt is '{first['stage_2_next_prompt']}'"
-    if not re.fullmatch(r"D-001\.\.D-219", first["decisions_range"]):
+    if not re.fullmatch(r"D-001\.\.D-233", first["decisions_range"]):
         return False, f"decisions_range is '{first['decisions_range']}'"
     return True, (f"the {len(required)} required status keys agree; next prompt "
                   f"{first['stage_2_next_prompt']}, range {first['decisions_range']}")

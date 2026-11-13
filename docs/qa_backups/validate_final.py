@@ -548,8 +548,8 @@ if all(blocks):
         fail.append(f"STATUS: stage_1 is {one.get('stage_1')!r}, expected CLOSED")
     if one.get("stage_2") != "IN PROGRESS":
         fail.append(f"STATUS: stage_2 is {one.get('stage_2')!r}, expected IN PROGRESS")
-    if one.get("stage_2_next_prompt") != "13C":
-        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 13C")
+    if one.get("stage_2_next_prompt") != "13D":
+        fail.append(f"STATUS: next Stage 2 prompt is {one.get('stage_2_next_prompt')!r}, expected 13D")
     op_state = one.get("operations_points", "")
     if not (op_state.startswith("Approved") and "D-015" in op_state and "provisional" in op_state.lower()):
         fail.append(f"STATUS: Operations Points state is {op_state!r}, expected the D-015 model with provisional values")
@@ -587,8 +587,8 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 267:
-        fail.append("design register does not carry DD-001..DD-267 contiguously")
+    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 281:
+        fail.append("design register does not carry DD-001..DD-281 contiguously")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -637,8 +637,8 @@ if (DOCS / "stage-2" / stage2_files["log"]).exists():
     if ("10A research complete" not in log_status("10")
             or "10B specification complete" not in log_status("10")
             or "Prompt 10C complete" not in log_status("10")
-            or "Prompt 13C next" not in log_status("10")):
-        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 13C next")
+            or "Prompt 13D next" not in log_status("10")):
+        fail.append("Stage 2 progress log row 10 does not record 10A complete, 10B complete, 10C complete and Prompt 13D next")
     # 2026-11-07 (Prompt 12A review remediation): row 12 must say 12A is
     # complete at the research/design-foundations level and 12B is next.
     # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted
@@ -844,6 +844,8 @@ _WORDS["one hundred and eighty-seven"] = 187
 _WORDS["one hundred and ninety-seven"] = 197
 _WORDS["two hundred and five"] = 205
 _WORDS["two hundred and nineteen"] = 219
+_WORDS["two hundred and thirty-two"] = 232
+_WORDS["two hundred and thirty-three"] = 233
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):
@@ -947,7 +949,7 @@ for did, successor in (("D-004", "D-015"), ("D-005", "D-008")):
         fail.append(f"{name}: current decision range still ends at D-029")
 ctx04 = next((ln for ln in ctx.splitlines() if "stage-2/04_approved" in ln), "")
 ctx07 = next((ln for ln in ctx.splitlines() if "stage-2/07_core" in ln), "")
-if ("DD-001" not in ctx04 or "DD-267" not in ctx04) or ("D-001" not in ctx04 or "D-219" not in ctx04):
+if ("DD-001" not in ctx04 or "DD-281" not in ctx04) or ("D-001" not in ctx04 or "D-233" not in ctx04):
     fail.append("AI_CONTEXT row 04 carries stale decision/position totals")
 if "v1.5" not in ctx07:
     fail.append("AI_CONTEXT row 07 carries a stale B-02 version")
