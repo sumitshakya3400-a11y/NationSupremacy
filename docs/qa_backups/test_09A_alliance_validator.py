@@ -529,7 +529,7 @@ class AllianceValidatorTests(unittest.TestCase):
             # 2026-11-11 (Prompt 13A): the live value is 13B, so the mutation
             # targets it; 09C is a closed historical sub-prompt and must still be
             # rejected as the active prompt.
-            write(path, text.replace("stage_2_next_prompt: 13B", "stage_2_next_prompt: 09C"))
+            write(path, text.replace("stage_2_next_prompt: 13C", "stage_2_next_prompt: 09C"))
 
         self.assert_fails("neg40", mutate)
 

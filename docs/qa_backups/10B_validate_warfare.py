@@ -963,7 +963,7 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-11 (Prompt 13A): the frontier advanced through 12C (owner-accepted
     # 2026-11-11) and the 13A research pass, so the live sub-prompt is 13B. No
     # 10-family completion fact changed; only the milestone constant moved.
-    check('CURRENT_SUBPROMPT = "13B"' in status_rules, "10-continuity", "status_rules.py does not set 13B as the current sub-prompt")
+    check('CURRENT_SUBPROMPT = "13C"' in status_rules, "10-continuity", "status_rules.py does not set 13C as the current sub-prompt")
     check('"10B"' in status_rules, "10-continuity", "status_rules.py does not list 10B as completed")
     check('"10C"' in status_rules, "10-continuity", "status_rules.py does not list 10C as completed")
 

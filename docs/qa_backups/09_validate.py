@@ -407,8 +407,8 @@ if blocks:
     # 2026-11-11 (Prompt 13A): the frontier advanced through 12C (owner-accepted
     # 2026-11-11) and the 13A research pass, so the live sub-prompt is 13B. The
     # rule itself is unchanged — the STATUS block must still name one live prompt.
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "13B":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 13B")
+    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "13C":
+        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 13C")
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -493,6 +493,7 @@ WORDS["one hundred and ninety-seven"] = 197
 # 2026-11-11 (Prompt 13A): D-198…D-205 move the recorded count to 205; the older
 # spellings stay in the map because historical status blocks still use them.
 WORDS["two hundred and five"] = 205
+WORDS["two hundred and nineteen"] = 219
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -527,7 +528,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
 # 2026-11-11 (Prompt 13A): DD-246…DD-253 are the mirrored 13A positions, so the
 # contiguous expectation advances; the check still derives the list from the file.
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 254)], "design register carries DD-001..DD-253 contiguously", str(len(dd_rows)))
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 268)], "design register carries DD-001..DD-267 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -579,8 +580,8 @@ check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
       # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted,
       # so row 10 must name 13B as the live prompt instead of 12C.
-      and "Prompt 13B next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 13B next", log_status("10"))
+      and "Prompt 13C next" in log_status("10"),
+      "progress log row 10 records 10B complete, 10C complete and Prompt 13C next", log_status("10"))
 # 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
 # pending count, so a row that silently regresses to "Pending" or to 12A-live
 # fails here even though the count of bare Pending rows is unchanged. The

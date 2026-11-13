@@ -113,7 +113,7 @@ def stale_next_actions(text: str, current_prompt: int = 4) -> list[str]:
 # claim is attributed to a sub-prompt only up to the next sub-prompt mention,
 # so "07B is complete; 07C is next" is never read as a 07B claim.
 
-CURRENT_SUBPROMPT = "13B"
+CURRENT_SUBPROMPT = "13C"
 # 2026-10-29: Prompt 08 is split too, so 08A joins the completed set.
 # 2026-10-30: 08B is complete as well, so it is caught the same way, and
 # 08C closes the set.
@@ -152,7 +152,7 @@ CURRENT_SUBPROMPT = "13B"
 # the SUBPROMPT token range now reaches the 13 family.
 COMPLETED_SUBPROMPTS = ("07A", "07B", "07C", "08A", "08B", "08C", "09A", "09B", "09C",
                         "10A", "10B", "10C", "11A", "11B", "11C", "12A", "12B", "12C",
-                        "13A")
+                        "13A", "13B")
 
 SUBPROMPT = re.compile(r"\b((?:0[789]|1[0-3])[A-C])\b")
 

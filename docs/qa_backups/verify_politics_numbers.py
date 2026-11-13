@@ -1525,8 +1525,8 @@ def progress_status_problems(log_text, progress_text):
     # the 13A research pass closed on 2026-11-11, so row 10 names 13B as live.
     if ("10B specification complete" not in rows.get("10", "")
             or "Prompt 10C complete" not in rows.get("10", "")
-            or "Prompt 13B next" not in rows.get("10", "")):
-        problems.append("progress-log row 10 does not record 10B complete, 10C complete and Prompt 13B next: %r" % rows.get("10"))
+            or "Prompt 13C next" not in rows.get("10", "")):
+        problems.append("progress-log row 10 does not record 10B complete, 10C complete and Prompt 13C next: %r" % rows.get("10"))
     header = log_text[:log_text.index("## 1.")] if "## 1." in log_text else log_text[:1500]
     if "**Prompt 06B complete**" not in header:
         problems.append("the progress-log header does not record 06B as complete")

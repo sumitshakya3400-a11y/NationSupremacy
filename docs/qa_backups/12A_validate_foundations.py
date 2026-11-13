@@ -548,8 +548,8 @@ def check_14(m: Model) -> tuple[bool, str]:
 
 def check_15(m: Model) -> tuple[bool, str]:
     """An A-phase pass allocates no global REQ identifier and moves no frontier."""
-    if m.req_max < 763 or m.req_max > 869:
-        return False, f"global requirement register frontier is REQ-{m.req_max}, expected 763 or the later 12B frontier 869"
+    if m.req_max < 763 or m.req_max > 1089:
+        return False, f"global requirement register frontier is REQ-{m.req_max}, expected 763 or the later B-13 frontier 1089"
     rows = re.findall(r"^\|\s*`?REQ-(\d{3})`?\s*\|", m.src["registers"], re.M)
     added = sorted({n for n in rows if int(n) >= 764})
     if added:
@@ -907,7 +907,7 @@ def check_31(m: Model) -> tuple[bool, str]:
     # agreement rule itself is unchanged: the three files must say the same thing.
     if not first["stage_2_next_prompt"].startswith("13"):
         return False, f"stage_2_next_prompt is '{first['stage_2_next_prompt']}'"
-    if not re.fullmatch(r"D-001\.\.D-205", first["decisions_range"]):
+    if not re.fullmatch(r"D-001\.\.D-219", first["decisions_range"]):
         return False, f"decisions_range is '{first['decisions_range']}'"
     return True, (f"the {len(required)} required status keys agree; next prompt "
                   f"{first['stage_2_next_prompt']}, range {first['decisions_range']}")

@@ -887,8 +887,8 @@ def c25_decision_records(T):
     if got != list(range(198, 206)):
         p.append(f"DECISIONS.md rows dated 2026-11-11 are {got}, expected D-198..D-205")
     dd = row_ids(T["register04"], "DD")
-    if not contiguous(dd, 1, 253):
-        p.append(f"stage-2/04 DD rows are not contiguous to DD-253 (max={max(dd) if dd else None})")
+    if not contiguous(dd, 1, 267):
+        p.append(f"stage-2/04 DD rows are not contiguous to DD-267 (max={max(dd) if dd else None})")
     for n in range(246, 254):
         if f"| DD-{n:03d} |" not in T["register04"]:
             p.append(f"DD-{n:03d} row missing from the mirrored position register")
@@ -899,12 +899,12 @@ def c26_status_blocks(T):
     p = []
     keys = ("ai_context", "ai_handoff", "progress")
     for k in keys:
-        if status_value(T[k], "stage_2_next_prompt") != "13B":
+        if status_value(T[k], "stage_2_next_prompt") != "13C":
             p.append(f"{k}: stage_2_next_prompt is "
                      f"{status_value(T[k], 'stage_2_next_prompt')!r}, expected 13B")
-        if status_value(T[k], "decisions_range") != "D-001..D-205":
+        if status_value(T[k], "decisions_range") != "D-001..D-219":
             p.append(f"{k}: decisions_range is {status_value(T[k], 'decisions_range')!r}")
-        if status_value(T[k], "status_updated") != "2026-11-12":
+        if status_value(T[k], "status_updated") != "2026-11-13":
             p.append(f"{k}: status_updated is {status_value(T[k], 'status_updated')!r}")
     dates = [status_value(T[k], "status_updated") for k in keys]
     if len(set(dates)) != 1:
@@ -2195,7 +2195,7 @@ CHECKS = [
     ("13A-23", "every cited D-/UD- resolves in the decision registers", c23_decision_citations),
     ("13A-24", "every cited 13A-/SCR-/OVL-/P13A- id (incl. compounds & D-198..205) resolves", c24_family_citations),
     ("13A-25", "D-198–205 and DD-246–253 are recorded and mirrored", c25_decision_records),
-    ("13A-26", "STATUS blocks agree: 13B, D-001..D-205, ui_foundations identical", c26_status_blocks),
+    ("13A-26", "STATUS blocks agree: 13C, D-001..D-219, ui_foundations identical", c26_status_blocks),
     ("13A-27", "log §§87–89, roadmap split registration and outline B-13 path", c27_roadmap_registration),
     ("13A-28", "Prompt 13A instruction archived and indexed with its digest", c28_prompt_archive),
     ("13A-29", "12A/12B/12C/R7/R8/security statuses preserved unchanged", c29_protected_statuses),
@@ -2257,7 +2257,7 @@ def fx_src_removed(T):
 
 
 def fx_status_reverted(T):
-    T["ai_context"] = T["ai_context"].replace("stage_2_next_prompt: 13B", "stage_2_next_prompt: 12C", 1)
+    T["ai_context"] = T["ai_context"].replace("stage_2_next_prompt: 13C", "stage_2_next_prompt: 13B", 1)
     return "13A-26"
 
 
@@ -2287,7 +2287,7 @@ def fx_overclaim(T):
 
 def fx_ui_key_split(T):
     T["progress"] = T["progress"].replace(
-        "ui_foundations: Prompt 13A complete", "ui_foundations: Prompt 13B pending", 1)
+        "ui_foundations: Prompt 13B complete", "ui_foundations: Prompt 13B pending", 1)
     return "13A-26"
 
 

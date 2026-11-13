@@ -427,8 +427,8 @@ def validate(docs: Path) -> tuple[list[str], int]:
     # 2026-11-11; Prompt 13 split and 13A closed at the research level, so 13B is
     # the live value. The rule — the STATUS block must name a real live sub-prompt
     # in the family sequence — is unchanged.
-    check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12[A-C]?|13[AB])", status.group(1)) is not None,
-          "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C, 12/12A/12B/12C or 13A/13B as the active prompt")
+    check(status is not None and re.fullmatch(r"(?:10[A-C]?|11[A-C]?|12[A-C]?|13[ABC])", status.group(1)) is not None,
+          "8-handoff", "AI_CONTEXT status block does not set Prompt 10/10A/10B/10C, 11/11A/11B/11C, 12/12A/12B/12C or 13A/13B/13C as the active prompt")
 
     # --- 9. Permissions inventory -------------------------------------------
     perm_block = section(research, "### 7.2", "### 7.3")

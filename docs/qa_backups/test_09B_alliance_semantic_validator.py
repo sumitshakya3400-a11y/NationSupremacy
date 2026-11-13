@@ -721,7 +721,7 @@ class AllianceSemanticValidatorTests(unittest.TestCase):
         # replace was a no-op, so the fixture proved nothing. The defect being
         # proven — a STATUS block naming a closed prompt as live must fail — is
         # unchanged.
-        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 13B", "stage_2_next_prompt: 09")
+        self.modify("AI_CONTEXT.md", "stage_2_next_prompt: 13C", "stage_2_next_prompt: 09")
         self.assert_failure(run_checks(self.root), "[C18]", "stage_2_next_prompt")
 
     # ------------------------------------------------------------------

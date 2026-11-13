@@ -109,7 +109,7 @@ class StaleNextActionTests(unittest.TestCase):
                     # was 12B; 12C then closed it on 2026-11-10 (owner-accepted
                     # 2026-11-11) and Prompt 13 split, so 13A closed on 2026-11-11
                     # and the live sub-prompt is 13B.
-                    self.assertEqual(status_next_prompt(text), "13B")
+                    self.assertEqual(status_next_prompt(text), "13C")
         texts = {p.name: p.read_text(encoding="utf-8", errors="replace")
                  for p in files if p.name in status_files}
         self.assertEqual(continuity_problems(texts), [])
@@ -240,8 +240,8 @@ class CurrentStateConsistencyTests(unittest.TestCase):
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
         self.assertEqual(pending, [f"{i:02d}" for i in range(14, 16)])
         row13 = next(row for row in rows if row[0] == "13")
-        self.assertIn("13A COMPLETE at the research and design-foundations level", row13[2])
-        self.assertIn("Prompt 13B is next", row13[2])
+        self.assertIn("13B COMPLETE at the specification/documentation level", row13[2])
+        self.assertIn("Prompt 13C is next", row13[2])
         # A research pass must never be presented as a built interface.
         self.assertNotRegex(
             row13[2].lower(),
@@ -477,7 +477,8 @@ class SubPromptStatusTests(unittest.TestCase):
         # task is now the same defect 12A and 12B were added to catch, while the
         # genuinely live sub-prompt 13B must not be flagged.
         self.assertEqual(len(subprompt_status_problems("Prompt 12C is the next intended task.")), 1)
-        self.assertEqual(subprompt_status_problems("Prompt 13B is the next intended task."), [])
+        self.assertEqual(subprompt_status_problems("Prompt 13C is the next intended task."), [])
+        self.assertEqual(len(subprompt_status_problems("Prompt 13B is the next intended task.")), 1)
         self.assertEqual(len(subprompt_status_problems("Prompt 13A is the next intended task.")), 1)
         self.assertEqual(len(subprompt_status_problems("Prompt 12B is the next intended task.")), 1)
         self.assertEqual(len(subprompt_status_problems("Prompt 12A is the next intended task.")), 1)
