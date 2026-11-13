@@ -2,7 +2,7 @@
 
 **Version:** 1.0 · **Created:** 2026-11-13 · **Stage 2, Prompt 13D** · **Status:** internal documentation acceptance assessment only.
 **Authority:** Prompt 13D instruction, executed 2026-11-13 under D-014. **This document does not record owner acceptance of Prompt 13D.** It records the agent's own verification evidence and the formal history of owner decisions.
-**Companions:** [`23_ui_system_integration_and_traceability.md`](23_ui_system_integration_and_traceability.md) · [`23_ui_integration_contracts.md`](23_ui_integration_contracts.md) · [`23_ui_acceptance_test_catalog.md`](23_ui_acceptance_test_catalog.md).
+**Companions:** [`23_ui_system_integration_and_traceability.md`](23_ui_system_integration_and_traceability.md) · [`23_ui_integration_contracts.md`](23_ui_integration_contracts.md) · [`23_ui_acceptance_test_catalog.md`](23_ui_acceptance_test_catalog.md) · [owner-acceptance record](23_prompt_13d_owner_acceptance_record.md).
 
 ---
 
@@ -13,7 +13,7 @@
 | Prompt 13A | Five `research/13A_*.md` documents | **COMPLETE at research/design-foundations level; OWNER ACCEPTED** | Log §87; corrected by 13A-C1/C1-R1/C1-R2 (§88–§90); acceptance recorded in the Prompt 13B instruction |
 | Prompt 13B | `21_interface_and_player_journeys.md` + screen + component companions | **COMPLETE at screen/component specification level; OWNER ACCEPTED** | Log §91; 13B-C1 and 13B-C1-R1 complete; D-233 |
 | Prompt 13C | `22_interaction_flows_and_player_experience.md` + journey + state companions | **COMPLETE at interaction-specification level; OWNER ACCEPTED** | Log §92; 13C-C1 complete and independently verified; D-233 |
-| Prompt 13D | This four-document integration and acceptance set | **COMPLETE at documentation level; OWNER ACCEPTANCE PENDING** | This document; internal gates §7; validation §9 |
+| Prompt 13D | This four-document integration and acceptance set | **PROMPT 13D: COMPLETE AT DOCUMENTATION LEVEL — FORMAL OWNER ACCEPTANCE PENDING.** | This document; internal gates §7; validation §9; [owner-acceptance record](23_prompt_13d_owner_acceptance_record.md) |
 | Prompt 14 | Numbers, formulas, balance and worked examples | **NOT STARTED / NOT AUTHORIZED** | D-002; this pass does not authorize it |
 | Prompt 15 | Master Bible assembly | **NOT STARTED / NOT AUTHORIZED** | D-002 |
 
@@ -28,7 +28,7 @@
 | 2026-11-11 | Owner formally accepted **Prompt 12C** in the Prompt 13A instruction | Fair-play workflows/integration/edge cases; specification only; 12C gates retain 16 PASS / 2 PARTIAL / 2 BLOCKED |
 | 2026-11-13 | **D-233 / DD-281** — owner formally accepted **Prompt 13B and Prompt 13C** in their entirety | 13B and 13C deliverables, including completed corrections (13B-C1, 13B-C1-R1, 13C-C1 complete and independently verified); specification-level; no status upgrades |
 | 2026-11-13 | Prompt 13A acceptance | Recorded via the 13B instruction; historical "acceptance pending" statements are preserved as history |
-| — | **Prompt 13D acceptance** | **Not given.** This document's conclusion is the agent's internal assessment, not an owner decision |
+| — | **Prompt 13D acceptance** | **PENDING EXPLICIT OWNER DECISION** — prepared in [the owner-acceptance record](23_prompt_13d_owner_acceptance_record.md); no decision or date is recorded here |
 
 **Preserved historical positions (unchanged):**
 
@@ -71,7 +71,8 @@
 | Dimension | Result | Assessment |
 |---|---|---|
 | Screens specified | 100 / 100 | Complete |
-| Screens integrated | 96 / 100 fully; 4 blocked/provisional with absence duties | Complete at specification level |
+| Screens integrated | 95 / 100 fully integrated; 5 appropriately restricted or unavailable (4 Conditional-class: `SCR-020`, `SCR-038`, `SCR-039`, `SCR-077`; 1 Provisional-class: `SCR-068`) | Complete at specification level |
+| Screens reachable | 95 / 100; 5 intentionally absent or unavailable | Complete at specification level |
 | Components specified | 90 / 90 | Complete |
 | Overlays specified | 8 / 8 | Complete |
 | Journeys specified | 13 / 13 | Complete |
@@ -177,15 +178,15 @@ None of these is hidden: each is a named absence with a gate, owner or future ph
 | `P13D-02` | Stage 1 cross-system consistency | Binding facts mapped; no contradiction | Document audit | D1 §4 | 14 facts; 0 contradictions | **PASS** | Capacity and prototype-security dependencies remain | Carry to implementation |
 | `P13D-03` | Stage 2 cross-system consistency | Every rule family mapped; conflicts resolved | Document audit | D1 §5–§7 | 32 facts; 12 documentation conflicts resolved; 0 game-rule contradictions | **PASS** | None | None |
 | `P13D-04` | Prompt 13A foundation preservation | 16 principles, 8 sections, 100 inventory, 8 overlays, mapless Network View | Cross-check | 13A documents; D1 §16 | All preserved; no replacement architecture | **PASS** | `P13A-10` historical PARTIAL preserved | None |
-| `P13D-05` | Prompt 13B screen completeness | 100 screens with A–K and statuses | Matrix A/L; validator | D1 §8/§10; D3 §2 | 100/100; 95 SPECIFIED, 2 PROVISIONAL, 3 BLOCKED | **PASS** | 4 conditional/provisional screens intentionally absent | None |
+| `P13D-05` | Prompt 13B screen completeness | 100 screens with A–K and statuses | Matrix A/L; validator | D1 §8/§10; D3 §2 | 100/100 specified; 95 INTEGRATED, 2 INTEGRATED-PROVISIONAL, 3 INTEGRATED-BLOCKED | **PASS** | 5 unavailable: 4 Conditional-class (`SCR-020`, `SCR-038`, `SCR-039`, `SCR-077`) and 1 Provisional-class (`SCR-068`) | None |
 | `P13D-06` | Prompt 13B component completeness | 90 components + 8 overlays mapped | Matrix G | D1 §13 | 98/98 mapped; 0 duplicates | **PASS** | None | None |
 | `P13D-07` | Prompt 13C journey completeness | 13 journeys with start/entry/sequence/failure/completion | Matrix E | D1 §11; D3 §3 | 13/13; each has completion test | **PASS** | None | None |
 | `P13D-08` | Prompt 13C interaction-flow completeness | 33 flows with operation/validation/permission/failure | Matrix F | D1 §12 | 33/33 mapped; no duplicate flow | **PASS** | None | None |
 | `P13D-09` | Prompt 13C interaction-state completeness | 18 states reconciled to screens/components | State audit | D1 §14 | 18/18; no missing transition | **PASS** | Two implementation rulings recorded | Apply rulings in build |
 | `P13D-10` | Screen-to-system mapping | 100 rows with system/rule/REQ/flow/contract/test | Matrix A | D1 §8 | 100/100 | **PASS** | 12 rows carry provisional/blocked limitations | Preserve |
-| `P13D-11` | Reverse system-to-screen mapping | Every capability classified | Matrix B | D1 §9 | 63 capabilities; 0 silent absences | **PASS** | 8 partial, 6 blocked, 1 candidate, 4 open-owner | Gaps registered |
+| `P13D-11` | Reverse system-to-screen mapping | Every capability classified | Matrix B | D1 §9 | 90 capabilities; 0 silent absences | **PASS** | 74 Complete, 8 Partial, 5 Blocked, 2 Open-Owner, 1 Candidate | Gaps registered |
 | `P13D-12` | Requirement traceability | Every Prompt 13 requirement dispositioned | Matrix C/D; validator | D1 §15; D3 §12 | 334/334; 0 orphans | **PASS** | 6 PROVISIONAL + 3 BLOCKED statuses preserved | None |
-| `P13D-13` | Navigation and journey reachability | Every screen has legitimate entry/exit; journeys completable | Matrix L + graph audit | D1 §10 | 95 reachable; 5 correctly absent; 0 dead ends | **PASS** | `SCR-068` unlinked by design | None |
+| `P13D-13` | Navigation and journey reachability | Every screen has legitimate entry/exit; journeys completable | Matrix L + graph audit | D1 §10 | 95 reachable; 5 unavailable (4 Conditional + 1 Provisional); 0 dead ends | **PASS** | `SCR-020`, `SCR-038`, `SCR-039`, `SCR-077`, `SCR-068` | None |
 | `P13D-14` | Component and overlay consistency | No duplicate/inconsistent component | Matrix G | D1 §13 | 98/98; no duplicate behaviour | **PASS** | None | None |
 | `P13D-15` | Integration contract completeness | 35 fields, reuse, status, tests | Contract review | D2 | 34 contracts; 11 grouped field rows each; reuse map | **PASS** | 2 blocked, 2 provisional | Stage 5 may refine mechanism |
 | `P13D-16` | Prompt 12C fair-play consistency | Permissions, privacy, moderation, appeal preserved | Cross-check | D1 §5; D2 §9 | 12C gates/statuses preserved; no weakening | **PASS** | 12C's 2 BLOCKED / 2 PARTIAL gates remain | Separate security work |
@@ -193,7 +194,7 @@ None of these is hidden: each is a named absence with a gate, owner or future ph
 | `P13D-18` | Accessibility and responsive consistency | Labels, focus, announcements, device duties | Test design + REQ mapping | D3 §8/§9; D1 §15 | 10 A + 8 R tests; no WCAG claim; breakpoints provisional | **PASS** | No assistive-technology or device test run | Built-UI pass |
 | `P13D-19` | Error, recovery and offline consistency | ERR/OFF/REC mapped to states | Cross-check | D1 §14; D2 §6–§8; D3 §10 | 20 error families; read-only offline; no auto-retry | **PASS** | None | None |
 | `P13D-20` | Security and permission consistency | Server authority; role/boundary preservation | Cross-check | D2 §9; D3 §6 | 12 permission tests; SEC never rendered; no grant-by-render | **PASS** | Production security obligations outstanding | Authorized security work |
-| `P13D-21` | Missing screen and interaction-path assessment | No invented screen; genuine gaps dispositioned | Gap audit | D1 §17 | 16 gaps; 0 critical; no screen added | **PASS** | 2 high-severity security gaps open | Carried |
+| `P13D-21` | Missing screen and interaction-path assessment | No invented screen; genuine gaps dispositioned | Gap audit | D1 §17 | 16 gaps: 3 fixed, 8 open, 3 deferred, 2 owner-reserved; 0 critical; no screen added | **PASS** | 2 high-severity security gaps among the 8 open | Carried |
 | `P13D-22` | Cross-system transaction consistency | 12 mixed-system scenarios | Test design | D3 §5 | 12/12 designed | **PASS** | None | Build and run |
 | `P13D-23` | Unresolved dependency and issue reconciliation | Every open issue has an owner and next action | Register audit | D4 §6 | 12 unresolved issues + 9 missing-functionality rows; all owned | **PARTIAL** | 2 high-severity production obligations and 2 owner/legal matters remain open; 13D cannot close them | Owner/authorized implementation |
 | `P13D-24` | Requirements and decision-register integrity | No duplicate/renumbered rows; new decisions mirrored | Register audit + validators | `03`, `04`, `DECISIONS`; `test_decision_registers` | No new REQ; D-234…236 / DD-282…284; tallies reconciled | **PASS** | None | None |
@@ -225,8 +226,8 @@ This is not an independent external audit. The next independent auditor should v
 
 | Command | Actual result |
 |---|---|
-| `python docs/qa_backups/13D_validate_integration.py` | **59/59 checks passed; 0 failed; 0 problem(s)** |
-| `python docs/qa_backups/13D_validate_integration.py --self-test` | **21/21 regression cases passed** |
+| `python docs/qa_backups/13D_validate_integration.py` | **75/75 checks passed; 0 failed; 0 problem(s)** |
+| `python docs/qa_backups/13D_validate_integration.py --self-test` | **38/38 regression cases passed** |
 
 ### 9.2 Prompt 13 regression
 
@@ -251,7 +252,7 @@ This is not an independent external audit. The next independent auditor should v
 | `python docs/qa_backups/09_validate.py` | 371/371 checks passed |
 | `python docs/qa_backups/11C_validate_b11_workflows.py` | PASS — internally consistent at the documentation level |
 | `python docs/qa_backups/10B_validate_warfare.py` | **1036 checks; 0 failures** after the `CURRENT_SUBPROMPT` expectation was refreshed (`GAP-13D-02`) |
-| `python docs/qa_backups/validate_links.py` | Actual: **4,204 links; 3,822 local; 382 external; 33 anchors; 0 unresolved** (post-13D) |
+| `python docs/qa_backups/validate_links.py` | Actual: **4,225 links; 3,843 local; 382 external; 34 anchors; 0 unresolved** (post-13D-C1-R2) |
 | `python docs/qa_backups/validate_final.py` | ALL CHECKS PASSED |
 | `python docs/qa_backups/test_next_action.py` | 27 tests OK |
 | `python docs/qa_backups/test_decision_registers.py` | 12 tests OK |

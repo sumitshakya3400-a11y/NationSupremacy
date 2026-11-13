@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 import sys
+from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
@@ -22,10 +23,18 @@ D2 = DOCS / "stage-2" / "23_ui_integration_contracts.md"
 D3 = DOCS / "stage-2" / "23_ui_acceptance_test_catalog.md"
 D4 = DOCS / "stage-2" / "23_prompt_13_final_reconciliation_and_acceptance.md"
 DECISIONS = DOCS / "DECISIONS.md"
+DD = DOCS / "stage-2" / "04_approved_and_provisional_decisions.md"
 SCREENS = DOCS / "stage-2" / "21_screen_specifications.md"
 COMPONENTS = DOCS / "stage-2" / "21_component_specifications.md"
 INTERACTIONS = DOCS / "stage-2" / "22_interaction_flows_and_player_experience.md"
 JOURNEYS = DOCS / "stage-2" / "22_player_journey_specifications.md"
+B13_PARENT = DOCS / "stage-2" / "21_interface_and_player_journeys.md"
+AI_CONTEXT = DOCS / "AI_CONTEXT.md"
+AI_HANDOFF = DOCS / "AI_HANDOFF.md"
+PROJECT_PROGRESS = DOCS / "PROJECT_PROGRESS.md"
+ROADMAP = DOCS / "ROADMAP.md"
+LOG = DOCS / "stage-2" / "06_stage_2_progress_log.md"
+STAGE2_ROADMAP = DOCS / "stage-2" / "01_stage_2_prompt_roadmap.md"
 
 SCREEN_IDS = [f"SCR-{i:03d}" for i in range(1, 101)]
 COMPONENT_IDS = [f"UI-CMP-{i:03d}" for i in range(1, 91)]
@@ -89,10 +98,18 @@ def load() -> dict[str, str]:
         "d3": read(D3) if D3.exists() else "",
         "d4": read(D4) if D4.exists() else "",
         "decisions": read(DECISIONS) if DECISIONS.exists() else "",
+        "dd": read(DD) if DD.exists() else "",
         "screens": read(SCREENS) if SCREENS.exists() else "",
         "components": read(COMPONENTS) if COMPONENTS.exists() else "",
         "interactions": read(INTERACTIONS) if INTERACTIONS.exists() else "",
         "journeys": read(JOURNEYS) if JOURNEYS.exists() else "",
+        "b13_parent": read(B13_PARENT) if B13_PARENT.exists() else "",
+        "ai_context": read(AI_CONTEXT) if AI_CONTEXT.exists() else "",
+        "ai_handoff": read(AI_HANDOFF) if AI_HANDOFF.exists() else "",
+        "project_progress": read(PROJECT_PROGRESS) if PROJECT_PROGRESS.exists() else "",
+        "roadmap": read(ROADMAP) if ROADMAP.exists() else "",
+        "log": read(LOG) if LOG.exists() else "",
+        "stage2_roadmap": read(STAGE2_ROADMAP) if STAGE2_ROADMAP.exists() else "",
     }
 
 
@@ -133,6 +150,83 @@ def uix_blocks(text: str) -> dict[str, str]:
         body = re.split(r"^### ", parts[i + 1], maxsplit=1, flags=re.M)[0]
         out[parts[i]] = body
     return out
+
+
+MATRIX_B_CLASSES = ("Complete", "Partial", "Blocked", "Open-Owner", "Candidate")
+GAP_CLASSES = ("FIXED IN 13D", "OPEN", "DEFERRED", "OWNER-RESERVED")
+GAP_STATUS_GROUPS = {
+    "Fixed": ("FIXED IN 13D",),
+    "Open": ("OPEN", "OPEN (BY GATE)", "OPEN (PROVISIONAL)", "OPEN (EXPECTED)", "OPEN (BY RULE)"),
+    "Deferred": ("DEFERRED",),
+    "Owner-reserved": ("OWNER-RESERVED",),
+}
+
+
+def matrix_b_counts(text: str) -> tuple[Counter, int]:
+    sec = section(text, "## 9. Matrix B", "**Reverse-mapping conclusion")
+    counts: Counter = Counter()
+    for line in sec.splitlines():
+        m = re.match(r"^\| [A-Za-z]", line)
+        if not m:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) > 3 and cells[3] in MATRIX_B_CLASSES:
+            counts[cells[3]] += 1
+    return counts, sum(counts.values())
+
+
+def b13_matrix_a_counts(text: str) -> tuple[Counter, Counter, int]:
+    sec = section(text, "## 24. Matrix A", "## 25. Matrix B")
+    status: Counter = Counter()
+    klass: Counter = Counter()
+    n = 0
+    for line in sec.splitlines():
+        if not re.match(r"^\| `SCR-\d{3}` \|", line):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 10:
+            continue
+        n += 1
+        status[clean(cells[9])] += 1
+        klass[clean(cells[2])] += 1
+    return status, klass, n
+
+
+def gate_cells(text: str, gid: str) -> list[str]:
+    for line in text.splitlines():
+        if line.startswith(f"| `{gid}` |"):
+            return [c.strip() for c in line.strip().strip("|").split("|")]
+    return []
+
+
+def gap_rows_in(text: str) -> list[list[str]]:
+    sec = section(text, "## 17. Gap register", "**Gap tally:**")
+    return rows(sec, r"^\| `GAP-13D-\d{2}` \|")
+
+
+def gap_summary_line(text: str) -> str:
+    for line in text.splitlines():
+        if "16 gaps" in line and ("3 fixed" in line or "8 open" in line or "5 open" in line):
+            return line
+    return ""
+
+
+def prompt13_roadmap_row(text: str) -> str:
+    return next((ln for ln in text.splitlines()
+                 if ln.startswith("| 13 | Interface, screens and player journeys")), "")
+
+
+def gap_summary_problems(text: str, label: str) -> list[str]:
+    p: list[str] = []
+    line = gap_summary_line(text)
+    if not line:
+        p.append(f"{label}: no 16-gap summary line")
+        return p
+    for token in ("8 open", "3 deferred", "2 owner-reserved"):
+        check(p, token in line, f"{label}: gap summary missing {token!r}")
+    for bad in ("5 open", "4 provisional/gated"):
+        check(p, bad not in line, f"{label}: stale gap phrase {bad!r}")
+    return p
 
 
 # ---------------------------------------------------------------- checks
@@ -678,6 +772,193 @@ def validate(t: dict[str, str]) -> list[tuple[str, str, list[str]]]:
         check(p, len(found) > 0, f"no {family} identifiers found")
     add("13D-59", "Identifier families present and non-empty", p)
 
+    # 60. Matrix B actual row count and status totals
+    p = []
+    mb_counts, mb_total = matrix_b_counts(t["d1"])
+    expected_mb = Counter({"Complete": 74, "Partial": 8, "Blocked": 5,
+                           "Open-Owner": 2, "Candidate": 1})
+    check(p, mb_total == 90, f"Matrix B has {mb_total} capability rows, expected 90")
+    check(p, mb_counts == expected_mb, f"Matrix B totals are {dict(mb_counts)}, expected {dict(expected_mb)}")
+    add("13D-60", "Matrix B capability rows and five status totals", p)
+
+    # 61. P13D-11 agrees with Matrix B
+    p = []
+    g11 = gate_cells(t["d4"], "P13D-11")
+    joined11 = " ".join(g11)
+    check(p, bool(g11), "P13D-11 gate row missing")
+    check(p, "90 capabilities" in joined11, "P13D-11 does not state 90 capabilities")
+    for token in ("74 Complete", "8 Partial", "5 Blocked", "2 Open-Owner", "1 Candidate"):
+        check(p, token in joined11, f"P13D-11 does not state {token!r}")
+    for bad in ("63 capabilities", "6 Blocked", "4 open-owner", "4 Open-Owner"):
+        check(p, bad not in joined11, f"P13D-11 retains stale claim {bad!r}")
+    add("13D-61", "P13D-11 agrees with Matrix B status distribution", p)
+
+    # 62. Matrix A (13B source) specification-status and class totals
+    p = []
+    a_status, a_class, a_total = b13_matrix_a_counts(t["b13_parent"])
+    expected_status = Counter({"SPECIFIED": 95, "PROVISIONAL": 2, "BLOCKED": 3})
+    expected_class = Counter({"Mandatory": 85, "Conditional": 4,
+                              "Provisional": 1, "Mandatory (admin)": 10})
+    check(p, a_total == 100, f"13B Matrix A has {a_total} screens, expected 100")
+    check(p, a_status == expected_status, f"13B Matrix A statuses are {dict(a_status)}, expected {dict(expected_status)}")
+    check(p, a_class == expected_class, f"13B Matrix A classes are {dict(a_class)}, expected {dict(expected_class)}")
+    add("13D-62", "Matrix A specification-status and class totals", p)
+
+    # 63. D4 completeness table agrees with screen totals
+    p = []
+    sec4 = section(t["d4"], "## 4. Overall UI completeness assessment", "## 5. Cross-stage audit summary")
+    integrated_line = next((ln for ln in sec4.splitlines() if ln.startswith("| Screens integrated |")), "")
+    reachable_line = next((ln for ln in sec4.splitlines() if ln.startswith("| Screens reachable |")), "")
+    check(p, "95 / 100" in integrated_line, "D4 'Screens integrated' does not state 95 / 100")
+    check(p, "5" in integrated_line and "Conditional" in integrated_line and "Provisional" in integrated_line,
+          "D4 'Screens integrated' does not explain the five unavailable screens")
+    for bad in ("96 / 100", "4 blocked"):
+        check(p, bad not in integrated_line, f"D4 'Screens integrated' retains stale claim {bad!r}")
+    check(p, "95 / 100" in reachable_line and "5" in reachable_line,
+          "D4 'Screens reachable' does not state 95 / 100 with 5 unavailable")
+    add("13D-63", "D4 completeness table agrees with Matrix A/L", p)
+
+    # 64. P13D-05 and P13D-13 identify all five unavailable screens
+    p = []
+    g05 = " ".join(gate_cells(t["d4"], "P13D-05"))
+    g13 = " ".join(gate_cells(t["d4"], "P13D-13"))
+    for gid, row in (("P13D-05", g05), ("P13D-13", g13)):
+        for token in ("95", "5 unavailable", "SCR-020", "SCR-038", "SCR-039", "SCR-077", "SCR-068"):
+            check(p, token in row, f"{gid} does not state {token!r}")
+        check(p, "4 conditional/provisional screens" not in row, f"{gid} retains the four-screen claim")
+    check(p, "95 `INTEGRATED`" in t["d1"] and "2 `INTEGRATED-PROVISIONAL`" in t["d1"]
+          and "3 `INTEGRATED-BLOCKED`" in t["d1"], "D1 §8.1 integration-status tally is not 95/2/3")
+    add("13D-64", "Screen availability agrees with P13D-05/P13D-13", p)
+
+    # 65. Gap-register counts and classifications
+    p = []
+    gr = gap_rows_in(t["d1"])
+    gstatus = Counter(clean(r[15]) for r in gr if len(r) > 15)
+    grouped = {name: sum(gstatus[s] for s in statuses) for name, statuses in GAP_STATUS_GROUPS.items()}
+    check(p, len(gr) == 16, f"gap register has {len(gr)} rows, expected 16")
+    check(p, grouped["Fixed"] == 3, f"fixed gaps are {grouped['Fixed']}, expected 3")
+    check(p, grouped["Open"] == 8, f"open gaps are {grouped['Open']}, expected 8")
+    check(p, grouped["Deferred"] == 3, f"deferred gaps are {grouped['Deferred']}, expected 3")
+    check(p, grouped["Owner-reserved"] == 2, f"owner-reserved gaps are {grouped['Owner-reserved']}, expected 2")
+    open_parts = Counter({s: gstatus[s] for s in GAP_STATUS_GROUPS["Open"]})
+    expected_open = Counter({"OPEN": 2, "OPEN (PROVISIONAL)": 3, "OPEN (BY GATE)": 1,
+                             "OPEN (BY RULE)": 1, "OPEN (EXPECTED)": 1})
+    check(p, open_parts == expected_open, f"open-gap composition is {dict(open_parts)}, expected {dict(expected_open)}")
+    add("13D-65", "Gap-register totals and open-gap composition", p)
+
+    # 66. Gap summaries agree across canonical records
+    p = []
+    sources: list[tuple[str, str]] = []
+    sources.append(("D1", gap_summary_line(t["d1"])))
+    d4_gap_line = next((ln for ln in t["d4"].splitlines() if ln.startswith("12. **Gap register**")), "")
+    sources.append(("D4 §3", d4_gap_line))
+    sources.append(("D4 P13D-21", " ".join(gate_cells(t["d4"], "P13D-21"))))
+    sources.append(("D-236", next((ln for ln in t["decisions"].splitlines() if ln.startswith("| D-236 |")), "")))
+    sources.append(("DD-284", next((ln for ln in t["dd"].splitlines() if ln.startswith("| DD-284 |")), "")))
+    for name, key in (("AI_CONTEXT", "ai_context"), ("AI_HANDOFF", "ai_handoff"),
+                      ("PROJECT_PROGRESS", "project_progress"), ("ROADMAP", "roadmap")):
+        sources.append((name, gap_summary_line(t.get(key, ""))))
+    log_gap = next((ln for ln in t.get("log", "").splitlines() if ln.startswith("- **Gaps:** 16")), "")
+    sources.append(("log §94", log_gap))
+    for label, line in sources:
+        if not line:
+            p.append(f"{label}: gap summary line missing")
+            continue
+        for token in ("8 open", "3 deferred", "2 owner-reserved"):
+            check(p, token in line, f"{label}: gap summary missing {token!r}")
+        for bad in ("5 open", "4 provisional/gated"):
+            check(p, bad not in line, f"{label}: stale gap phrase {bad!r}")
+    add("13D-66", "Gap summaries agree across D1/D4/registers/continuity", p)
+
+    # 67. Working-tree audit-trail correction (§95) present, §94 preserved
+    p = []
+    log = t.get("log", "")
+    check(p, "## 95. Prompt 13D-C1" in log, "progress log §95 correction record missing")
+    check(p, "## 94. Prompt 13D" in log, "historical §94 record was removed or renumbered")
+    check(p, "working tree was clean at start" in log, "historical §94 clean-tree statement was silently rewritten")
+    for token in ("6 new files", "24 substantively modified existing files", "0 removed files",
+                  "150", "154", "no application or prototype implementation content",
+                  "Autonomous Decision Policy content remained unchanged"):
+        check(p, token.lower() in log.lower(), f"§95 does not record audit-trail fact {token!r}")
+    add("13D-67", "Working-tree audit trail corrected in §95 with §94 preserved", p)
+
+    # 68. Integration-status agreement across D1 and D4
+    p = []
+    check(p, "95 `INTEGRATED`" in t["d1"] and "2 `INTEGRATED-PROVISIONAL`" in t["d1"]
+          and "3 `INTEGRATED-BLOCKED`" in t["d1"], "D1 integration-status tally is not 95/2/3")
+    joined05 = " ".join(gate_cells(t["d4"], "P13D-05"))
+    check(p, "95 INTEGRATED" in joined05 and "2 INTEGRATED-PROVISIONAL" in joined05
+          and "3 INTEGRATED-BLOCKED" in joined05, "P13D-05 integration-status tally is not 95/2/3")
+    check(p, "92 `INTEGRATED`" not in t["d1"] and "96 / 100" not in t["d4"],
+          "stale screen-integration tally remains")
+    add("13D-68", "Integration-status tally agrees across D1 and D4", p)
+
+    # 69. Stage 2 roadmap current Prompt 13 row reports 90 capabilities
+    p = []
+    row13 = prompt13_roadmap_row(t["stage2_roadmap"])
+    check(p, bool(row13), "Stage 2 roadmap Prompt 13 row missing")
+    check(p, "90 capabilities" in row13, "Stage 2 roadmap Prompt 13 row does not report 90 capabilities")
+    for token in ("74 Complete", "8 Partial", "5 Blocked", "2 Open-Owner", "1 Candidate"):
+        check(p, token in row13, f"Stage 2 roadmap Prompt 13 row omits Matrix B total {token!r}")
+    add("13D-69", "Stage 2 roadmap reports 90 Matrix B capabilities", p)
+
+    # 70. Stage 2 roadmap Matrix B totals agree with canonical D1 Matrix B
+    p = []
+    mb_counts2, mb_total2 = matrix_b_counts(t["d1"])
+    check(p, bool(row13), "Stage 2 roadmap Prompt 13 row missing")
+    for name in ("Complete", "Partial", "Blocked", "Open-Owner", "Candidate"):
+        token = f"{mb_counts2[name]} {name}"
+        check(p, token in row13, f"Stage 2 roadmap Matrix B total disagrees with D1: missing {token!r}")
+    add("13D-70", "Stage 2 roadmap Matrix B totals agree with D1", p)
+
+    # 71. Stage 2 roadmap screen totals agree with D1 and D4
+    p = []
+    for token in ("95 fully integrated", "2 INTEGRATED-PROVISIONAL", "3 INTEGRATED-BLOCKED",
+                  "95 reachable", "5 unavailable", "4 Conditional-class", "1 Provisional-class"):
+        check(p, token in row13, f"Stage 2 roadmap screen total missing {token!r}")
+    check(p, "96 / 100" not in row13 and "4 blocked" not in row13,
+          "Stage 2 roadmap retains a stale screen-integration total")
+    add("13D-71", "Stage 2 roadmap screen totals agree with D1 and D4", p)
+
+    # 72. Stage 2 roadmap gap totals agree with the canonical gap register
+    p = []
+    gr2 = gap_rows_in(t["d1"])
+    g2 = Counter(clean(r[15]) for r in gr2 if len(r) > 15)
+    grouped2 = {name: sum(g2[s] for s in statuses) for name, statuses in GAP_STATUS_GROUPS.items()}
+    check(p, "16 gaps" in row13, "Stage 2 roadmap does not state 16 gaps")
+    check(p, f"{grouped2['Fixed']} fixed" in row13, "Stage 2 roadmap fixed-gap total disagrees with D1")
+    check(p, f"{grouped2['Open']} open" in row13, "Stage 2 roadmap open-gap total disagrees with D1")
+    check(p, f"{grouped2['Deferred']} deferred" in row13, "Stage 2 roadmap deferred-gap total disagrees with D1")
+    check(p, f"{grouped2['Owner-reserved']} owner-reserved" in row13,
+          "Stage 2 roadmap owner-reserved gap total disagrees with D1")
+    for bad in ("5 open", "4 provisional/gated"):
+        check(p, bad not in row13, f"Stage 2 roadmap retains stale gap phrase {bad!r}")
+    add("13D-72", "Stage 2 roadmap gap totals agree with D1", p)
+
+    # 73. Stale 63-capability statement cannot remain in the current row
+    p = []
+    for bad in ("63-capability", "63 capabilities", "63-capability Matrix B"):
+        check(p, bad not in row13, f"Stage 2 roadmap current row retains stale claim {bad!r}")
+    add("13D-73", "Stage 2 roadmap current row has no stale 63-capability claim", p)
+
+    # 74. Stage 2 roadmap cites the completion and correction records
+    p = []
+    check(p, "§94" in row13, "Stage 2 roadmap does not cite the Prompt 13D completion record §94")
+    check(p, "§95" in row13, "Stage 2 roadmap does not cite the 13D-C1 correction record §95")
+    add("13D-74", "Stage 2 roadmap cites §94 and §95", p)
+
+    # 75. Historical/current distinction for superseded roadmap figures
+    p = []
+    for line in t["stage2_roadmap"].splitlines():
+        if "63-capability" not in line and "63 capabilities" not in line:
+            continue
+        if line == row13:
+            continue  # check 73 owns the current row
+        low = line.lower()
+        check(p, any(marker in low for marker in ("historical", "superseded", "earlier summary")),
+              "Stage 2 roadmap contains an unlabelled superseded 63-capability reference")
+    add("13D-75", "Superseded roadmap figures are labelled historical", p)
+
     return results
 
 
@@ -843,6 +1124,127 @@ def self_test() -> int:
         m["decisions"] = m["decisions"].replace("| D-234 |", "| D-934 |", 1)
         return expect(m, "DECISIONS.md does not record D-234", "missing decision")
     case("missing decision row fails", missing_decision)
+
+    # Positive controls
+    def positive_baseline():
+        results = validate(base)
+        problems = sum(len(probs) for _, _, probs in results)
+        if problems:
+            print(f"[SELF-TEST FAIL] positive baseline: {problems} problems on the corrected tree")
+        return problems == 0
+    case("positive baseline passes", positive_baseline)
+
+    def positive_matrix_b():
+        counts, total = matrix_b_counts(base["d1"])
+        expected = Counter({"Complete": 74, "Partial": 8, "Blocked": 5,
+                            "Open-Owner": 2, "Candidate": 1})
+        ok = total == 90 and counts == expected
+        if not ok:
+            print(f"[SELF-TEST FAIL] positive Matrix B: {total}, {dict(counts)}")
+        return ok
+    case("positive Matrix B totals accepted", positive_matrix_b)
+
+    # Negative controls for the 13D-C1 checks
+    def bad_matrix_b_count():
+        m = deepcopy(base)
+        m["d1"] = m["d1"].replace(
+            "| Registration and e-mail verification | B-03 ACC-023/024 | `SCR-002`, `SCR-006` | Complete |",
+            "| Registration and e-mail verification | B-03 ACC-023/024 | `SCR-002`, `SCR-006` | Partial |", 1)
+        return expect(m, "Matrix B totals", "Matrix B count corruption")
+    case("Matrix B count corruption fails", bad_matrix_b_count)
+
+    def bad_gate_11():
+        m = deepcopy(base)
+        m["d4"] = m["d4"].replace("90 capabilities; 0 silent absences", "63 capabilities; 0 silent absences", 1)
+        return expect(m, "P13D-11", "P13D-11 stale capability claim")
+    case("P13D-11 stale capability claim fails", bad_gate_11)
+
+    def bad_matrix_a_status():
+        m = deepcopy(base)
+        m["b13_parent"] = m["b13_parent"].replace(
+            "| `SCR-001` | Landing / public introduction | Mandatory | B-03 | Complete | Complete | Complete | Complete | D-007; brand `13A-OQ-001/002`; k=5 | SPECIFIED |",
+            "| `SCR-001` | Landing / public introduction | Mandatory | B-03 | Complete | Complete | Complete | Complete | D-007; brand `13A-OQ-001/002`; k=5 | PROVISIONAL |", 1)
+        return expect(m, "13B Matrix A statuses", "Matrix A status corruption")
+    case("Matrix A status corruption fails", bad_matrix_a_status)
+
+    def bad_screen_total():
+        m = deepcopy(base)
+        m["d4"] = m["d4"].replace("95 / 100 fully integrated", "96 / 100 fully integrated", 1)
+        return expect(m, "Screens integrated", "D4 screen-total corruption")
+    case("D4 screen-total corruption fails", bad_screen_total)
+
+    def bad_gate_05():
+        m = deepcopy(base)
+        m["d4"] = m["d4"].replace("5 unavailable: 4 Conditional-class", "4 conditional/provisional screens", 1)
+        return expect(m, "P13D-05", "P13D-05 four-screen claim")
+    case("P13D-05 unavailable-screen corruption fails", bad_gate_05)
+
+    def bad_gap_status():
+        m = deepcopy(base)
+        m["d1"] = m["d1"].replace("| **OPEN (BY RULE)** |", "| **DEFERRED** |", 1)
+        return expect(m, "open gaps are", "gap-status corruption")
+    case("gap-status corruption fails", bad_gap_status)
+
+    def bad_d236():
+        m = deepcopy(base)
+        m["decisions"] = m["decisions"].replace("**8 open**", "**5 open**", 1)
+        return expect(m, "D-236", "D-236 stale gap total")
+    case("D-236 stale gap total fails", bad_d236)
+
+    def bad_ai_context():
+        m = deepcopy(base)
+        m["ai_context"] = m["ai_context"].replace("8 open — 2 high-severity", "5 open — 2 high-severity", 1)
+        return expect(m, "AI_CONTEXT", "AI_CONTEXT stale gap total")
+    case("AI_CONTEXT stale gap total fails", bad_ai_context)
+
+    def bad_audit_trail():
+        m = deepcopy(base)
+        m["log"] = m["log"].replace("24 substantively modified existing files", "22 substantively modified existing files", 1)
+        return expect(m, "§95", "§95 audit-trail corruption")
+    case("§95 audit-trail corruption fails", bad_audit_trail)
+
+    # Stage 2 roadmap synchronization controls
+    def positive_roadmap():
+        row = prompt13_roadmap_row(base["stage2_roadmap"])
+        ok = ("90 capabilities" in row and "8 open" in row and "§94" in row and "§95" in row)
+        if not ok:
+            print(f"[SELF-TEST FAIL] positive roadmap: {row[:200]}")
+        return ok
+    case("positive Stage 2 roadmap row accepted", positive_roadmap)
+
+    def bad_roadmap_63():
+        m = deepcopy(base)
+        m["stage2_roadmap"] = m["stage2_roadmap"].replace("Matrix B 90 capabilities", "63-capability Matrix B", 1)
+        return expect(m, "63-capability", "roadmap 63-corruption")
+    case("roadmap 63-capability corruption fails", bad_roadmap_63)
+
+    def bad_roadmap_missing_95():
+        m = deepcopy(base)
+        m["stage2_roadmap"] = m["stage2_roadmap"].replace("[§95](06_stage_2_progress_log.md)", "[§94](06_stage_2_progress_log.md)", 1)
+        return expect(m, "§95", "roadmap missing §95")
+    case("roadmap missing §95 fails", bad_roadmap_missing_95)
+
+    def bad_roadmap_gap():
+        m = deepcopy(base)
+        m["stage2_roadmap"] = m["stage2_roadmap"].replace("16 gaps (3 fixed, 8 open", "16 gaps (3 fixed, 5 open", 1)
+        return expect(m, "open-gap total", "roadmap gap-total corruption")
+    case("roadmap gap-total corruption fails", bad_roadmap_gap)
+
+    def historical_63_allowed():
+        m = deepcopy(base)
+        m["stage2_roadmap"] = m["stage2_roadmap"] + "\n> **Historical (superseded):** an earlier summary said 63-capability Matrix B.\n"
+        results = validate(m)
+        problems = sum(len(probs) for _, _, probs in results)
+        if problems:
+            print(f"[SELF-TEST FAIL] historical 63 allowed: {problems} problems")
+        return problems == 0
+    case("labelled historical 63-capability reference allowed", historical_63_allowed)
+
+    def unlabelled_historical_63():
+        m = deepcopy(base)
+        m["stage2_roadmap"] = m["stage2_roadmap"] + "\nA current summary says 63-capability Matrix B.\n"
+        return expect(m, "unlabelled superseded 63-capability reference", "unlabelled 63 reference")
+    case("unlabelled superseded 63-capability reference fails", unlabelled_historical_63)
 
     print(f"\nSELF-TEST: {passed}/{total} regression cases passed")
     return 0 if passed == total else 1

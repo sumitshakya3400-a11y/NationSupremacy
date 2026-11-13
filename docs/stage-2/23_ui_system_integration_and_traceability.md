@@ -329,7 +329,7 @@ No underlying game-system conflict was found that required changing a rule. No a
 
 ### 8.1 Matrix A tallies
 
-- **100 screens** accounted for: 85 Mandatory player, 4 Conditional player (`SCR-020/038/039/077`), 1 Provisional player (`SCR-068`), 10 Mandatory administrative (`SCR-091`…`SCR-100`).
+- **100 screens** accounted for by **class**: 85 Mandatory player, 4 Conditional player (`SCR-020/038/039/077`), 1 Provisional player (`SCR-068`), 10 Mandatory administrative (`SCR-091`…`SCR-100`). Class (product availability) and specification status are different axes; a Conditional-class screen may be SPECIFIED or PROVISIONAL.
 - **Status:** 95 SPECIFIED, 2 PROVISIONAL (`SCR-020`, `SCR-077`), 3 BLOCKED (`SCR-038`, `SCR-039`, `SCR-068`).
 - **R/W posture:** 52 read-only, 45 write/both (34 write-only + 11 read/write), 3 absent.
 - **Integration status:** 95 `INTEGRATED`, 2 `INTEGRATED-PROVISIONAL` (`SCR-020`, `SCR-077`), 3 `INTEGRATED-BLOCKED` as absence (`SCR-038`, `SCR-039`, `SCR-068`), 0 unexplained gaps.
@@ -581,7 +581,7 @@ No underlying game-system conflict was found that required changing a rule. No a
 | `SCR-099` | Admin | `admin.announce` | Console | `SCR-091` | `JRN-M` | Reachable (authorized) |
 | `SCR-100` | Admin | `admin.roles` | Console | `SCR-091` | `JRN-M` | Reachable (R-SEC) |
 
-**Reachability verdict.** 95 screens reachable by a legitimate path; 4 conditional/provisional screens correctly absent (`SCR-020`, `SCR-038`, `SCR-039`, `SCR-077`); `SCR-068` provisional and unlinked. No accidental dead end exists: every reachable screen has a return path, and every task screen has a cancel/return path specified in its flow. No screen is reachable only through an overlay. The four dual-parent aliases (`SCR-010/017/062/088`) share one route each; no duplicate copy exists.
+**Reachability verdict.** 95 screens reachable by a legitimate path; **5 unavailable** — 4 Conditional-class screens (`SCR-020`, `SCR-038`, `SCR-039`, `SCR-077`) and 1 Provisional-class screen (`SCR-068`, unlinked). No accidental dead end exists: every reachable screen has a return path, and every task screen has a cancel/return path specified in its flow. No screen is reachable only through an overlay. The four dual-parent aliases (`SCR-010/017/062/088`) share one route each; no duplicate copy exists.
 
 ---
 
