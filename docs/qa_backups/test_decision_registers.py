@@ -180,7 +180,7 @@ class HandoffTests(unittest.TestCase):
         # on 2026-11-11, Prompt 13 split, and 13A closed at the research level, so
         # every STATUS block now records 13C as the live sub-prompt.
         for path in (DOCS / "AI_CONTEXT.md", DOCS / "AI_HANDOFF.md", DOCS / "PROJECT_PROGRESS.md"):
-            self.assertRegex(read(path), r"stage_2_next_prompt:\s*13D\b", path.name)
+            self.assertRegex(read(path), r"stage_2_next_prompt:\s*14\b", path.name)
         progress = read(DOCS / "PROJECT_PROGRESS.md")
         self.assertRegex(progress, r"\| 04 \| Economy[^\n]*\| \*\*Complete\*\*")
         self.assertRegex(progress, r"\| 05 \| Cities[^\n]*\| \*\*Complete\*\*")

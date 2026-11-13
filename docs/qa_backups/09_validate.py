@@ -407,8 +407,8 @@ if blocks:
     # 2026-11-11 (Prompt 13A): the frontier advanced through 12C (owner-accepted
     # 2026-11-11) and the 13A research pass, so the live sub-prompt is 13B. The
     # rule itself is unchanged — the STATUS block must still name one live prompt.
-    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "13C":
-        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 13C")
+    if one.get("stage_2") == "IN PROGRESS" and one.get("stage_2_next_prompt") == "14":
+        print("PASS  STATUS: Stage 2 IN PROGRESS, next prompt 14")
     else:
         failures.append(f"STATUS: Stage 2 state is {one.get('stage_2')!r} / prompt {one.get('stage_2_next_prompt')!r}")
     if "deleted" in (one.get("legacy_worker", "") + one.get("legacy_supabase_project", "")) and \
@@ -494,6 +494,7 @@ WORDS["one hundred and ninety-seven"] = 197
 # spellings stay in the map because historical status blocks still use them.
 WORDS["two hundred and five"] = 205
 WORDS["two hundred and nineteen"] = 219
+WORDS["two hundred and thirty-six"] = 236
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -528,7 +529,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
 # 2026-11-11 (Prompt 13A): DD-246…DD-253 are the mirrored 13A positions, so the
 # contiguous expectation advances; the check still derives the list from the file.
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 268)], "design register carries DD-001..DD-267 contiguously", str(len(dd_rows)))
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 285)], "design register carries DD-001..DD-284 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -580,8 +581,8 @@ check("10B specification complete" in log_status("10")
       and "Prompt 10C complete" in log_status("10")
       # 2026-11-11 (Prompt 13A): 12C closed on 2026-11-10 and was owner-accepted,
       # so row 10 must name 13B as the live prompt instead of 12C.
-      and "Prompt 13C next" in log_status("10"),
-      "progress log row 10 records 10B complete, 10C complete and Prompt 13C next", log_status("10"))
+      and "Prompt 14 next" in log_status("10"),
+      "progress log row 10 records 10B complete, 10C complete and Prompt 14 next", log_status("10"))
 # 2026-11-07 (Prompt 12A review remediation): read row 12 itself, not just the
 # pending count, so a row that silently regresses to "Pending" or to 12A-live
 # fails here even though the count of bare Pending rows is unchanged. The
@@ -612,13 +613,13 @@ check("Prompt 06" in ctx_handoff_row and "next action = Prompt 05" not in ctx_ha
       "AI_CONTEXT index row describes the Stage 2 handoff's current next action")
 
 hand_h = hand[hand.index("## H. Next authorized task"):hand.index("## I. Instructions")]
-check("Prompt 10C" in hand_h and not stale_next_actions(hand_h),
-      "AI_HANDOFF §H names Prompt 10C as the next task")
+check("Prompt 13D" in hand_h and not stale_next_actions(hand_h),
+      "AI_HANDOFF §H names Prompt 13D as the next task")
 s2_next = s2[s2.index("## 10. Next action"):s2.index("## 11. House rules")]
-check("Prompt 10C" in s2_next and not stale_next_actions(s2_next),
-      "Stage 2 handoff §10 names Prompt 10C as the next action")
+check("Prompt 13D" in s2_next and not stale_next_actions(s2_next),
+      "Stage 2 handoff §10 names Prompt 13D as the next action")
 log_next = log[:log.index("## 1.")] if "## 1." in log else log[:1200]
-check("Prompt 10C" in log_next, "Stage 2 progress log header names Prompt 10C")
+check("Prompt 13D" in log_next, "Stage 2 progress log header names Prompt 13D")
 
 # 15g. Prompt 02 specification (2026-10-23) ----------------------------------
 spec = read(DOCS / "stage-2" / "07_core_gameplay_loop_symbolic_world_and_turn_system.md")

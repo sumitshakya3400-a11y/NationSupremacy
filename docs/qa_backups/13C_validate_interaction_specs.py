@@ -402,10 +402,14 @@ def c21_no_implementation(t: dict[str, str]) -> list[str]:
 
 def c22_no_13d(t: dict[str, str]) -> list[str]:
     p: list[str] = []
-    for path in (DOCS / "stage-2").glob("*"):
-        check(p, not re.match(r"^(23_|13D_)", path.name), f"Prompt 13D deliverable exists: {path.name}")
-    check(p, "13D is NOT STARTED" in t["master"], "Prompt 13D non-start statement missing")
+    # Frontier refresh (Prompt 13D): the four 13D deliverables now exist by owner
+    # authorization. The 13C boundary that matters is retained: 13C itself
+    # created no implementation and recorded the 13D boundary.
+    for name in ("23_ui_system_integration_and_traceability.md", "23_ui_integration_contracts.md",
+                 "23_ui_acceptance_test_catalog.md", "23_prompt_13_final_reconciliation_and_acceptance.md"):
+        check(p, (DOCS / "stage-2" / name).exists(), f"Prompt 13D deliverable missing: {name}")
     check(p, "Prompt 13D" in t["master"], "Prompt 13D boundary missing")
+    check(p, "No frontend implementation" in t["master"], "13C scope confirmation missing")
     return p
 
 
@@ -586,7 +590,7 @@ CHECKS = [
     ("13C-19", "Conditional features respect gates", c19_conditional),
     ("13C-20", "Mapless architecture preserved", c20_mapless),
     ("13C-21", "No implementation artifacts", c21_no_implementation),
-    ("13C-22", "No Prompt 13D deliverable", c22_no_13d),
+    ("13C-22", "Prompt 13D boundary recorded; 13D deliverables present", c22_no_13d),
     ("13C-23", "Internal Markdown links and anchors resolve", c23_links),
     ("13C-24", "Section references resolve", c24_sections),
     ("13C-25", "Requirement/journey/flow traceability consistent", c25_traceability),

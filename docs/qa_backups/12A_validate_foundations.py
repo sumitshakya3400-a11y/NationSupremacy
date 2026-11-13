@@ -905,9 +905,9 @@ def check_31(m: Model) -> tuple[bool, str]:
     # 2026-11-11 (Prompt 13A): the frontier moved through 12C (owner-accepted) to
     # the 13 family, so the machine-checked milestone values advance with it. The
     # agreement rule itself is unchanged: the three files must say the same thing.
-    if not first["stage_2_next_prompt"].startswith("13"):
+    if not first["stage_2_next_prompt"].startswith("14"):
         return False, f"stage_2_next_prompt is '{first['stage_2_next_prompt']}'"
-    if not re.fullmatch(r"D-001\.\.D-233", first["decisions_range"]):
+    if not re.fullmatch(r"D-001\.\.D-236", first["decisions_range"]):
         return False, f"decisions_range is '{first['decisions_range']}'"
     return True, (f"the {len(required)} required status keys agree; next prompt "
                   f"{first['stage_2_next_prompt']}, range {first['decisions_range']}")
