@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "NC-F-EC-000f",
+  "clause_id": "F-EC-000f",
+  "title": "Constants are versioned",
+  "source_document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+  "source_version": "B-04 formula register v1.4",
+  "baseline_source_hash": "3025cc447ebb91be8d226ff5035da0e403947d2be603e81e535bbd5600bca5ca",
+  "contract_version": "1.0.0",
+  "lifecycle_status": "ADOPTED",
+  "numerical_status": "PROVISIONAL VALUE",
+  "numerical_status_display": "Provisional",
+  "effective_decision": "D-238",
+  "scope": {
+    "systems": ["B-04"],
+    "domain": "CONSTANT_VERSIONING",
+    "turn_phases": ["ALL"],
+    "persistence": "NONE",
+    "inheritance": "EXPLICIT_PER_PROPOSITION",
+    "excluded_systems": [],
+    "excluded_concepts": [],
+    "scope_authority": ["D-014"]
+  },
+  "propositions": [
+    {
+      "id": "NC-F-EC-000f/P-001",
+      "kind": "CONSTANT_CLASSIFICATION",
+      "subject": "F_EC_000F_CONSTANTS",
+      "predicate": "IS_CLASSIFIED_AS",
+      "object": { "type": "CONSTANT_STATUS", "value": "V1_0_PROVISIONAL_CALIBRATION" },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "CONSTANT_VERSIONING",
+        "persistence": "NONE",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "NONE", "phase": "ALL", "persistence": "NONE" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-014"],
+        "basis_note": "The provisional-calibration classification is an ordinary Category B register rule recorded under D-014; it is not an owner numerical approval."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000f",
+        "excerpt": "The constants below are the v1.0 provisional calibration",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000f/P-002",
+      "kind": "CONSTANT_CARRY_FORWARD",
+      "subject": "V1_0_CALIBRATION",
+      "predicate": "IS_CARRIED_UNCHANGED_INTO",
+      "object": { "type": "REGISTER_VERSION_CARRY", "from": "v1.0", "to": "v1.1", "reference": "F-EC-044" },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "CONSTANT_VERSIONING",
+        "persistence": "NONE",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "NONE", "phase": "ALL", "persistence": "NONE" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-014"],
+        "basis_note": "The v1.0-to-v1.1 carry is a documentary register rule traceable to F-EC-044; it changes no numerical value and is Category B under D-014."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000f",
+        "excerpt": "carried unchanged into v1.1 (see F-EC-044)",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000f/P-003",
+      "kind": "CONSTANT_PROPERTY",
+      "subject": "F_EC_000F_CONSTANTS",
+      "predicate": "ARE_OBSERVED_PRICES",
+      "object": { "type": "BOOLEAN_PROPERTY", "value": "OBSERVED_PRICES" },
+      "modality": "MUST_NOT",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "CONSTANT_VERSIONING",
+        "persistence": "NONE",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "NONE", "phase": "ALL", "persistence": "NONE" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-014"],
+        "basis_note": "The denial of observed-price status is a Category B register classification under D-014; the constants are provisional calibration values, not market observations."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000f",
+        "excerpt": "They are not observed prices",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000f/P-004",
+      "kind": "CONSTANT_PROPERTY",
+      "subject": "F_EC_000F_CONSTANTS",
+      "predicate": "ARE_BALANCE_CLAIMS",
+      "object": { "type": "BOOLEAN_PROPERTY", "value": "BALANCE_CLAIMS" },
+      "modality": "MUST_NOT",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "CONSTANT_VERSIONING",
+        "persistence": "NONE",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "NONE", "phase": "ALL", "persistence": "NONE" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-014"],
+        "basis_note": "The denial of balance-claim status is a Category B register classification under D-014; no value is calibrated or proven by this clause."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000f",
+        "excerpt": "and not balance claims",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000f/P-005",
+      "kind": "VALUE_CHANGE_AUTHORITY",
+      "subject": "VALUE_CHANGE",
+      "predicate": "REQUIRES_REVISION",
+      "object": { "type": "REVISION_REQUIREMENT", "mechanism": "NEW_REGISTER_REVISION", "authority": "D-014" },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "CONSTANT_VERSIONING",
+        "persistence": "NONE",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "NONE", "phase": "ALL", "persistence": "NONE" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-014"],
+        "basis_note": "D-014 authorizes working-AI Category B register revisions but requires every value change to arrive through a new register revision; an owner-only revision rule is not the baseline."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000f",
+        "excerpt": "Prompt 14 may change a value only by a new revision of this register.",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    }
+  ],
+  "change_policy": {
+    "default_category": "B",
+    "propositions": {
+      "NC-F-EC-000f/P-001": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000f/P-002": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000f/P-003": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000f/P-004": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000f/P-005": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      }
+    }
+  },
+  "rendering": {
+    "template_id": "B04-F-EC-000f",
+    "version": "1.0.0",
+    "template_path": "projections/F-EC-000f.md.tpl",
+    "fragment_separator": " ",
+    "structural_prefix": "**F-EC-000f — Constants are versioned.** *{{numerical_status_display}}.*",
+    "fragments": [
+      { "proposition_id": "NC-F-EC-000f/P-001", "template": "The constants below are the **v1.0 provisional calibration**," },
+      { "proposition_id": "NC-F-EC-000f/P-002", "template": "carried unchanged into v1.1 (see F-EC-044)." },
+      { "proposition_id": "NC-F-EC-000f/P-003", "template": "They are not observed prices" },
+      { "proposition_id": "NC-F-EC-000f/P-004", "template": "and not balance claims." },
+      { "proposition_id": "NC-F-EC-000f/P-005", "template": "Prompt 14 may change a value only by a new revision of this register." }
+    ]
+  }
+}

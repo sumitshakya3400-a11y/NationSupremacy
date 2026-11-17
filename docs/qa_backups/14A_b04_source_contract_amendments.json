@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "description": "Controlled B-04 source-contract baseline and authorized-amendment ledger. The baseline hashes are independently maintained here and in 14A_validate_numerical_foundation.py. An amendment entry is accepted only when its decision record exists in DECISIONS.md, names the clause and source, carries the required D-014 status, matches the previous and new fingerprints, and supplies authorization, rationale and regression evidence.",
+  "source_document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+  "baseline": {
+    "F-EC-000b": {
+      "hash": "bb1090ccae5cd15e0d883a57ab63216a106ff7c4e503e85cf2146e19e02271c6",
+      "source_version": "B-04 formula register v1.4"
+    },
+    "F-EC-000f": {
+      "hash": "3025cc447ebb91be8d226ff5035da0e403947d2be603e81e535bbd5600bca5ca",
+      "source_version": "B-04 formula register v1.4"
+    }
+  },
+  "amendments": []
+}

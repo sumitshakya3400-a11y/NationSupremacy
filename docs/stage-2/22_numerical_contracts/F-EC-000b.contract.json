@@ -1,0 +1,289 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "NC-F-EC-000b",
+  "clause_id": "F-EC-000b",
+  "title": "Integer arithmetic",
+  "source_document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+  "source_version": "B-04 formula register v1.4",
+  "baseline_source_hash": "bb1090ccae5cd15e0d883a57ab63216a106ff7c4e503e85cf2146e19e02271c6",
+  "contract_version": "1.0.0",
+  "lifecycle_status": "ADOPTED",
+  "numerical_status": "PROVISIONAL VALUE",
+  "numerical_status_display": "Provisional (REQ-162)",
+  "effective_decision": "D-238",
+  "scope": {
+    "systems": ["B-04"],
+    "domain": "FORMULA_ARITHMETIC",
+    "turn_phases": ["ALL"],
+    "persistence": "WITHIN_TURN",
+    "inheritance": "EXPLICIT_PER_PROPOSITION",
+    "excluded_systems": ["B-09"],
+    "excluded_concepts": ["CUMULATIVE_FLOOR_ACCRUAL_WITHIN_TURN"],
+    "scope_authority": ["D-045", "D-064"]
+  },
+  "propositions": [
+    {
+      "id": "NC-F-EC-000b/P-001",
+      "kind": "NUMERIC_DOMAIN",
+      "subject": "ALL_QUANTITIES",
+      "predicate": "HAS_TYPE",
+      "object": { "type": "NUMERIC_TYPE", "value": "INTEGER" },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "FORMULA_ARITHMETIC",
+        "persistence": "WITHIN_TURN",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "TWO_HOUR_UTC", "phase": "ALL", "persistence": "WITHIN_TURN" },
+      "numeric": {
+        "representation": "INTEGER",
+        "rounding": [],
+        "precision": "WHOLE_UNIT",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-045", "D-064"],
+        "basis_note": "Whole-unit resources, whole crowns and integer economic arithmetic are Confirmed Category B design decisions under D-014."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000b",
+        "excerpt": "All quantities are integers.",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000b/P-002",
+      "kind": "DIVISION_ROUNDING",
+      "subject": "EVERY_DIVISION",
+      "predicate": "STATES_ROUNDING",
+      "object": {
+        "type": "ROUNDING_SET",
+        "allowed": ["FLOOR", "CEIL", "ROUND_HALF_UP"],
+        "floor_negative": "TOWARD_NEGATIVE_INFINITY",
+        "floor_positive": "TOWARD_ZERO"
+      },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "FORMULA_ARITHMETIC",
+        "persistence": "WITHIN_TURN",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "TWO_HOUR_UTC", "phase": "ALL", "persistence": "WITHIN_TURN" },
+      "numeric": {
+        "representation": "INTEGER",
+        "rounding": ["FLOOR", "CEIL", "ROUND_HALF_UP"],
+        "precision": "WHOLE_UNIT",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-045", "D-064"],
+        "basis_note": "D-045 and D-064 require whole units and an explicit floor or ceil statement for every division; round_half_up is the published third mode in F-EC-000b."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000b",
+        "excerpt": "Every division states its rounding: floor (toward negative infinity for negative values; toward zero for the positive values used here), ceil or round_half_up.",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000b/P-003",
+      "kind": "ARITHMETIC_REPRESENTATION",
+      "subject": "FORMULA_CALCULATIONS",
+      "predicate": "USES_REPRESENTATION",
+      "object": { "type": "REPRESENTATION_CLASS", "value": "BINARY_FLOATING_POINT" },
+      "modality": "MUST_NOT",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "FORMULA_ARITHMETIC",
+        "persistence": "WITHIN_TURN",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "TWO_HOUR_UTC", "phase": "ALL", "persistence": "WITHIN_TURN" },
+      "numeric": {
+        "representation": "BINARY_FLOATING_POINT",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-045", "D-064"],
+        "basis_note": "The arithmetic-representation convention is a Category B design rule under D-014: D-045 forbids fractional and floating-point balances, and D-064 forbids floating-point formula arithmetic. It is not an owner-reserved Category A fixed constraint; D-008/D-009/D-010 govern hosting and backend direction, not the arithmetic convention."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000b",
+        "excerpt": "No formula uses binary floating point.",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000b/P-004",
+      "kind": "PERCENTAGE_REPRESENTATION",
+      "subject": "PERCENTAGE",
+      "predicate": "IS_REPRESENTED_AS",
+      "object": { "type": "PERCENTAGE_UNIT", "unit": "BASIS_POINT", "basis": 10000 },
+      "modality": "MUST",
+      "polarity": "AFFIRM",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "FORMULA_ARITHMETIC",
+        "persistence": "WITHIN_TURN",
+        "inheritance": "NONE",
+        "distinct_from": []
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "RATE", "unit": "BASIS_POINT" },
+      "timing": { "boundary": "TWO_HOUR_UTC", "phase": "ALL", "persistence": "WITHIN_TURN" },
+      "numeric": {
+        "representation": "INTEGER",
+        "rounding": [],
+        "precision": "BASIS_POINT",
+        "basis_point_relation": "10,000 bp = 100%"
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "RESOLVED",
+        "basis_decisions": ["D-045", "D-064"],
+        "basis_note": "D-045 and D-064 fix percentages as integer basis points; the 10,000 bp = 100% relation is the basis-point definition and is not a tunable value."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/10_economic_formula_and_balance_register.md",
+        "section": "F-EC-000b",
+        "excerpt": "A percentage is an integer in basis points (bp), where 10,000 bp = 100%.",
+        "source_kind": "CLAUSE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "CLAUSE"
+    },
+    {
+      "id": "NC-F-EC-000b/P-005",
+      "kind": "FRACTIONAL_ACCUMULATION",
+      "subject": "CROSS_TURN_FRACTIONAL_REMAINDER",
+      "predicate": "PERSISTS_ACROSS_TURNS",
+      "object": { "type": "UNRESOLVED", "status": "NOT_ESTABLISHED" },
+      "modality": "NOT_ESTABLISHED",
+      "polarity": "NEUTRAL",
+      "scope": {
+        "systems": ["B-04"],
+        "domain": "FORMULA_ARITHMETIC",
+        "persistence": "ACROSS_TURNS",
+        "inheritance": "NONE",
+        "distinct_from": ["CUMULATIVE_FLOOR_ACCRUAL_WITHIN_TURN"]
+      },
+      "conditions": [],
+      "exceptions": [],
+      "units": { "dimension": "DIMENSIONLESS", "unit": "NONE" },
+      "timing": { "boundary": "TWO_HOUR_UTC", "phase": "ALL", "persistence": "ACROSS_TURNS" },
+      "numeric": {
+        "representation": "NONE",
+        "rounding": [],
+        "precision": "NONE",
+        "basis_point_relation": null
+      },
+      "authority": {
+        "category": "B",
+        "owner_reserved": false,
+        "classification_status": "UNRESOLVED_BASELINE",
+        "basis_decisions": ["D-014"],
+        "basis_note": "The baseline establishes no cross-turn fractional-remainder rule. This unresolved knowledge state is not a permission; turning it into an affirmative permission requires new reviewed supporting evidence and an appropriate D-014 decision."
+      },
+      "source_anchor": {
+        "document": "docs/stage-2/22_formulas_and_balance.md",
+        "section": "8.2",
+        "excerpt": "No binary floating point; no fractional carry stated",
+        "source_kind": "BASELINE_EVIDENCE"
+      },
+      "status": "ACTIVE",
+      "projection_visibility": "DERIVED_FROM_BASELINE_EVIDENCE"
+    }
+  ],
+  "change_policy": {
+    "default_category": "B",
+    "propositions": {
+      "NC-F-EC-000b/P-001": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000b/P-002": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000b/P-003": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000b/P-004": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": false,
+        "exceptions_allowed": false
+      },
+      "NC-F-EC-000b/P-005": {
+        "category": "B",
+        "owner_reserved": false,
+        "evidence_required_on_change": true,
+        "baseline_unresolved": true,
+        "exceptions_allowed": false
+      }
+    }
+  },
+  "rendering": {
+    "template_id": "B04-F-EC-000b",
+    "version": "1.0.0",
+    "template_path": "projections/F-EC-000b.md.tpl",
+    "fragment_separator": " ",
+    "structural_prefix": "**F-EC-000b — Integer arithmetic.** *{{numerical_status_display}}.*",
+    "fragments": [
+      { "proposition_id": "NC-F-EC-000b/P-001", "template": "All quantities are integers." },
+      { "proposition_id": "NC-F-EC-000b/P-002", "template": "Every division states its rounding: `floor` (toward negative infinity for negative values; toward zero for the positive values used here), `ceil` or `round_half_up`." },
+      { "proposition_id": "NC-F-EC-000b/P-003", "template": "No formula uses binary floating point." },
+      { "proposition_id": "NC-F-EC-000b/P-004", "template": "A percentage is an integer in **basis points** (bp), where {{basis_point_relation}}." }
+    ]
+  }
+}

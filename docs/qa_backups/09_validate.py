@@ -495,6 +495,7 @@ WORDS["one hundred and ninety-seven"] = 197
 WORDS["two hundred and five"] = 205
 WORDS["two hundred and nineteen"] = 219
 WORDS["two hundred and thirty-six"] = 236
+WORDS["two hundred and thirty-seven"] = 237
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -529,7 +530,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
 # 2026-11-11 (Prompt 13A): DD-246…DD-253 are the mirrored 13A positions, so the
 # contiguous expectation advances; the check still derives the list from the file.
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 285)], "design register carries DD-001..DD-284 contiguously", str(len(dd_rows)))
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 286)], "design register carries DD-001..DD-285 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,

@@ -1,0 +1,617 @@
+{
+  "schema_version": "1.0.0",
+  "lexicon_version": "1.0.0",
+  "concepts": [
+    {
+      "concept_id": "BINARY_FLOATING_POINT",
+      "category": "REPRESENTATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "ARITHMETIC_REPRESENTATION",
+        "predicate": "USES_REPRESENTATION",
+        "object": {
+          "type": "REPRESENTATION_CLASS",
+          "value": "BINARY_FLOATING_POINT"
+        }
+      },
+      "surface_forms": [
+        "binary floating point",
+        "binary floating-point",
+        "ieee-754",
+        "ieee 754",
+        "binary32",
+        "binary64",
+        "binary128",
+        "single-precision",
+        "double-precision",
+        "float32",
+        "float64",
+        "radix-two encoding",
+        "radix-2 encoding",
+        "radix-two representation",
+        "radix-2 representation",
+        "base-2 encoding",
+        "base-2 representation",
+        "base-2 form",
+        "exponent and significand",
+        "significand and exponent",
+        "sign, exponent and mantissa",
+        "sign exponent mantissa",
+        "sign-mantissa-exponent",
+        "three-field sign-mantissa-exponent",
+        "mantissa and exponent",
+        "mantissa",
+        "significand",
+        "exponent field",
+        "exponent fields",
+        "split-mantissa",
+        "binary scientific form",
+        "binary representation",
+        "binary encoding",
+        "machine number encoding",
+        "binary-floating-point"
+      ],
+      "distinct_from": [
+        "INTEGER_REPRESENTATION",
+        "DECIMAL_FRACTION"
+      ],
+      "notes": "Every reviewed surface form denotes the single prohibited representation class. A surface form outside this list is rejected as CONTRACT_UNMAPPED_TERM; it is never guessed."
+    },
+    {
+      "concept_id": "INTEGER_REPRESENTATION",
+      "category": "REPRESENTATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "NUMERIC_DOMAIN",
+        "predicate": "HAS_TYPE",
+        "object": {
+          "type": "NUMERIC_TYPE",
+          "value": "INTEGER"
+        }
+      },
+      "surface_forms": [
+        "integer arithmetic",
+        "integer representation",
+        "whole-unit arithmetic",
+        "whole integer quantities",
+        "quantities are integers",
+        "integers only"
+      ],
+      "distinct_from": [
+        "BINARY_FLOATING_POINT",
+        "DECIMAL_FRACTION"
+      ],
+      "notes": "Canonical integer domain concept. It maps to the numeric-domain proposition, not to a permission."
+    },
+    {
+      "concept_id": "DECIMAL_FRACTION",
+      "category": "REPRESENTATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "NUMERIC_DOMAIN",
+        "predicate": "HAS_TYPE",
+        "object": {
+          "type": "NUMERIC_TYPE",
+          "value": "DECIMAL_FRACTION"
+        }
+      },
+      "surface_forms": [
+        "decimal fraction",
+        "decimal fractions",
+        "fractional quantity",
+        "fractional quantities",
+        "decimal representation"
+      ],
+      "distinct_from": [
+        "INTEGER_REPRESENTATION",
+        "BINARY_FLOATING_POINT"
+      ],
+      "notes": "Decimal-fraction permission contradicts the integer numeric-domain proposition."
+    },
+    {
+      "concept_id": "BASIS_POINT",
+      "category": "UNIT",
+      "persistence": null,
+      "maps_to": {
+        "kind": "PERCENTAGE_REPRESENTATION",
+        "predicate": "IS_REPRESENTED_AS",
+        "object": {
+          "type": "PERCENTAGE_UNIT",
+          "unit": "BASIS_POINT",
+          "basis": 10000
+        }
+      },
+      "surface_forms": [
+        "basis point",
+        "basis points",
+        "bp"
+      ],
+      "distinct_from": [],
+      "notes": "Basis-point percentages carry the fixed 10,000 bp = 100% relation; any other relation is a conflict."
+    },
+    {
+      "concept_id": "ROUND_FLOOR",
+      "category": "ROUNDING",
+      "persistence": null,
+      "maps_to": {
+        "kind": "DIVISION_ROUNDING",
+        "predicate": "STATES_ROUNDING",
+        "object": {
+          "type": "ROUNDING_SET",
+          "allowed": [
+            "FLOOR"
+          ],
+          "floor_negative": "TOWARD_NEGATIVE_INFINITY",
+          "floor_positive": "TOWARD_ZERO"
+        }
+      },
+      "surface_forms": [
+        "floor",
+        "round down",
+        "toward negative infinity"
+      ],
+      "distinct_from": [],
+      "notes": "Floor is the only rounding mode mapped from prose. CEIL and ROUND_HALF_UP changes require a typed contract patch."
+    },
+    {
+      "concept_id": "CROSS_TURN_REMAINDER_PERSISTENCE",
+      "category": "ACCUMULATION",
+      "persistence": "ACROSS_TURNS",
+      "maps_to": {
+        "kind": "FRACTIONAL_ACCUMULATION",
+        "predicate": "PERSISTS_ACROSS_TURNS",
+        "object": {
+          "type": "ACCUMULATION_SCOPE",
+          "value": "ACROSS_TURNS"
+        }
+      },
+      "surface_forms": [
+        "fractional carry",
+        "fractional remainder",
+        "residual sub-unit amount",
+        "residual sub-unit amounts",
+        "sub-unit remainder",
+        "sub-unit remainders",
+        "leftover fraction",
+        "leftover fractions",
+        "residual fraction",
+        "residual fractions",
+        "fractional leftover"
+      ],
+      "distinct_from": [
+        "CUMULATIVE_FLOOR_ACCRUAL_WITHIN_TURN"
+      ],
+      "notes": "Requires an explicit ACROSS_TURNS qualifier. It is a different concept from within-turn cumulative floor accrual and must never be collapsed with it."
+    },
+    {
+      "concept_id": "CUMULATIVE_FLOOR_ACCRUAL_WITHIN_TURN",
+      "category": "ACCUMULATION",
+      "persistence": "WITHIN_TURN",
+      "maps_to": {
+        "kind": "FRACTIONAL_ACCUMULATION",
+        "predicate": "PERSISTS_WITHIN_TURN",
+        "object": {
+          "type": "ACCUMULATION_SCOPE",
+          "value": "WITHIN_TURN"
+        }
+      },
+      "surface_forms": [
+        "cumulative floor accrual",
+        "cumulative floor",
+        "floored cumulative liability",
+        "cumulative tax due",
+        "cumulative gross",
+        "cumulative fractional accrual",
+        "cumulative accrual"
+      ],
+      "distinct_from": [
+        "CROSS_TURN_REMAINDER_PERSISTENCE"
+      ],
+      "notes": "The legitimate B-09 F-AL-006 model: cumulative gross, floored cumulative liability, subtraction of the already-collected amount, separate asset accumulators and per-turn settlement. It creates no cross-turn residual balance."
+    },
+    {
+      "concept_id": "SCOPE_DERIVED_CALCULATIONS",
+      "category": "SCOPE_QUALIFIER",
+      "persistence": null,
+      "maps_to": {
+        "kind": "SCOPE_QUALIFIER",
+        "predicate": "QUALIFIES_SCOPE",
+        "object": {
+          "type": "SCOPE_QUALIFIER",
+          "value": "DERIVED_CALCULATIONS"
+        }
+      },
+      "surface_forms": [
+        "including derived calculations",
+        "derived calculations",
+        "derived economic calculations"
+      ],
+      "distinct_from": [],
+      "notes": "Derived calculations are formula calculations and therefore remain inside the controlled clause scope; this qualifier does not widen it."
+    },
+    {
+      "concept_id": "SCOPE_TREASURY_SUBSYSTEM",
+      "category": "SCOPE_QUALIFIER",
+      "persistence": null,
+      "maps_to": {
+        "kind": "SCOPE_QUALIFIER",
+        "predicate": "QUALIFIES_SCOPE",
+        "object": {
+          "type": "SCOPE_QUALIFIER",
+          "value": "TREASURY_SUBSYSTEM"
+        }
+      },
+      "surface_forms": [
+        "treasury carry subsystem",
+        "treasury subsystem",
+        "treasury calculations"
+      ],
+      "distinct_from": [],
+      "notes": "A subsystem qualifier cannot create an exception; no exception is authorized for any controlled arithmetic proposition."
+    },
+    {
+      "concept_id": "PROVISIONAL_CALIBRATION",
+      "category": "CLASSIFICATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "CONSTANT_CLASSIFICATION",
+        "predicate": "IS_CLASSIFIED_AS",
+        "object": {
+          "type": "CALIBRATION_CLASS",
+          "value": "PROVISIONAL_V1_0"
+        }
+      },
+      "surface_forms": [
+        "provisional calibration",
+        "v1.0 provisional calibration"
+      ],
+      "distinct_from": [
+        "FINAL_CALIBRATION"
+      ],
+      "notes": "The constants are the v1.0 provisional calibration. The classification is not an observed-price or balance claim."
+    },
+    {
+      "concept_id": "FINAL_CALIBRATION",
+      "category": "CLASSIFICATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "CONSTANT_CLASSIFICATION",
+        "predicate": "IS_CLASSIFIED_AS",
+        "object": {
+          "type": "CALIBRATION_CLASS",
+          "value": "FINAL"
+        }
+      },
+      "surface_forms": [
+        "final calibration",
+        "calibrated final values"
+      ],
+      "distinct_from": [
+        "PROVISIONAL_CALIBRATION"
+      ],
+      "notes": "A final-calibration claim contradicts the baseline provisional classification and requires new reviewed evidence and authority."
+    },
+    {
+      "concept_id": "OBSERVED_PRICES_CONSTANT",
+      "category": "CLASSIFICATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "CONSTANT_PROPERTY",
+        "predicate": "ARE_OBSERVED_PRICES",
+        "object": {
+          "type": "BOOLEAN_PROPERTY",
+          "value": "OBSERVED_PRICES"
+        }
+      },
+      "surface_forms": [
+        "observed prices",
+        "observed market prices"
+      ],
+      "distinct_from": [],
+      "notes": "An affirmative observed-price claim contradicts the baseline prohibition."
+    },
+    {
+      "concept_id": "BALANCE_CLAIMS_CONSTANT",
+      "category": "CLASSIFICATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "CONSTANT_PROPERTY",
+        "predicate": "ARE_BALANCE_CLAIMS",
+        "object": {
+          "type": "BOOLEAN_PROPERTY",
+          "value": "BALANCE_CLAIMS"
+        }
+      },
+      "surface_forms": [
+        "balance claims",
+        "balance claim"
+      ],
+      "distinct_from": [],
+      "notes": "An affirmative balance-claim contradicts the baseline prohibition."
+    },
+    {
+      "concept_id": "REVISION_REQUIREMENT",
+      "category": "PERSISTENCE",
+      "persistence": null,
+      "maps_to": {
+        "kind": "VALUE_CHANGE_AUTHORITY",
+        "predicate": "REQUIRES_REVISION",
+        "object": {
+          "type": "REVISION_REQUIREMENT",
+          "mechanism": "NEW_REGISTER_REVISION",
+          "authority": "D-014"
+        }
+      },
+      "surface_forms": [
+        "new revision of this register",
+        "new register revision",
+        "register revision"
+      ],
+      "distinct_from": [
+        "OWNER_ONLY_REVISION_AUTHORITY"
+      ],
+      "notes": "A value change requires a new revision of the register under D-014."
+    },
+    {
+      "concept_id": "OWNER_ONLY_REVISION_AUTHORITY",
+      "category": "PERSISTENCE",
+      "persistence": null,
+      "maps_to": {
+        "kind": "VALUE_CHANGE_AUTHORITY",
+        "predicate": "REQUIRES_REVISION",
+        "object": {
+          "type": "REVISION_AUTHORITY",
+          "value": "OWNER_ONLY"
+        }
+      },
+      "surface_forms": [
+        "only the project owner may change",
+        "only the owner may change",
+        "owner-only revision authority"
+      ],
+      "distinct_from": [
+        "REVISION_REQUIREMENT"
+      ],
+      "notes": "An owner-only revision claim is a changed authority proposition. It is not the baseline rule and cannot be accepted without new reviewed evidence and appropriate authority."
+    },
+    {
+      "concept_id": "ROUND_CEIL",
+      "category": "ROUNDING",
+      "persistence": null,
+      "maps_to": {
+        "kind": "DIVISION_ROUNDING",
+        "predicate": "STATES_ROUNDING",
+        "object": {
+          "type": "ROUNDING_SET",
+          "allowed": [
+            "CEIL"
+          ],
+          "floor_negative": "TOWARD_NEGATIVE_INFINITY",
+          "floor_positive": "TOWARD_ZERO"
+        }
+      },
+      "surface_forms": [
+        "ceil",
+        "ceiling",
+        "round up"
+      ],
+      "distinct_from": [],
+      "notes": "Ceil is a published rounding mode; a change to the allowed mode set requires a typed contract patch."
+    },
+    {
+      "concept_id": "ROUND_HALF_UP",
+      "category": "ROUNDING",
+      "persistence": null,
+      "maps_to": {
+        "kind": "DIVISION_ROUNDING",
+        "predicate": "STATES_ROUNDING",
+        "object": {
+          "type": "ROUNDING_SET",
+          "allowed": [
+            "ROUND_HALF_UP"
+          ],
+          "floor_negative": "TOWARD_NEGATIVE_INFINITY",
+          "floor_positive": "TOWARD_ZERO"
+        }
+      },
+      "surface_forms": [
+        "round_half_up",
+        "round half up",
+        "half-up"
+      ],
+      "distinct_from": [],
+      "notes": "round_half_up is a published rounding mode; a change to the allowed mode set requires a typed contract patch."
+    },
+    {
+      "concept_id": "VERSION_CARRY_FORWARD",
+      "category": "CLASSIFICATION",
+      "persistence": null,
+      "maps_to": {
+        "kind": "CONSTANT_CARRY_FORWARD",
+        "predicate": "IS_CARRIED_UNCHANGED_INTO",
+        "object": {
+          "type": "REGISTER_VERSION_CARRY",
+          "from": "v1.0",
+          "to": "v1.1",
+          "reference": "F-EC-044"
+        }
+      },
+      "surface_forms": [
+        "carried unchanged into v1.1",
+        "carried unchanged into",
+        "carried unchanged"
+      ],
+      "distinct_from": [],
+      "notes": "The v1.0 constants are carried unchanged into v1.1 under F-EC-044; a change to the carry relation requires a typed contract patch."
+    }
+  ],
+  "modality_markers": {
+    "PERMIT": [
+      "may use",
+      "may be",
+      "may preserve",
+      "may retain",
+      "may carry",
+      "may keep",
+      "can use",
+      "can be",
+      "is permitted",
+      "are permitted",
+      "permitted",
+      "is allowed",
+      "are allowed",
+      "allowed",
+      "is preserved",
+      "are preserved",
+      "preserved",
+      "is retained",
+      "are retained",
+      "retained",
+      "is carried",
+      "are carried",
+      "carried forward",
+      "remains",
+      "remain",
+      "may"
+    ],
+    "PROHIBIT": [
+      "must not",
+      "may not",
+      "cannot",
+      "can not",
+      "no formula uses",
+      "no formula may use",
+      "no quantity is",
+      "no quantity may be",
+      "is not permitted",
+      "are not permitted",
+      "not permitted",
+      "is not allowed",
+      "are not allowed",
+      "not allowed",
+      "prohibited",
+      "forbidden",
+      "never",
+      "prohibition applies",
+      "prohibition is maintained",
+      "prohibition"
+    ],
+    "MANDATE": [
+      "must",
+      "shall",
+      "is required",
+      "are required",
+      "states its rounding",
+      "is an integer",
+      "are integers"
+    ],
+    "NEGATED_PROHIBITION": [
+      "is not prohibited",
+      "are not prohibited",
+      "not prohibited",
+      "is not forbidden",
+      "are not forbidden",
+      "not forbidden",
+      "is not banned",
+      "are not banned",
+      "not banned"
+    ]
+  },
+  "exception_markers": [
+    "except",
+    "exception",
+    "unless",
+    "only when",
+    "provided that",
+    "subject to",
+    "notwithstanding",
+    "however",
+    "but "
+  ],
+  "persistence_qualifiers": {
+    "WITHIN_TURN": [
+      "within the turn",
+      "within a turn",
+      "within-turn",
+      "intra-turn",
+      "during the turn",
+      "in the same turn",
+      "same-turn"
+    ],
+    "ACROSS_TURNS": [
+      "between turns",
+      "across turns",
+      "across-turn",
+      "turn to turn",
+      "between turn boundaries",
+      "into the next turn",
+      "between one turn and the next"
+    ]
+  },
+  "unknown_material_families": {
+    "REPRESENTATION": [
+      "represent",
+      "representation",
+      "encoding",
+      "format",
+      "radix",
+      "base-",
+      "exponent",
+      "significand",
+      "mantissa",
+      "field",
+      "fields",
+      "binary",
+      "decimal",
+      "float",
+      "precision",
+      "ieee",
+      "coefficient",
+      "layout",
+      "tuple",
+      "component",
+      "components",
+      "scientific"
+    ],
+    "ACCUMULATION": [
+      "fraction",
+      "fractional",
+      "remainder",
+      "residual",
+      "carry",
+      "carries",
+      "leftover",
+      "sub-unit",
+      "subunit",
+      "accrual",
+      "accumulat",
+      "preserve",
+      "retain"
+    ],
+    "ROUNDING": [
+      "round",
+      "truncat",
+      "floor",
+      "ceil",
+      "half-up",
+      "half up"
+    ],
+    "UNIT": [
+      "percent",
+      "per-cent",
+      "crown",
+      "resource unit",
+      "unit of account"
+    ],
+    "SCOPE": [
+      "subsystem",
+      "treasury",
+      "register",
+      "global",
+      "all systems",
+      "cross-register",
+      "nation-wide",
+      "world-wide"
+    ]
+  }
+}

@@ -1,0 +1,654 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nation-supremacy.local/schema/numerical-contracts/1.0.0",
+  "title": "Nation Supremacy controlled numerical contract schema",
+  "description": "Strict, closed schema for the Prompt 14A controlled numerical contracts. Unknown fields, unknown enumerations, missing mandatory metadata and dangling references are rejected by the deterministic validator. This file defines structure only; cross-field semantic rules are implemented in 14A_contract_validator.py and documented in 14A_SEMANTIC_CONTRACT_IMPLEMENTATION_REPORT.md.",
+  "type": "object",
+  "required": ["schema_version", "contracts", "proposition", "proposition_scope", "authority", "source_anchor", "rendering", "change_policy", "lexicon", "evidence_mappings", "index", "owner_authorization"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "contracts": { "$ref": "#/$defs/contract" },
+    "proposition": { "$ref": "#/$defs/proposition" },
+    "proposition_scope": { "$ref": "#/$defs/proposition_scope" },
+    "authority": { "$ref": "#/$defs/authority" },
+    "source_anchor": { "$ref": "#/$defs/source_anchor" },
+    "rendering": { "$ref": "#/$defs/rendering" },
+    "change_policy": { "$ref": "#/$defs/change_policy" },
+    "lexicon": { "$ref": "#/$defs/lexicon" },
+    "evidence_mappings": { "$ref": "#/$defs/evidence_mappings" },
+    "index": { "$ref": "#/$defs/index" },
+    "owner_authorization": { "$ref": "#/$defs/owner_authorization" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "semver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "decision_id": { "type": "string", "pattern": "^D-[0-9]{3}$" },
+    "identifier": { "type": "string", "pattern": "^(D-[0-9]{3}|F-[A-Z]{2}-[0-9]{3}[a-z]?|REQ-[0-9]{3}|B-[0-9]{2}|UD-[0-9]{3}|ECN-[0-9]{3}[a-z]?|NC-[A-Za-z0-9./_-]+)$" },
+    "proposition_id": { "type": "string", "pattern": "^NC-[A-Za-z0-9./_-]+$" },
+    "contract_id": { "type": "string", "pattern": "^NC-F-[A-Z]{2}-[0-9]{3}[a-z]?$" },
+    "evidence_id": { "type": "string", "pattern": "^EV-[A-Za-z0-9./_-]+$" },
+    "document_path": { "type": "string", "pattern": "^docs/[A-Za-z0-9._/-]+\\.md$" },
+    "string_list": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "system_list": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["B-02", "B-03", "B-04", "B-05", "B-06", "B-07", "B-08", "B-09", "B-10", "B-11", "B-12"] }
+    },
+    "numeric_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "NUMERIC_TYPE" },
+        "value": { "type": "string", "enum": ["INTEGER", "DECIMAL_FRACTION"] }
+      }
+    },
+    "rounding_set": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "allowed", "floor_negative", "floor_positive"],
+      "properties": {
+        "type": { "const": "ROUNDING_SET" },
+        "allowed": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "enum": ["FLOOR", "CEIL", "ROUND_HALF_UP"] } },
+        "floor_negative": { "type": "string", "enum": ["TOWARD_NEGATIVE_INFINITY", "TOWARD_ZERO"] },
+        "floor_positive": { "type": "string", "enum": ["TOWARD_NEGATIVE_INFINITY", "TOWARD_ZERO"] }
+      }
+    },
+    "representation_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "REPRESENTATION_CLASS" },
+        "value": { "type": "string", "enum": ["INTEGER", "BINARY_FLOATING_POINT", "DECIMAL_FRACTION"] }
+      }
+    },
+    "percentage_unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "unit", "basis"],
+      "properties": {
+        "type": { "const": "PERCENTAGE_UNIT" },
+        "unit": { "type": "string", "enum": ["BASIS_POINT"] },
+        "basis": { "type": "integer", "const": 10000 }
+      }
+    },
+    "constant_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "CONSTANT_STATUS" },
+        "value": { "type": "string", "enum": ["V1_0_PROVISIONAL_CALIBRATION"] }
+      }
+    },
+    "register_version_carry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "from", "to", "reference"],
+      "properties": {
+        "type": { "const": "REGISTER_VERSION_CARRY" },
+        "from": { "type": "string", "enum": ["v1.0"] },
+        "to": { "type": "string", "enum": ["v1.1"] },
+        "reference": { "type": "string", "pattern": "^F-[A-Z]{2}-[0-9]{3}[a-z]?$" }
+      }
+    },
+    "boolean_property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "BOOLEAN_PROPERTY" },
+        "value": { "type": "string", "enum": ["OBSERVED_PRICES", "BALANCE_CLAIMS"] }
+      }
+    },
+    "unresolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "status"],
+      "properties": {
+        "type": { "const": "UNRESOLVED" },
+        "status": { "const": "NOT_ESTABLISHED" }
+      }
+    },
+    "revision_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "mechanism", "authority"],
+      "properties": {
+        "type": { "const": "REVISION_REQUIREMENT" },
+        "mechanism": { "const": "NEW_REGISTER_REVISION" },
+        "authority": { "const": "D-014" }
+      }
+    },
+    "accumulation_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "ACCUMULATION_SCOPE" },
+        "value": { "type": "string", "enum": ["WITHIN_TURN", "ACROSS_TURNS"] }
+      }
+    },
+    "scope_qualifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "SCOPE_QUALIFIER" },
+        "value": { "type": "string", "enum": ["DERIVED_CALCULATIONS", "TREASURY_SUBSYSTEM"] }
+      }
+    },
+    "calibration_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "CALIBRATION_CLASS" },
+        "value": { "type": "string", "enum": ["PROVISIONAL_V1_0", "FINAL"] }
+      }
+    },
+    "revision_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "REVISION_AUTHORITY" },
+        "value": { "type": "string", "enum": ["D014_WORKING_AI_VIA_REGISTER_REVISION", "OWNER_ONLY"] }
+      }
+    },
+    "calibration_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "CALIBRATION_EVIDENCE" },
+        "value": { "type": "string", "enum": ["NOT_ESTABLISHED"] }
+      }
+    },
+    "typed_object": {
+      "oneOf": [
+        { "$ref": "#/$defs/numeric_type" },
+        { "$ref": "#/$defs/rounding_set" },
+        { "$ref": "#/$defs/representation_class" },
+        { "$ref": "#/$defs/percentage_unit" },
+        { "$ref": "#/$defs/constant_status" },
+        { "$ref": "#/$defs/register_version_carry" },
+        { "$ref": "#/$defs/boolean_property" },
+        { "$ref": "#/$defs/unresolved" },
+        { "$ref": "#/$defs/revision_requirement" },
+        { "$ref": "#/$defs/accumulation_scope" },
+        { "$ref": "#/$defs/scope_qualifier" },
+        { "$ref": "#/$defs/calibration_class" },
+        { "$ref": "#/$defs/revision_authority" },
+        { "$ref": "#/$defs/calibration_evidence" }
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition_id", "expression_kind", "subject", "operator", "value"],
+      "properties": {
+        "condition_id": { "type": "string", "pattern": "^C-[A-Za-z0-9./_-]+$" },
+        "expression_kind": { "type": "string", "enum": ["SCOPE_QUALIFIER", "TEMPORAL", "NUMERIC", "CONCEPT_BOUNDARY"] },
+        "subject": { "type": "string", "enum": ["DERIVED_CALCULATIONS", "TREASURY_SUBSYSTEM", "TURN_PHASE", "PERCENTAGE", "FRACTIONAL_REMAINDER"] },
+        "operator": { "type": "string", "enum": ["WITHIN", "EQUALS", "EXCLUDES", "REQUIRES"] },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exception_id", "target_proposition", "effect", "scope", "conditions", "authority"],
+      "properties": {
+        "exception_id": { "type": "string", "pattern": "^X-[A-Za-z0-9./_-]+$" },
+        "target_proposition": { "$ref": "#/$defs/proposition_id" },
+        "effect": { "type": "string", "enum": ["PERMIT", "NEGATE", "QUALIFY"] },
+        "scope": { "$ref": "#/$defs/proposition_scope" },
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["decision", "category"],
+          "properties": {
+            "decision": { "$ref": "#/$defs/decision_id" },
+            "category": { "type": "string", "enum": ["A", "B", "C", "D"] }
+          }
+        }
+      }
+    },
+    "proposition_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["systems", "domain", "persistence", "inheritance", "distinct_from"],
+      "properties": {
+        "systems": { "$ref": "#/$defs/system_list" },
+        "domain": { "type": "string", "enum": ["FORMULA_ARITHMETIC", "ECONOMIC_ARITHMETIC", "CONSTANT_VERSIONING", "CROSS_REGISTER_TEST"] },
+        "persistence": { "type": "string", "enum": ["NONE", "WITHIN_TURN", "ACROSS_TURNS"] },
+        "inheritance": { "type": "string", "enum": ["NONE", "EXPLICIT_PER_PROPOSITION"] },
+        "distinct_from": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$" } }
+      }
+    },
+    "contract_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["systems", "domain", "turn_phases", "persistence", "inheritance", "excluded_systems", "excluded_concepts", "scope_authority"],
+      "properties": {
+        "systems": { "$ref": "#/$defs/system_list" },
+        "domain": { "type": "string", "enum": ["FORMULA_ARITHMETIC", "CONSTANT_VERSIONING"] },
+        "turn_phases": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "enum": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "ALL"] } },
+        "persistence": { "type": "string", "enum": ["NONE", "WITHIN_TURN", "ACROSS_TURNS"] },
+        "inheritance": { "const": "EXPLICIT_PER_PROPOSITION" },
+        "excluded_systems": { "$ref": "#/$defs/string_list" },
+        "excluded_concepts": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$" } },
+        "scope_authority": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/decision_id" } }
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "unit"],
+      "properties": {
+        "dimension": { "type": "string", "enum": ["DIMENSIONLESS", "RATE", "TIME", "COUNT", "CURRENCY"] },
+        "unit": { "type": "string", "enum": ["NONE", "BASIS_POINT", "TURN", "RESOURCE_UNIT", "CROWN"] }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["boundary", "phase", "persistence"],
+      "properties": {
+        "boundary": { "type": "string", "enum": ["TWO_HOUR_UTC", "NONE"] },
+        "phase": { "type": "string", "enum": ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "ALL", "NONE"] },
+        "persistence": { "type": "string", "enum": ["NONE", "WITHIN_TURN", "ACROSS_TURNS"] }
+      }
+    },
+    "numeric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["representation", "rounding", "precision", "basis_point_relation"],
+      "properties": {
+        "representation": { "type": "string", "enum": ["INTEGER", "BINARY_FLOATING_POINT", "DECIMAL_FRACTION", "NONE"] },
+        "rounding": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["FLOOR", "CEIL", "ROUND_HALF_UP"] } },
+        "precision": { "type": "string", "enum": ["WHOLE_UNIT", "BASIS_POINT", "NONE"] },
+        "basis_point_relation": { "type": ["string", "null"], "enum": ["10,000 bp = 100%", null] }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "owner_reserved", "classification_status", "basis_decisions", "basis_note"],
+      "properties": {
+        "category": { "type": "string", "enum": ["A", "B", "C", "D"] },
+        "owner_reserved": { "type": "boolean" },
+        "classification_status": { "type": "string", "enum": ["RESOLVED", "PENDING_OWNER_CLARIFICATION", "OWNER_RESERVED", "UNRESOLVED_BASELINE", "PROVISIONAL"] },
+        "basis_decisions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/decision_id" } },
+        "basis_note": { "type": "string", "minLength": 30 }
+      }
+    },
+    "source_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document", "section", "excerpt", "source_kind"],
+      "properties": {
+        "document": { "$ref": "#/$defs/document_path" },
+        "section": { "type": "string", "minLength": 1 },
+        "excerpt": { "type": "string", "minLength": 10 },
+        "source_kind": { "type": "string", "enum": ["CLAUSE", "BASELINE_EVIDENCE"] }
+      }
+    },
+    "proposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "subject", "predicate", "object", "modality", "polarity", "scope", "conditions", "exceptions", "units", "timing", "numeric", "authority", "source_anchor", "status", "projection_visibility"],
+      "properties": {
+        "id": { "$ref": "#/$defs/proposition_id" },
+        "kind": { "type": "string", "enum": ["NUMERIC_DOMAIN", "DIVISION_ROUNDING", "ARITHMETIC_REPRESENTATION", "PERCENTAGE_REPRESENTATION", "ARITHMETIC_AUTHORITY", "CONSTANT_CLASSIFICATION", "CONSTANT_CARRY_FORWARD", "CONSTANT_PROPERTY", "VALUE_CHANGE_AUTHORITY", "FRACTIONAL_ACCUMULATION"] },
+        "subject": { "type": "string", "enum": ["ALL_QUANTITIES", "EVERY_DIVISION", "FORMULA_CALCULATIONS", "PERCENTAGE", "ECONOMIC_ARITHMETIC", "F_EC_000F_CONSTANTS", "V1_0_CALIBRATION", "CONSTANT_SET", "VALUE_CHANGE", "CROSS_TURN_FRACTIONAL_REMAINDER", "WITHIN_TURN_CUMULATIVE_ACCRUAL", "DERIVED_CALCULATIONS", "CATEGORY_A_TEST_PROPOSITION"] },
+        "predicate": { "type": "string", "enum": ["HAS_TYPE", "STATES_ROUNDING", "USES_REPRESENTATION", "IS_REPRESENTED_AS", "GOVERNS", "IS_CLASSIFIED_AS", "IS_CARRIED_UNCHANGED_INTO", "ARE_OBSERVED_PRICES", "ARE_BALANCE_CLAIMS", "REQUIRES_REVISION", "PERSISTS_ACROSS_TURNS", "PERSISTS_WITHIN_TURN", "HAS_EVIDENCE_STATE", "IS_INCLUDED_IN"] },
+        "object": { "$ref": "#/$defs/typed_object" },
+        "modality": { "type": "string", "enum": ["MUST", "MUST_NOT", "MAY", "MAY_NOT", "NOT_ESTABLISHED"] },
+        "polarity": { "type": "string", "enum": ["AFFIRM", "NEGATE", "NEUTRAL"] },
+        "scope": { "$ref": "#/$defs/proposition_scope" },
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "exceptions": { "type": "array", "items": { "$ref": "#/$defs/exception" } },
+        "units": { "$ref": "#/$defs/units" },
+        "timing": { "$ref": "#/$defs/timing" },
+        "numeric": { "$ref": "#/$defs/numeric" },
+        "authority": { "$ref": "#/$defs/authority" },
+        "source_anchor": { "$ref": "#/$defs/source_anchor" },
+        "status": { "type": "string", "enum": ["ACTIVE", "RETIRED"] },
+        "projection_visibility": { "type": "string", "enum": ["CLAUSE", "DERIVED_FROM_BASELINE_EVIDENCE"] }
+      }
+    },
+    "change_policy_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "owner_reserved", "evidence_required_on_change", "baseline_unresolved", "exceptions_allowed"],
+      "properties": {
+        "category": { "type": "string", "enum": ["A", "B", "C", "D"] },
+        "owner_reserved": { "type": "boolean" },
+        "evidence_required_on_change": { "type": "boolean" },
+        "baseline_unresolved": { "type": "boolean" },
+        "exceptions_allowed": { "type": "boolean" }
+      }
+    },
+    "change_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_category", "propositions"],
+      "properties": {
+        "default_category": { "type": "string", "enum": ["B"] },
+        "propositions": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/change_policy_entry" }
+        }
+      }
+    },
+    "rendering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template_id", "version", "template_path", "fragment_separator", "structural_prefix", "fragments"],
+      "properties": {
+        "template_id": { "type": "string", "pattern": "^B04-F-[A-Z]{2}-[0-9]{3}[a-z]?$" },
+        "version": { "$ref": "#/$defs/semver" },
+        "template_path": { "type": "string", "pattern": "^projections/[A-Za-z0-9._-]+\\.tpl$" },
+        "fragment_separator": { "const": " " },
+        "structural_prefix": { "type": "string", "minLength": 1 },
+        "fragments": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["proposition_id", "template"],
+            "properties": {
+              "proposition_id": { "$ref": "#/$defs/proposition_id" },
+              "template": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "contract_id", "clause_id", "title", "source_document", "source_version", "baseline_source_hash", "contract_version", "lifecycle_status", "numerical_status", "numerical_status_display", "effective_decision", "scope", "propositions", "change_policy", "rendering"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "contract_id": { "$ref": "#/$defs/contract_id" },
+        "clause_id": { "type": "string", "pattern": "^F-[A-Z]{2}-[0-9]{3}[a-z]?$" },
+        "title": { "type": "string", "minLength": 1 },
+        "source_document": { "$ref": "#/$defs/document_path" },
+        "source_version": { "type": "string", "minLength": 3 },
+        "baseline_source_hash": { "$ref": "#/$defs/sha256" },
+        "contract_version": { "$ref": "#/$defs/semver" },
+        "lifecycle_status": { "type": "string", "enum": ["SHADOW", "ADOPTED", "ADOPTED_PROVISIONAL", "SUPERSEDED", "RETIRED"] },
+        "numerical_status": { "type": "string", "enum": ["OWNER-APPROVED VALUE", "PROVISIONAL VALUE", "DESIGN PROPOSAL", "NEEDS PLAYTESTING", "UNSPECIFIED"] },
+        "numerical_status_display": { "type": "string", "minLength": 1 },
+        "effective_decision": { "$ref": "#/$defs/decision_id" },
+        "scope": { "$ref": "#/$defs/contract_scope" },
+        "propositions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/proposition" } },
+        "change_policy": { "$ref": "#/$defs/change_policy" },
+        "rendering": { "$ref": "#/$defs/rendering" }
+      }
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concept_id", "category", "persistence", "maps_to", "surface_forms", "distinct_from", "notes"],
+      "properties": {
+        "concept_id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$" },
+        "category": { "type": "string", "enum": ["REPRESENTATION", "ACCUMULATION", "UNIT", "ROUNDING", "SCOPE_QUALIFIER", "CLASSIFICATION", "PERSISTENCE"] },
+        "persistence": { "type": ["string", "null"], "enum": ["WITHIN_TURN", "ACROSS_TURNS", null] },
+        "maps_to": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "predicate", "object"],
+          "properties": {
+            "kind": { "type": "string", "enum": ["ARITHMETIC_REPRESENTATION", "PERCENTAGE_REPRESENTATION", "DIVISION_ROUNDING", "FRACTIONAL_ACCUMULATION", "NUMERIC_DOMAIN", "CONSTANT_CLASSIFICATION", "CONSTANT_CARRY_FORWARD", "CONSTANT_PROPERTY", "SCOPE_QUALIFIER", "VALUE_CHANGE_AUTHORITY"] },
+            "predicate": { "type": "string", "enum": ["USES_REPRESENTATION", "IS_REPRESENTED_AS", "STATES_ROUNDING", "PERSISTS_ACROSS_TURNS", "PERSISTS_WITHIN_TURN", "HAS_TYPE", "IS_CLASSIFIED_AS", "IS_CARRIED_UNCHANGED_INTO", "ARE_OBSERVED_PRICES", "ARE_BALANCE_CLAIMS", "REQUIRES_REVISION", "QUALIFIES_SCOPE"] },
+            "object": { "$ref": "#/$defs/typed_object" }
+          }
+        },
+        "surface_forms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2, "pattern": "^[a-z0-9][a-z0-9 .,'’/_-]*$" } },
+        "distinct_from": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$" } },
+        "notes": { "type": "string", "minLength": 20 }
+      }
+    },
+    "lexicon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "lexicon_version", "concepts", "modality_markers", "exception_markers", "persistence_qualifiers", "unknown_material_families"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "lexicon_version": { "$ref": "#/$defs/semver" },
+        "concepts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/concept" } },
+        "modality_markers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["PERMIT", "PROHIBIT", "MANDATE", "NEGATED_PROHIBITION"],
+          "properties": {
+            "PERMIT": { "$ref": "#/$defs/string_list" },
+            "PROHIBIT": { "$ref": "#/$defs/string_list" },
+            "MANDATE": { "$ref": "#/$defs/string_list" },
+            "NEGATED_PROHIBITION": { "$ref": "#/$defs/string_list" }
+          }
+        },
+        "exception_markers": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2 } },
+        "persistence_qualifiers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["WITHIN_TURN", "ACROSS_TURNS"],
+          "properties": {
+            "WITHIN_TURN": { "$ref": "#/$defs/string_list" },
+            "ACROSS_TURNS": { "$ref": "#/$defs/string_list" }
+          }
+        },
+        "unknown_material_families": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/string_list" }
+        }
+      }
+    },
+    "evidence_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_status", "reviewed_by", "reviewer_role", "reviewed_at", "review_rationale"],
+      "properties": {
+        "review_status": { "type": "string", "enum": ["NOT_REVIEWED", "REVIEWED", "REJECTED", "SUPERSEDED"] },
+        "reviewed_by": { "type": ["string", "null"] },
+        "reviewer_role": { "type": ["string", "null"] },
+        "reviewed_at": { "type": ["string", "null"] },
+        "review_rationale": { "type": ["string", "null"] }
+      }
+    },
+    "evidence_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "contract_id", "proposition_id", "document_path", "section", "document_sha256", "excerpt", "classification", "proposed_classification", "scope", "review", "implementation_actor", "reviewer_independence_required", "status"],
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/evidence_id" },
+        "contract_id": { "$ref": "#/$defs/contract_id" },
+        "proposition_id": { "$ref": "#/$defs/proposition_id" },
+        "document_path": { "$ref": "#/$defs/document_path" },
+        "section": { "type": "string", "minLength": 1 },
+        "document_sha256": { "$ref": "#/$defs/sha256" },
+        "excerpt": { "type": "string", "minLength": 10 },
+        "classification": { "type": "string", "enum": ["SUPPORTS", "CONTRADICTS", "QUALIFIES", "CONTEXT_ONLY", "NOT_ESTABLISHED", "INVALID_SOURCE", "PARSE_FAILURE", "NOT_REVIEWED"] },
+        "proposed_classification": { "type": ["string", "null"], "enum": ["SUPPORTS", "CONTRADICTS", "QUALIFIES", "CONTEXT_ONLY", "NOT_ESTABLISHED", "INVALID_SOURCE", "PARSE_FAILURE", null] },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["systems", "conditions"],
+          "properties": {
+            "systems": { "$ref": "#/$defs/system_list" },
+            "conditions": { "$ref": "#/$defs/string_list" }
+          }
+        },
+        "review": { "$ref": "#/$defs/evidence_review" },
+        "implementation_actor": { "type": "string", "minLength": 3 },
+        "reviewer_independence_required": { "const": true },
+        "status": { "type": "string", "enum": ["ACTIVE", "RETIRED"] }
+      }
+    },
+    "evidence_mappings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "mappings"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "mappings": { "type": "array", "items": { "$ref": "#/$defs/evidence_mapping" } }
+      }
+    },
+    "owner_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorization_id", "decision_id", "instruction_source", "instruction_sha256", "quoted_instruction", "authorized_at", "scope", "status", "provenance", "fixture_only"],
+      "properties": {
+        "authorization_id": { "type": "string", "pattern": "^OA-[A-Za-z0-9._/-]+$" },
+        "decision_id": { "$ref": "#/$defs/decision_id" },
+        "instruction_source": { "type": "string", "pattern": "^(docs|qa_backups)/[A-Za-z0-9._/-]+\\.md$" },
+        "instruction_sha256": { "$ref": "#/$defs/sha256" },
+        "quoted_instruction": { "type": "string", "minLength": 20 },
+        "authorized_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["systems", "propositions"],
+          "properties": {
+            "systems": { "$ref": "#/$defs/system_list" },
+            "propositions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/proposition_id" } }
+          }
+        },
+        "status": { "type": "string", "enum": ["ACTIVE", "REVOKED"] },
+        "provenance": { "const": "OWNER_INSTRUCTION_DOCUMENT" },
+        "fixture_only": { "type": "boolean" }
+      }
+    },
+    "contract_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_id", "clause_id", "path", "contract_version", "contract_sha256", "projection_path", "projection_sha256", "source_sha256", "material_coverage", "numerical_status", "lifecycle_status"],
+      "properties": {
+        "contract_id": { "$ref": "#/$defs/contract_id" },
+        "clause_id": { "type": "string", "pattern": "^F-[A-Z]{2}-[0-9]{3}[a-z]?$" },
+        "path": { "type": "string", "pattern": "^F-[A-Z]{2}-[0-9]{3}[a-z]?\\.contract\\.json$" },
+        "contract_version": { "$ref": "#/$defs/semver" },
+        "contract_sha256": { "$ref": "#/$defs/sha256" },
+        "projection_path": { "type": "string", "pattern": "^projections/[A-Za-z0-9._-]+\\.tpl$" },
+        "projection_sha256": { "$ref": "#/$defs/sha256" },
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "material_coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["segments", "covered", "ratio"],
+          "properties": {
+            "segments": { "type": "integer", "minimum": 1 },
+            "covered": { "type": "integer", "minimum": 1 },
+            "ratio": { "type": "number", "minimum": 1, "maximum": 1 }
+          }
+        },
+        "numerical_status": { "type": "string", "enum": ["OWNER-APPROVED VALUE", "PROVISIONAL VALUE", "DESIGN PROPOSAL", "NEEDS PLAYTESTING", "UNSPECIFIED"] },
+        "lifecycle_status": { "type": "string", "enum": ["ADOPTED", "ADOPTED_PROVISIONAL"] }
+      }
+    },
+    "index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "index_version", "registry_id", "created", "adoption_decision", "adoption_status", "schema", "lexicon", "evidence_mappings", "contracts", "cross_cutting_authority", "source_documents", "preserved_baseline", "evidence_review_policy", "owner_authorizations", "validation"],
+      "properties": {
+        "schema_version": { "$ref": "#/$defs/semver" },
+        "index_version": { "$ref": "#/$defs/semver" },
+        "registry_id": { "type": "string", "minLength": 3 },
+        "created": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "adoption_decision": { "$ref": "#/$defs/decision_id" },
+        "adoption_status": { "type": "string", "enum": ["ADOPTED", "SHADOW"] },
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": { "path": { "const": "schema.json" }, "sha256": { "$ref": "#/$defs/sha256" } }
+        },
+        "lexicon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "version"],
+          "properties": {
+            "path": { "const": "lexicon.json" },
+            "sha256": { "$ref": "#/$defs/sha256" },
+            "version": { "$ref": "#/$defs/semver" }
+          }
+        },
+        "evidence_mappings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": { "path": { "const": "evidence_mappings.json" }, "sha256": { "$ref": "#/$defs/sha256" } }
+        },
+        "contracts": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/contract_ref" } },
+        "cross_cutting_authority": { "$ref": "#/$defs/proposition" },
+        "source_documents": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": { "path": { "$ref": "#/$defs/document_path" }, "sha256": { "$ref": "#/$defs/sha256" } }
+          }
+        },
+        "preserved_baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["active_formulas", "parameter_records", "b03_carry_ins", "registers", "retired_formula", "b04_hashes", "manifest_amendments", "d014_policy_sha256"],
+          "properties": {
+            "active_formulas": { "type": "integer", "const": 295 },
+            "parameter_records": { "type": "integer", "const": 393 },
+            "b03_carry_ins": { "type": "integer", "const": 20 },
+            "registers": { "type": "integer", "const": 9 },
+            "retired_formula": { "const": "F-WEP-048" },
+            "b04_hashes": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["F-EC-000b", "F-EC-000f"],
+              "properties": {
+                "F-EC-000b": { "$ref": "#/$defs/sha256" },
+                "F-EC-000f": { "$ref": "#/$defs/sha256" }
+              }
+            },
+            "manifest_amendments": { "type": "integer", "const": 0 },
+            "d014_policy_sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "evidence_review_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["role", "independence_rule", "required_fields", "classifications", "non_supports_effect"],
+          "properties": {
+            "role": { "const": "INDEPENDENT_HUMAN_EVIDENCE_REVIEWER" },
+            "independence_rule": { "type": "string", "minLength": 30 },
+            "required_fields": { "type": "array", "minItems": 8, "uniqueItems": true, "items": { "type": "string", "minLength": 3 } },
+            "classifications": { "type": "array", "minItems": 7, "uniqueItems": true, "items": { "type": "string", "enum": ["SUPPORTS", "CONTRADICTS", "QUALIFIES", "CONTEXT_ONLY", "NOT_ESTABLISHED", "INVALID_SOURCE", "PARSE_FAILURE", "NOT_REVIEWED"] } },
+            "non_supports_effect": { "type": "string", "minLength": 20 }
+          }
+        },
+        "owner_authorizations": { "type": "array", "items": { "$ref": "#/$defs/owner_authorization" } },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["deterministic", "offline", "runtime"],
+          "properties": {
+            "deterministic": { "const": true },
+            "offline": { "const": true },
+            "runtime": { "const": "python-standard-library" }
+          }
+        }
+      }
+    }
+  }
+}

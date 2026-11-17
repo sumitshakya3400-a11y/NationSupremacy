@@ -887,8 +887,8 @@ def c25_decision_records(T):
     if got != list(range(198, 206)):
         p.append(f"DECISIONS.md rows dated 2026-11-11 are {got}, expected D-198..D-205")
     dd = row_ids(T["register04"], "DD")
-    if not contiguous(dd, 1, 284):
-        p.append(f"stage-2/04 DD rows are not contiguous to DD-284 (max={max(dd) if dd else None})")
+    if not contiguous(dd, 1, 285):
+        p.append(f"stage-2/04 DD rows are not contiguous to DD-285 (max={max(dd) if dd else None})")
     for n in range(246, 254):
         if f"| DD-{n:03d} |" not in T["register04"]:
             p.append(f"DD-{n:03d} row missing from the mirrored position register")
@@ -902,7 +902,7 @@ def c26_status_blocks(T):
         if status_value(T[k], "stage_2_next_prompt") != "14":
             p.append(f"{k}: stage_2_next_prompt is "
                      f"{status_value(T[k], 'stage_2_next_prompt')!r}, expected 14")
-        if status_value(T[k], "decisions_range") != "D-001..D-236":
+        if status_value(T[k], "decisions_range") != "D-001..D-237":
             p.append(f"{k}: decisions_range is {status_value(T[k], 'decisions_range')!r}")
         if status_value(T[k], "status_updated") != "2026-11-13":
             p.append(f"{k}: status_updated is {status_value(T[k], 'status_updated')!r}")

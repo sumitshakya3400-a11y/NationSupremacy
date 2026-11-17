@@ -235,13 +235,19 @@ class CurrentStateConsistencyTests(unittest.TestCase):
         # 2026-11-06 (Prompt 12A): row 12 stops being a bare Pending row because
         # 12A closed at the research/design-foundations level.
         # 2026-11-11 (Prompt 13A): row 13 stops being a bare Pending row because
-        # 13A closed at the research/design-foundations level, so only 14-15 stay
-        # Pending.
+        # 13A closed at the research/design-foundations level.
+        # 2026-11-16 (Prompt 14A semantic contracts): row 14 stops being a bare
+        # Pending row because the implementation is complete and validated while
+        # owner acceptance is pending. Only Prompt 15 stays Pending.
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
-        self.assertEqual(pending, [f"{i:02d}" for i in range(14, 16)])
+        self.assertEqual(pending, ["15"])
+        row14 = next(row for row in rows if row[0] == "14")
+        self.assertIn("PROMPT 14A OPEN", row14[2])
+        self.assertIn("OWNER ACCEPTANCE PENDING", row14[2])
         row13 = next(row for row in rows if row[0] == "13")
         self.assertIn("13D COMPLETE at the documentation level", row13[2])
-        self.assertIn("Prompt 14 NOT AUTHORIZED", row13[2])
+        self.assertIn("Prompt 14A is OPEN", row13[2])
+        self.assertIn("Prompt 14B is NOT AUTHORIZED", row13[2])
         # A research pass must never be presented as a built interface.
         self.assertNotRegex(
             row13[2].lower(),

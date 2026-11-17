@@ -458,12 +458,12 @@ def c16_suppression(problems: list[str]) -> None:
 def c17_decisions(problems: list[str]) -> None:
     dec = read(DECISIONS)
     d_ids = re.findall(r"^\| (D-\d{3}) \|", dec, re.M)
-    check(problems, d_ids == [f"D-{i:03d}" for i in range(1, 237)], f"DECISIONS.md is not D-001..D-236 ({len(d_ids)})")
+    check(problems, d_ids == [f"D-{i:03d}" for i in range(1, 238)], f"DECISIONS.md is not D-001..D-237 ({len(d_ids)})")
     for i in range(220, 237):
         check(problems, f"D-{i:03d}" in d_ids, f"missing decision D-{i:03d}")
     dd = read(DD)
     dd_ids = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
-    check(problems, dd_ids == [f"DD-{i:03d}" for i in range(1, 285)], f"DD register is not DD-001..DD-284 ({len(dd_ids)})")
+    check(problems, dd_ids == [f"DD-{i:03d}" for i in range(1, 286)], f"DD register is not DD-001..DD-285 ({len(dd_ids)})")
     for i in range(268, 285):
         check(problems, f"DD-{i:03d}" in dd_ids, f"missing mirrored decision DD-{i:03d}")
 
@@ -473,7 +473,7 @@ def c18_status(problems: list[str]) -> None:
     for f, text in blocks.items():
         check(problems, status_value(text, "status_updated") == "2026-11-13", f"{f} status_updated is not 2026-11-13")
         check(problems, status_value(text, "stage_2_next_prompt") == "14", f"{f} next prompt is not 14")
-        check(problems, status_value(text, "decisions_range") == "D-001..D-236", f"{f} decisions_range is not D-001..D-236")
+        check(problems, status_value(text, "decisions_range") == "D-001..D-237", f"{f} decisions_range is not D-001..D-237")
     ui = [status_value(t, "ui_foundations") for t in blocks.values()]
     check(problems, all(ui) and len(set(ui)) == 1 and "Prompt 13B" in ui[0],
           "ui_foundations status entries are missing, disagree, or do not record Prompt 13B")

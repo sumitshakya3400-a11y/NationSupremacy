@@ -587,8 +587,8 @@ if (DOCS / "stage-2" / stage2_files["outline"]).exists():
         fail.append("Bible outline does not carry 19 parts")
 if (DOCS / "stage-2" / stage2_files["decisions"]).exists():
     dr = rd(DOCS / "stage-2" / stage2_files["decisions"])
-    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 284:
-        fail.append("design register does not carry DD-001..DD-284 contiguously")
+    if len(re.findall(r"^\| DD-\d{3} \|", dr, re.M)) != 285:
+        fail.append("design register does not carry DD-001..DD-285 contiguously")
     if "| DD-042 |" not in dr or "| DD-048 |" not in dr:
         fail.append("design register does not carry the decision-closure positions DD-042..DD-048")
     if "| DD-049 |" not in dr or "| DD-060 |" not in dr:
@@ -849,6 +849,9 @@ _WORDS["two hundred and thirty-three"] = 233
 _WORDS["two hundred and thirty-four"] = 234
 _WORDS["two hundred and thirty-five"] = 235
 _WORDS["two hundred and thirty-six"] = 236
+_WORDS["two hundred and thirty-seven"] = 237
+_WORDS["two hundred and thirty-eight"] = 238
+_WORDS["two hundred and thirty-nine"] = 239
 _mc = re.search(r"holds \*\*([\w -]+?)\*\* entries", hnd)
 _dec_rows = [ln for ln in dec.splitlines() if re.match(r"\|\s*D-\d{3}\s*\|", ln)]
 if not _mc or _WORDS.get(_mc.group(1).lower()) != len(_dec_rows):

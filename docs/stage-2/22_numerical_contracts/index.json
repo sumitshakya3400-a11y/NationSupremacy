@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "index_version": "1.0.0",
+  "registry_id": "NC-REGISTRY-14A",
+  "created": "2026-11-16",
+  "adoption_decision": "D-238",
+  "adoption_status": "ADOPTED",
+  "schema": {
+    "path": "schema.json",
+    "sha256": "ee07ffd8ebbb9ac866f68edbc5cc28a2293efadda1a4be40c17a7e7038755b21"
+  },
+  "lexicon": {
+    "path": "lexicon.json",
+    "sha256": "74f3c8297c0ab0663c187045600cca42f0965711988c37b260b57dfaa49a8ba8",
+    "version": "1.0.0"
+  },
+  "evidence_mappings": {
+    "path": "evidence_mappings.json",
+    "sha256": "a9db23618f6e67fb62d0c4b89d8b7b5e5be662591b2ffa9a4e9e16f1d3d99040"
+  },
+  "contracts": [
+    {
+      "contract_id": "NC-F-EC-000b",
+      "clause_id": "F-EC-000b",
+      "path": "F-EC-000b.contract.json",
+      "contract_version": "1.0.0",
+      "contract_sha256": "07ce51388c69524d497dafe0c38f7baa7ca4686af29cbc2e00f2e76d2b179d8b",
+      "projection_path": "projections/F-EC-000b.md.tpl",
+      "projection_sha256": "9ef02d58e8e0518aad0e0125c78c2a4b720e50be00a24beb2fe05641d1dd1f57",
+      "source_sha256": "bb1090ccae5cd15e0d883a57ab63216a106ff7c4e503e85cf2146e19e02271c6",
+      "material_coverage": {
+        "segments": 6,
+        "covered": 6,
+        "ratio": 1.0
+      },
+      "numerical_status": "PROVISIONAL VALUE",
+      "lifecycle_status": "ADOPTED"
+    },
+    {
+      "contract_id": "NC-F-EC-000f",
+      "clause_id": "F-EC-000f",
+      "path": "F-EC-000f.contract.json",
+      "contract_version": "1.0.0",
+      "contract_sha256": "1f81736336c1649cf1bbab770a3f120b4abb7fec4032d27ede1feee810eb44e3",
+      "projection_path": "projections/F-EC-000f.md.tpl",
+      "projection_sha256": "682b2c3ea7ef9cbf6bb0546e7fcd13b19a16bd3cbacc8137da71008442e420eb",
+      "source_sha256": "3025cc447ebb91be8d226ff5035da0e403947d2be603e81e535bbd5600bca5ca",
+      "material_coverage": {
+        "segments": 7,
+        "covered": 7,
+        "ratio": 1.0
+      },
+      "numerical_status": "PROVISIONAL VALUE",
+      "lifecycle_status": "ADOPTED"
+    }
+  ],
+  "cross_cutting_authority": {
+    "id": "NC-AUTH/ARITH-001",
+    "kind": "ARITHMETIC_AUTHORITY",
+    "subject": "ECONOMIC_ARITHMETIC",
+    "predicate": "USES_REPRESENTATION",
+    "object": {
+      "type": "REPRESENTATION_CLASS",
+      "value": "INTEGER"
+    },
+    "modality": "MUST",
+    "polarity": "AFFIRM",
+    "scope": {
+      "systems": [
+        "B-04"
+      ],
+      "domain": "ECONOMIC_ARITHMETIC",
+      "persistence": "NONE",
+      "inheritance": "NONE",
+      "distinct_from": [
+        "CUMULATIVE_FLOOR_ACCRUAL_WITHIN_TURN",
+        "CROSS_TURN_REMAINDER_PERSISTENCE"
+      ]
+    },
+    "conditions": [],
+    "exceptions": [],
+    "units": {
+      "dimension": "CURRENCY",
+      "unit": "CROWN"
+    },
+    "timing": {
+      "boundary": "NONE",
+      "phase": "ALL",
+      "persistence": "NONE"
+    },
+    "numeric": {
+      "representation": "INTEGER",
+      "rounding": [
+        "FLOOR",
+        "CEIL"
+      ],
+      "precision": "WHOLE_UNIT",
+      "basis_point_relation": "10,000 bp = 100%"
+    },
+    "authority": {
+      "category": "B",
+      "owner_reserved": false,
+      "classification_status": "RESOLVED",
+      "basis_decisions": [
+        "D-045",
+        "D-064"
+      ],
+      "basis_note": "D-045 and D-064 are Confirmed Category B design decisions under D-014. Their documented scope is economic arithmetic as recorded in the B-04 register (whole resources, whole crowns, integer basis points, explicit floor or ceil). The rule is not inherited by other registers; each register states its own precision convention in B-14 sections 8.1-8.2. B-09 F-AL-006 within-turn cumulative accrual and cross-turn remainder persistence are distinct concepts and are not governed or rejected by this authority record."
+    },
+    "source_anchor": {
+      "document": "docs/DECISIONS.md",
+      "section": "D-064",
+      "excerpt": "All economic arithmetic is integer; percentages are basis points; every formula states floor or ceil; no formula uses floating point, a locale decimal separator or a client calculation.",
+      "source_kind": "BASELINE_EVIDENCE"
+    },
+    "status": "ACTIVE",
+    "projection_visibility": "DERIVED_FROM_BASELINE_EVIDENCE"
+  },
+  "source_documents": [
+    {
+      "path": "docs/stage-2/10_economic_formula_and_balance_register.md",
+      "sha256": "46950c264dfd3a42979e21fe9ea43e45067bc5ac48ee2a000b5e77420fd30d1c"
+    },
+    {
+      "path": "docs/stage-2/22_formulas_and_balance.md",
+      "sha256": "959ab39b435f96fa61af0436d5af61f627d41f0d92527343829fa6640e854cb7"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "sha256": "9a4087ae327a9f23a429f834544db5cc0249d2d6c2b7fbfe3c68b62df2c5c6b4"
+    },
+    {
+      "path": "docs/AUTONOMOUS_DECISION_POLICY.md",
+      "sha256": "697dd52d895ff897c498c1acb987535178da42e96bb3458297e762addb8ad479"
+    }
+  ],
+  "preserved_baseline": {
+    "active_formulas": 295,
+    "parameter_records": 393,
+    "b03_carry_ins": 20,
+    "registers": 9,
+    "retired_formula": "F-WEP-048",
+    "b04_hashes": {
+      "F-EC-000b": "bb1090ccae5cd15e0d883a57ab63216a106ff7c4e503e85cf2146e19e02271c6",
+      "F-EC-000f": "3025cc447ebb91be8d226ff5035da0e403947d2be603e81e535bbd5600bca5ca"
+    },
+    "manifest_amendments": 0,
+    "d014_policy_sha256": "697dd52d895ff897c498c1acb987535178da42e96bb3458297e762addb8ad479"
+  },
+  "evidence_review_policy": {
+    "role": "INDEPENDENT_HUMAN_EVIDENCE_REVIEWER",
+    "independence_rule": "The reviewer must be a human who is neither the amendment author nor the implementation actor. An AI session may prepare a draft mapping but may not record a REVIEWED status or promote its own proposed classification to SUPPORTS.",
+    "required_fields": [
+      "reviewer_identity",
+      "reviewer_role",
+      "review_date",
+      "source_document_and_sha256",
+      "exact_section_and_excerpt",
+      "proposition_identifier",
+      "covered_scope_and_conditions",
+      "evidence_classification",
+      "review_rationale",
+      "review_status"
+    ],
+    "classifications": [
+      "SUPPORTS",
+      "CONTRADICTS",
+      "QUALIFIES",
+      "CONTEXT_ONLY",
+      "NOT_ESTABLISHED",
+      "INVALID_SOURCE",
+      "PARSE_FAILURE",
+      "NOT_REVIEWED"
+    ],
+    "non_supports_effect": "Only a REVIEWED mapping whose effective classification is SUPPORTS can satisfy the evidence requirement for a changed proposition. All other classifications and all NOT_REVIEWED mappings fail closed."
+  },
+  "owner_authorizations": [],
+  "validation": {
+    "deterministic": true,
+    "offline": true,
+    "runtime": "python-standard-library"
+  }
+}
