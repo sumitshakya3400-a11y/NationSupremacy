@@ -251,6 +251,8 @@ Canonical register: [`11_city_infrastructure_production_and_research_formula_reg
 
 **Register-rule entries excluded from the active total:** `F-CI-000`, `F-CI-000b`, `F-CI-000c`, `F-CI-000d`, `F-CI-000e`.
 
+**Prompt 14C reconciliation (2026-11-18).** All 41 identifiers were re-verified against the canonical register. The classification is **30 executable** (`F-CI-001`…`030`), **4 analytical** (`F-CI-031`…`034`) and **7 governance** (`F-CI-035`…`041`) under D-244/DD-290. Identifiers, names, source sections and evidence references are unchanged; no record was added, retired or renumbered; the global total remains **295**. The metadata-gap entries in §7 for `F-CI-031`…`041` describe **expected non-executable metadata**, not omissions: analytical and governance entries have no executable inputs, output, rounding or timing. See [29_prompt_14C_b05_cities_completion_report.md](29_prompt_14C_b05_cities_completion_report.md) §2 and §13.1.
+
 ## 4.3 B-06 — 44 active formulas
 
 Canonical register: [`12_population_and_domestic_politics_formula_register.md`](12_population_and_domestic_politics_formula_register.md).

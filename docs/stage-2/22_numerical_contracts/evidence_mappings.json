@@ -115,7 +115,7 @@
       "proposition_id": "NC-F-EC-000b/P-005",
       "document_path": "docs/stage-2/22_formulas_and_balance.md",
       "section": "8.2",
-      "document_sha256": "25abf5e055d82ac94bb9418f157671bce32cf686c5250724ae27d05c78e67c80",
+      "document_sha256": "1adbcda74b8e02e5442fee4ed1e1afc74a379193b100aba7790ddbcfeb82e28d",
       "excerpt": "No binary floating point; no fractional carry stated",
       "classification": "NOT_REVIEWED",
       "proposed_classification": "NOT_ESTABLISHED",

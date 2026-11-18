@@ -1097,3 +1097,21 @@ No balance acceptance, no playtest, no runtime validation and no economic simula
 ### 19.3 Next subphase
 
 Prompt 14C is **NOT AUTHORIZED**. Only the owner may authorize it.
+
+---
+
+## 20. Prompt 14C — B-05 reconciliation status (2026-11-18)
+
+### 20.1 What was reconciled
+
+Prompt 14C reconciled the B-05 numerical foundation against the register and the B-14 inventories: **41 active `F-CI` identifiers** (30 executable, 4 analytical, 7 governance), **73/73 parameter records** (1:1 with register §3.1–§3.7; 0 missing, 0 duplicate, 0 changed), the **17-type** building catalogue, **12 technologies / 5 branches / 4 programmes**, the **39-row** B-05 cross-system matrix (**33 / 4 / 2 / 0**) and a separate **2-entry** contradiction register (C-14C-01, C-14C-02) with **7 limitations**. The global counts remain **295 active formulas** and **393 parameter records**; six formula/rule-embedded parameter groups are recorded in the 14C report's Annex A under the established constant-table convention (D-245/DD-291).
+
+The phase produced **12 new integrated examples (E1–E12)** and a **24-scenario deterministic reference model** at 10/30/60/120 turns (`14C_simulate_b05.py`), with zero invariant violations and an exact reproduction of Prompt 14B's standard-start 30-turn result (1,530 / 1,516 / 4,386). No numerical value, recipe, price, maintenance rate, tax value or formula structure was changed. See [29_prompt_14C_b05_cities_completion_report.md](29_prompt_14C_b05_cities_completion_report.md).
+
+### 20.2 What was not established
+
+No B-05 formula has been implemented or runtime-tested; no database, scheduler, API or UI exists; the 64 T05 specifications remain unexecuted; the balance is not accepted; no playtest was conducted; the B-05 register remains Draft; and the two B-04 cross-document contradictions remain B-04-owned handoffs. The 14B documentation-validator technical debt and the four inherited historical validator failures are preserved.
+
+### 20.3 Next subphase
+
+The owner reviews the Prompt 14C package and decides whether to accept it. **Prompt 14D is not authorized and not started.** Implementation must wait for the owner's acceptance of the full Prompt 14 numerical foundation, and B-04's owner should correct F-EC-026 and the gasoline sink roster before fixed-asset accounting or programme materials are implemented.
