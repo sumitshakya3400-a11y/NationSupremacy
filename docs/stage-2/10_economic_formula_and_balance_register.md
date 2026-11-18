@@ -1,6 +1,6 @@
 # Economic formula and balance register
 
-**Version:** 1.4 · **Created:** 2026-10-24 · **Stage 2, Prompt 04** · **Revised:** 2026-11-04 (v1.4 Prompt 10B-C2 updates **F-EC-003** to the protected-civilian-Food model: `available_if_held` and `available_after_release` are distinct, `unmet_food` is computed after any `OP-09` release in reverse acceptance order, and the dependency on B-10 `WAR-053l` is explicit. No constant or tax coefficient changed. The v1.3 text follows for history: v1.3 records **ECN-147a** in F-EC-014: maintenance is one whole obligation per chain, attempted in the extraction → generation → processing order, paid or cancelled whole, with a published standard-start allocation (1 crown → oil paid, five chains `UNMAINTAINED`, treasury 0). No constant or formula value changed. Earlier: 2026-10-25 — v1.2 corrects F-EC-006: `planned_batches = M + A ≤ C`, where manual batches occupy capacity instead of being added to it, with the worked-example index and the F-EC-006 example updated. No coefficient changed. Earlier: v1.1 numerical correction pass — bundle total, F-EC-021/023 examples, the worked-example index and the validation record; see F-EC-044)
+**Version:** 1.5 · **Created:** 2026-10-24 · **Stage 2, Prompt 04** · **Revised:** 2026-11-17 (v1.5 Prompt 14B B-04 reconciliation. **No constant, recipe, tax rate or reference price changed.** F-EC-002a is published as a full field table; F-EC-004 and F-EC-012 consume the published B-05 `yield_bonus` as `Y_eff = Y + yield_bonus(r)`; F-EC-014 consumes the published B-05 `standards_bonus` as `max(1, 2 − standards_bonus)`; F-EC-016 publishes `net economic result`; F-EC-018's `operating` term is defined to include every P3.7 obligation actually paid; F-EC-026/027/032's construction illustrations use the B-05 farm (120 crowns + 5 steel, book value 155, payback 23); F-EC-037 publishes the grid-utilisation distinction; F-EC-039 records the 30-turn reference-model measurement. The previous expressions are preserved in F-EC-044. The v1.4 text follows for history: v1.4 Prompt 10B-C2 updates **F-EC-003** to the protected-civilian-Food model: `available_if_held` and `available_after_release` are distinct, `unmet_food` is computed after any `OP-09` release in reverse acceptance order, and the dependency on B-10 `WAR-053l` is explicit. No constant or tax coefficient changed. The v1.3 text follows for history: v1.3 records **ECN-147a** in F-EC-014: maintenance is one whole obligation per chain, attempted in the extraction → generation → processing order, paid or cancelled whole, with a published standard-start allocation (1 crown → oil paid, five chains `UNMAINTAINED`, treasury 0). No constant or formula value changed. Earlier: 2026-10-25 — v1.2 corrects F-EC-006: `planned_batches = M + A ≤ C`, where manual batches occupy capacity instead of being added to it, with the worked-example index and the F-EC-006 example updated. No coefficient changed. Earlier: v1.1 numerical correction pass — bundle total, F-EC-021/023 examples, the worked-example index and the validation record; see F-EC-044)
 **Status:** **Draft** — definitive formula definitions; **no formula has been implemented or runtime-tested.**
 **Authority:** This register is the **single authoritative source** for the expression, variables, units, bounds, rounding, timing and dependencies of every economic formula in Nation Supremacy. [B-04](10_economy_resources_treasury_and_finances.md) summarises these formulas; if the two disagree, this register wins until it is corrected by a new revision.
 **Companions:** [B-04](10_economy_resources_treasury_and_finances.md) · [research report](research/04_politics_and_war_economy_research.md) · [B-02](07_core_gameplay_loop_symbolic_world_and_turn_system.md) · [requirements](03_requirements_traceability.md)
@@ -159,7 +159,22 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Validation | T04-C01 |
 | Requirements | REQ-127 |
 
-**F-EC-002a — Military Food demand is a separate formula.** *Provisional.* The garrison ration is **not** part of `food_demand` and never changes the hunger ratio. It is computed by `F-WR-036` in the B-10 warfare formula register and paid at P3.7 rank 6(a) from the Food left after P3.6. A formula or screen that adds it to `food_demand` is incorrect.
+**F-EC-002a — Military Food demand is a separate formula.** *Provisional.*
+
+| Field | Definition |
+|---|---|
+| Expression | Not computed here. B-10 `F-WR-036` computes `ration_equivalents = Σ_t(force_snapshot.strength_t × e_t)` and `military_food_demand = ceil(ration_equivalents / 1,000)` |
+| Variables | `force_snapshot.strength_t` (integer ≥ 0, per unit type, from the single P3.7 snapshot `WAR-053m`); `e_t` (soldier-equivalent factor, B-10: INF 10, ARM 4, AIR 2, NAV 20) |
+| Units | Output: Food units per turn |
+| Range | 0 … `ceil(max_force_equivalents / 1,000)` |
+| Rounding | One ceiling after the whole sum; B-10 owns it |
+| Timing | P3.7 rank 6(a), after P3.6 civilian consumption and after the `WAR-053l` conditional test |
+| Dependencies | `F-WR-036` owns the ration quantity and the `RATION_SHORT` consequence; B-04 supplies the Food left after P3.6 and executes the debit |
+| Example | 200 `UNIT-INF` + 300 `UNIT-ARM` → 2,000 + 1,200 = 3,200 equivalents → 4 Food |
+| Rationale | The garrison eats after civilians; the ration never changes the civilian hunger ratio and never competes with an `OP-09` field ration |
+| Edge cases | Zero strength → 0 Food and a vacuously paid obligation; an unpayable ration is cancelled whole, sets `RATION_SHORT` and reduces readiness; it is never added to `food_demand` and never paid from protected civilian Food |
+| Validation | `10B_validate_warfare.py` (structure); 14B Example F (B-04 execution) |
+| Requirements | REQ-127 (B-04 contract); B-10 owns the quantity |
 
 **F-EC-003 — Hunger penalty.**
 
@@ -182,17 +197,17 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 
 | Field | Definition |
 |---|---|
-| Expression | `batches_run = min(C, floor(available_crowns / V), floor(free_space / Y))` |
-| Variables | `C` (capacity, batches ≥ 0); `available_crowns` (crowns, integer ≥ 0); `V` (variable cost per batch, crowns > 0); `free_space` (units ≥ 0); `Y` (output per batch, units > 0) |
+| Expression | `batches_run = min(C, floor(available_crowns / V), floor(free_space / Y_eff))`, where `Y_eff(r) = Y_r + yield_bonus(r)` |
+| Variables | `C` (capacity, batches ≥ 0); `available_crowns` (crowns, integer ≥ 0); `V` (variable cost per batch, crowns > 0); `free_space` (units ≥ 0); `Y_eff` (effective output per batch, units > 0); `Y_r` (base output per batch, register §3.2); `yield_bonus(r)` (integer ≥ 0, published by B-05 `F-CI-015`, 0 at launch) |
 | Units | Output: batches (integer) |
 | Range | 0 … `C` |
 | Rounding | Floor each limit, then take the minimum |
 | Timing | P3.3, per resource in the published order |
-| Dependencies | F-EC-014 (maintenance already charged); F-EC-023 (free space) |
+| Dependencies | F-EC-014 (maintenance already charged); F-EC-023 (free space); B-05 `F-CI-015` (`yield_bonus`) |
 | Example | `C=5, V=10, available=100, Y=10, free=25 → min(5, 10, 2) = 2` batches |
-| Rationale | A batch is atomic; the strictest constraint wins |
-| Edge cases | `V=0` is invalid (undefined); `free_space < Y` → 0; negative crowns → 0 |
-| Validation | T04-D01/C04 |
+| Rationale | A batch is atomic; the strictest constraint wins; a research yield bonus enlarges the space a batch needs as well as its output |
+| Edge cases | `V=0` is invalid (undefined); `free_space < Y_eff` → 0; negative crowns → 0; a bonus never makes a blocked batch run |
+| Validation | T04-D01/C04; 14B model |
 | Requirements | REQ-112/141 |
 
 **F-EC-005 — Extraction variable cost.**
@@ -320,16 +335,16 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 
 | Field | Definition |
 |---|---|
-| Expression | `output = batches_run × output_per_batch`; `inputs_consumed = batches_run × input_per_batch` |
-| Variables | `batches_run` (integer ≥ 0); `output_per_batch`, `input_per_batch` (units) |
+| Expression | `output = batches_run × (Y + yield_bonus(c))`; `inputs_consumed = batches_run × input_per_batch` |
+| Variables | `batches_run` (integer ≥ 0); `output_per_batch` = `Y_c + yield_bonus(c)` (units > 0); `input_per_batch` (units); `yield_bonus(c)` (integer ≥ 0, published by B-05 `F-CI-016`, 0 at launch) |
 | Units | Output and inputs: units |
-| Range | 0 … `C × output_per_batch` |
+| Range | 0 … `C × (Y + bonus)` |
 | Rounding | None (integer multiplication) |
 | Timing | P3.5, atomically with the cost |
-| Dependencies | F-EC-008/009/010/011 |
-| Example | 2 steel batches → 16 steel; 20 iron + 12 coal consumed |
-| Rationale | Fixed recipe, no yield randomness |
-| Edge cases | A blocked batch consumes no input; a manual order that fails consumes nothing |
+| Dependencies | F-EC-008/009/010/011; B-05 `F-CI-016` |
+| Example | 2 steel batches → 16 steel; 20 iron + 12 coal consumed; with a +1 bonus, 18 steel and the same inputs |
+| Rationale | Fixed recipe, no yield randomness; a published research bonus raises output, never the input list |
+| Edge cases | A blocked batch consumes no input; a manual order that fails consumes nothing; the bonus never changes the recipe's inputs |
 | Validation | T04-D07 |
 | Requirements | REQ-121 |
 
@@ -356,16 +371,16 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 
 | Field | Definition |
 |---|---|
-| Expression | `maintenance = Σ_extraction(C_extraction × 1) + Σ_processing(C_processing × 2) + Σ_generators(levels × 2)` |
-| Variables | Capacity in batches; generator levels |
+| Expression | `maintenance = Σ_extraction(C_extraction × 1) + Σ_processing(C_processing × max(1, 2 − standards_bonus)) + Σ_generators(levels × 2)` |
+| Variables | Capacity in batches; generator levels; `standards_bonus` (0 or 1, published by B-05 `F-CI-017`; 0 at launch) |
 | Units | Output: crowns |
 | Range | 0 … a nation's total capacity × 2 |
 | Rounding | None (integer sum) |
 | Timing | P3.2, after tax and before extraction |
-| Dependencies | Prompt 05 capacity |
-| Example | Standard start: 3+2+1+1 + 2 + 2 = 11 crowns |
-| Rationale | Idle capacity is not free; this is the anti-hoarding cost |
-| Edge cases | One **whole** obligation per chain, attempted in **ECN-147a**'s order (extraction → generation → processing); paid in full or cancelled in full, and the engine continues past an unaffordable chain; a cancelled chain is `UNMAINTAINED` and cannot run this turn; the mark clears at the next P3.2 in which its obligation is paid; a capacity of 0 costs 0 |
+| Dependencies | Prompt 05 capacity; B-05 `F-CI-017` (`standards_bonus`) |
+| Example | Standard start: 3+2+1+1 + 2 + 2 = 11 crowns; with the Standards Bureau the refining obligation falls from 2 to 1, so the start is 10 |
+| Rationale | Idle capacity is not free; this is the anti-hoarding cost; the maintenance floor of 1 keeps a research programme from making capacity free |
+| Edge cases | One **whole** obligation per chain, attempted in **ECN-147a**'s order (extraction → generation → processing); paid in full or cancelled in full, and the engine continues past an unaffordable chain; a cancelled chain is `UNMAINTAINED` and cannot run this turn; the mark clears at the next P3.2 in which its obligation is paid; a capacity of 0 costs 0; extraction stays at 1 and generators at 2 regardless of the bonus |
 | Allocation | Standard start, 1 crown: food 3 and coal 2 cancelled, **oil 1 paid**, iron 1, generator 2 and refining 2 cancelled — five `UNMAINTAINED`, treasury 0 (D-050) |
 | Validation | T04-B02 |
 | Requirements | REQ-116 |
@@ -404,6 +419,14 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Validation | T04-B02/B03 |
 | Requirements | REQ-131 |
 
+**Report definitions (Prompt 14B).** Three related figures stay distinct:
+
+- `net_operating_income` (this formula) measures **capacity operations only**. It counts tax and rewards as income and maintenance/variable costs as expense, but **not** the book value of the goods produced, because production is an asset swap (cash into inventory), not income. A nation that produces can therefore show a negative net operating income while its wealth rises (B-04 Example 3 is the published case).
+- `net_operating_income_after_obligations = net_operating_income − P3.7_obligations_paid` adds the military, public-service and facility-upkeep obligations that P3.7 actually paid.
+- `net economic result = net_cash_flow (F-EC-017) + Δ inventory_book_value (F-EC-025)`. This is the measure used by B-04 `ECN-185` target 1, because it counts the value the nation actually created (cash plus inventory) rather than treating produced goods as free.
+
+These are report definitions, not new executable formulas (F-EC-043).
+
 **F-EC-017 — Net cash flow.**
 
 | Field | Definition |
@@ -426,7 +449,7 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Field | Definition |
 |---|---|
 | Expression | `closing = opening + tax + rewards + sale_proceeds + transfers_in + refunds − operating − capex − purchase_costs − transfers_out − fees` |
-| Variables | All terms are integer crowns |
+| Variables | All terms are integer crowns. **`operating` is every operating outflow actually paid this turn**: `operating_expenses` (F-EC-016) **plus** every P3.7 obligation paid in crowns (military readiness/upkeep, public-service cost, facility upkeep and construction maintenance). The military Food ration is a Food debit, not a crown term. A public-service payment is written as `POLICY_SERVICE_COST` (B-06 `DMP-118`); a cancelled payment writes `POLICY_SERVICE_CANCELLED` and charges nothing. Capex, purchase costs, transfers out and fees have their own terms and are never included in `operating`. |
 | Units | Crowns |
 | Range | ≥ 0 (non-negative invariant) |
 | Rounding | None; the identity must hold to the crown |
@@ -568,7 +591,7 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Rounding | None |
 | Timing | Updated at P4 when a construction completes |
 | Dependencies | Prompt 05 construction record; F-EC-027 |
-| Example | 150 + 10×7 = 220 |
+| Example | Farm `120 + 5×7 = 155` |
 | Rationale | Construction converts liquid assets into a durable asset; it does not destroy wealth |
 | Edge cases | No depreciation in v1; an abandoned project does not add value |
 | Validation | T04-B04 |
@@ -585,7 +608,7 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Rounding | None |
 | Timing | At completion (P4) |
 | Dependencies | Prompt 05 cost table; §3.5 |
-| Example | 150 + 10×7 + 5×6 = 250 |
+| Example | Farm `120 + 5×7 = 155`; refinery `320 + 15×7 = 425` |
 | Rationale | Avoids a phantom wealth loss when materials are consumed |
 | Edge cases | A construction with no material cost has book value = crown cost |
 | Validation | T04-B04 |
@@ -672,7 +695,7 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Rounding | Ceiling |
 | Timing | Report only |
 | Dependencies | F-EC-027/031 |
-| Example | `ceil(250 / 7) = 36` turns |
+| Example | `ceil(155 / 7) = 23` turns for one farm |
 | Rationale | A legible investment estimate |
 | Edge cases | Margin 0 → "never"; a price change changes the estimate, so it is labelled a forecast |
 | Validation | T04-B04 |
@@ -760,11 +783,15 @@ Each entry states: expression, variables, units, range, rounding, timing, depend
 | Aluminum | +14 | −12 | **+2** |
 | Ammunition | +10 | −6 | **+4** |
 
-Refining is break-even at the reference gasoline price when powered by coal. That is deliberate: refining's value is the **gasoline price** and the construction/military demand, not a guaranteed arbitrage. If the market price of gasoline is 7 instead of 6, the fully loaded margin is **+8** per batch (one extra crown on each of eight units); at 5 it is −8. A player who wants a refining business must find a buyer, not rely on the reference price.
+Refining is break-even at the reference gasoline price when powered by coal **at full grid utilisation**. That is deliberate: refining's value is the **gasoline price** and the construction/military demand, not a guaranteed arbitrage. If the market price of gasoline is 7 instead of 6, the fully loaded margin is **+8** per batch (one extra crown on each of eight units); at 5 it is −8. A player who wants a refining business must find a buyer, not rely on the reference price.
+
+**Prompt 14B — utilisation matters as much as the price.** The 3.0-crowns-per-GU figure is the **marginal** cost of a GU on a grid whose output is fully used. A generator is indivisible and its whole turn cost is paid whether or not the GU is used. At the standard start one coal level produces 6 GU for `6 coal + 10 crowns + 2 maintenance = 18 crowns`; only the refinery's 2 GU are used, so the **actual** cost of the power consumed is **9 crowns per used GU**, not 3. The standard-start refining margin at actual utilisation is therefore `6 − 18 = −12` crowns per batch, not the 0 shown in the table. The table's 0 is the correct figure only once the other 4 GU are consumed by another chain. Both numbers must be reported: the marginal figure answers "should I build more generation?", the actual figure answers "what did this batch really cost?" (14B finding F14B-09.)
 
 **F-EC-038 — Dominance test.** *Provisional.* A chain is **dominant** if it has (a) the highest base margin **and** the lowest capital cost per batch **and** the lowest operating risk, or (b) an output that every other chain requires with no substitute. At v1.0, food has the highest extraction margin but its demand is capped by population and storage; steel and aluminum have the highest processing margins but require power and construction capital; refining is break-even under coal power. No chain meets both (a) and (b). Prompt 14 must re-run this test after any number change.
 
 **F-EC-039 — Money-creation test.** *Provisional.* Over a 30-turn simulation, `Σ new crowns` (tax + rewards) must not exceed `Σ economic output at reference prices` (production + processing). If it does, operating costs or maintenance are too small, or tax income is too high. This is a design target; it has not been measured.
+
+**Prompt 14B measurement (deterministic reference model, not a gameplay simulation).** `qa_backups/14B_verify_b04_economy.py` runs the standard start for 30 turns under two policies. **Producing:** 30 turns of `RUN_AT_CAPACITY`; the refinery runs 27 turns and idles 3 (oil production 8 per turn cannot fund a 10-oil batch every turn once the starting oil is spent); gross production is **4,476 crowns** at reference prices, tax is **4,500 crowns**, so the **gross reading fails by 24 crowns (0.5%)**. Net crowns added are **+30** (the sinks almost exactly offset tax), so the **net reading passes**. Treasury closes at 1,530; wealth at 4,386; 1,516 units; the warehouse does not block in 30 turns. **Idling every chain:** gross output 0, tax 3,303 (hunger reduces it after turn 4), net crowns +2,213, so the test **fails on both readings** — idle crown accumulation is the behaviour the test is meant to catch. The gross/net ambiguity is recorded as a 14B finding; the rule text is unchanged and the final reading requires the Prompt 14 balance phase.
 
 ---
 
@@ -775,7 +802,7 @@ Refining is break-even at the reference gasoline price when powered by coal. Tha
 | 1 New nation | F-EC-024/025/026 | Wealth 2,100; 310 units |
 | 2 Positive income | F-EC-001/014/015/016/018 | Closing 1,529; net 29 |
 | 3 Operating loss | F-EC-014/015/016/024 | Closing 1,247; net −282; wealth +146 |
-| 4 Capex vs opex | F-EC-027/031/032 | Book value 250; margin 7; payback 36 |
+| 4 | Capex vs opex | F-EC-027/031/032 | Book value 155; margin 7; payback 23 |
 | 5 Reconciliation | F-EC-017/018/028 | Closing 1,428; identity holds |
 | 6 Warehouse limit | F-EC-004/023 | 2 batches; 20 coal; 25 cost |
 | 7 Refining | F-EC-008/012 | 16 gasoline; 40 cost |
@@ -809,7 +836,7 @@ Refining is break-even at the reference gasoline price when powered by coal. Tha
 
 ## 8. Revision history and validation record
 
-**F-EC-044 — Revision history.** *Provisional.* v1.0 (2026-10-24): first issue. No earlier version exists. The constants are the v1.0 provisional calibration; no value has been tuned or measured. **v1.1 (2026-10-24):** numerical correction pass. The bundle total (310), the F-EC-021/023 examples, the worked-example index and the register's validation record were corrected; two examples in the rulebook were rebuilt. **No constant, formula, recipe or reference price changed.** A same-day micro-correction completed v1.1: the index's Example 5 row was synchronised with the rulebook (**1,426 → 1,428**), this register's header now reads v1.1, and the arithmetic checker compares the two documents. **v1.2 (2026-10-25):** F-EC-006 publishes `planned_batches = M + A ≤ C`; no value changed. **v1.3 (2026-10-28):** F-EC-014 records ECN-147a's whole-obligation allocation and its standard-start worked case; no constant, formula or reference price changed.
+**F-EC-044 — Revision history.** *Provisional.* v1.0 (2026-10-24): first issue. No earlier version exists. The constants are the v1.0 provisional calibration; no value has been tuned or measured. **v1.1 (2026-10-24):** numerical correction pass. The bundle total (310), the F-EC-021/023 examples, the worked-example index and the register's validation record were corrected; two examples in the rulebook were rebuilt. **No constant, formula, recipe or reference price changed.** A same-day micro-correction completed v1.1: the index's Example 5 row was synchronised with the rulebook (**1,426 → 1,428**), this register's header now reads v1.1, and the arithmetic checker compares the two documents. **v1.2 (2026-10-25):** F-EC-006 publishes `planned_batches = M + A ≤ C`; no value changed. **v1.3 (2026-10-28):** F-EC-014 records ECN-147a's whole-obligation allocation and its standard-start worked case; no constant, formula or reference price changed. **v1.4 (2026-11-04):** F-EC-003 moves to the protected-civilian-Food model; no constant or tax coefficient changed. **v1.5 (2026-11-17, Prompt 14B):** cross-system contract corrections and illustrations; **no constant, recipe, tax rate or reference price changed.** (a) F-EC-002a is published as a full field table (purpose, inputs, output, units, range, rounding, timing, dependencies, example, edge cases, validation). (b) F-EC-004 and F-EC-012 consume B-05 `F-CI-015`/`F-CI-016` as `Y_eff = Y + yield_bonus`; the previous F-EC-004 expression was `batches_run = min(C, floor(available_crowns / V), floor(free_space / Y))`, and the previous F-EC-012 expression was `output = batches_run × output_per_batch`. (c) F-EC-014 consumes B-05 `F-CI-017` as `max(1, 2 − standards_bonus)` for processing only; the previous expression was `Σ_processing(C_processing × 2)`. (d) F-EC-016 publishes the `net operating income` / `net economic result` distinction. (e) F-EC-018's `operating` variable is defined to include every P3.7 obligation paid; the expression is unchanged. (f) F-EC-026/027/032's construction illustrations use the B-05 farm (120 crowns + 5 steel, book 155, payback 23) instead of the superseded placeholder (150 crowns + 10 steel + 5 gasoline, book 250, payback 36). (g) F-EC-037 publishes the grid-utilisation distinction. (h) F-EC-039 records the 30-turn reference-model measurement. All previous values and expressions are preserved in this entry. Decision: D-240/D-241/D-242/D-243; full evidence in the 14B completion report.
 
 **F-EC-045 — Validation record.** *Provisional.*
 
@@ -824,6 +851,8 @@ The register and the rulebook it serves were checked on 2026-10-24 with the repo
 | `python qa_backups/verify_economy_numbers.py` | **146/146 — `ALL CHECKS PASSED`**: recomputes the starting bundle, every base margin in §5, all 20 worked examples and this register's index from §3's constants; compares Example 5 with this register's index row and both headers with their stated revision; and fails on any stale figure |
 
 Every constant in §3 is exercised by the arithmetic script; a disagreement between this register and the rulebook is a defect. **Not run:** no formula has been executed against a database or a scheduler, and no simulation exists.
+
+**Prompt 14B (2026-11-17).** The following were executed from `docs/` after the v1.5 corrections: `verify_economy_numbers.py` (**170/170**), `14B_verify_b04_economy.py` and its self-tests, the 14A numerical-foundation validator and the controlled-contract suite, and the documentation/continuity validators. The actual output is recorded in the [Prompt 14B completion report §8](25_prompt_14B_b04_economy_completion_report.md). The protected clauses `F-EC-000b` and `F-EC-000f` are byte-identical at v1.5; the contracts and projections were not changed, and the trusted evidence hashes were refreshed after the legitimate document amendment. **Not run:** no formula has been executed against a database, a scheduler or a player; the 30-turn figures are a deterministic reference model, not a simulation.
 
 **F-EC-046 — What is not validated.** *Provisional.* (1) No formula has been executed against a database or a scheduler. (2) The examples are hand calculations, not a simulation. (3) The reference prices are accounting estimates, not observed market prices. (4) No player has played the economy. (5) The balance targets in F-EC-038/039 are unmeasured. (6) The hash function in F-EC-033 is a Stage 5 choice, not a fixed algorithm.
 

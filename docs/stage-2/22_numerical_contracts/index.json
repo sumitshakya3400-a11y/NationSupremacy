@@ -16,7 +16,7 @@
   },
   "evidence_mappings": {
     "path": "evidence_mappings.json",
-    "sha256": "a9db23618f6e67fb62d0c4b89d8b7b5e5be662591b2ffa9a4e9e16f1d3d99040"
+    "sha256": "5d3cc6300068815c1c52ce343bfc9184f9887ab5c3c721b0c4ac9969bb6b32ab"
   },
   "contracts": [
     {
@@ -119,15 +119,15 @@
   "source_documents": [
     {
       "path": "docs/stage-2/10_economic_formula_and_balance_register.md",
-      "sha256": "46950c264dfd3a42979e21fe9ea43e45067bc5ac48ee2a000b5e77420fd30d1c"
+      "sha256": "a47e468dd736234b62a4e5ffba1474c037a9589bd0741ef56ef7ed3347242018"
     },
     {
       "path": "docs/stage-2/22_formulas_and_balance.md",
-      "sha256": "959ab39b435f96fa61af0436d5af61f627d41f0d92527343829fa6640e854cb7"
+      "sha256": "25abf5e055d82ac94bb9418f157671bce32cf686c5250724ae27d05c78e67c80"
     },
     {
       "path": "docs/DECISIONS.md",
-      "sha256": "9a4087ae327a9f23a429f834544db5cc0249d2d6c2b7fbfe3c68b62df2c5c6b4"
+      "sha256": "d1a760cf0e607c626216f6d6651f24777c1b567152820b2e758bef90c930351e"
     },
     {
       "path": "docs/AUTONOMOUS_DECISION_POLICY.md",

@@ -1,9 +1,9 @@
 # B-14 — Formulas, numerical rules and balance
 
-**Version:** 1.4 (Prompt 14A-C4 final Git-status and handoff closeout) · **Created:** 2026-11-13 · **Last corrected:** 2026-11-17 · **Stage 2, Prompt 14, Subphase 14A**
-**Status:** **PROMPT 14A IS OPEN. The C4 closeout reconciles the handoff banner, the repository-wide Git status and the generated cache-file inventory. Independent verification is recorded; formal owner acceptance has not been granted and is not claimed. Prompt 14 is NOT COMPLETE. Subphases 14B–14K are NOT AUTHORIZED and NOT STARTED. No numerical value is approved, calibrated, simulated or implemented by this document.**
+**Version:** 1.5 (Prompt 14B B-04 economy reconciliation) · **Created:** 2026-11-13 · **Last corrected:** 2026-11-17 · **Stage 2, Prompt 14, Subphase 14B**
+**Status:** **PROMPT 14A IS OWNER ACCEPTED (17 November 2026). PROMPT 14B — B-04 economy, resources, income and treasury — IS COMPLETE AT THE DOCUMENTATION, NUMERICAL-ANALYSIS AND DOCUMENT-VALIDATION LEVEL.** No B-04 value was retuned; no formula was added or renumbered; the 295/393/20 counts are preserved. The standard start is not balance-accepted and no runtime exists. Subphases 14C–14K are **NOT AUTHORIZED and NOT STARTED**. No numerical value is approved, calibrated, simulated or implemented by this document.**
 
-> **Scope statement.** B-14 is the numerical architecture of Nation Supremacy: the index, reconciliation and decision-authority layer over the nine authoritative formula registers. **It is not a competing formula register.** Every expression, constant and worked example remains defined by its owning register (B-04…B-12); B-14 links to those definitions, accounts for every active identifier and records who may decide each unresolved value. Prompt 14A establishes this foundation only. Economy, production, research, trade, diplomacy, Alliance, warfare and progression calibration belong to Prompt 14B–14K and require separate owner authorization.
+> **Scope statement.** B-14 is the numerical architecture of Nation Supremacy: the index, reconciliation and decision-authority layer over the nine authoritative formula registers. **It is not a competing formula register.** Every expression, constant and worked example remains defined by its owning register (B-04…B-12); B-14 links to those definitions, accounts for every active identifier and records who may decide each unresolved value. Prompt 14A established this foundation (owner accepted 2026-11-17). Prompt 14B reconciled the B-04 economy at the documentation and numerical-analysis level (2026-11-17) without retuning a value; the remaining economy, production, research, trade, diplomacy, Alliance, warfare and progression calibration belong to Prompt 14C–14K and require separate owner authorization.
 
 **Governing policy:** [AUTONOMOUS_DECISION_POLICY.md](../AUTONOMOUS_DECISION_POLICY.md) (D-014).
 **Parent instruction:** [Prompt 14A archive](../prompts/prompt_14A_formula_inventory_numerical_architecture_and_baseline_reconciliation.md).
@@ -887,7 +887,7 @@ This section records the final, uniquely numbered closure of the semantic-valida
 
 | Subphase | Scope | Preconditions | Status |
 |---|---|---|---|
-| 14B | Economy, resources, income and treasury | 14A complete; owner authorization | **NOT AUTHORIZED** |
+| 14B | Economy, resources, income and treasury | 14A owner accepted; owner authorization 2026-11-17 | **COMPLETE at the documentation/numerical-analysis level (2026-11-17); no balance acceptance** |
 | 14C | Cities, infrastructure, production and research | 14B or parallel authorization | **NOT AUTHORIZED** |
 | 14D | Population and domestic politics | 14B/14C inputs | **NOT AUTHORIZED** |
 | 14E | Trade and markets | 14B reference prices; G-5 for fees | **NOT AUTHORIZED** |
@@ -924,8 +924,9 @@ Each subphase must re-run this validator, update the affected inventory rows and
 | 1.3 | 2026-11-17 | Prompt 14A-C3 final QA reconciliation: contract-level metadata diff with previous/proposed values and gate-derived classifications; complete 150/150 numerical self-test executed in 1m00.094s after safe memoization; accurate Git status and complete C3 file inventory; C3 closeout report; no numerical or architectural change | [log §110](06_stage_2_progress_log.md); [C3 report](../qa_backups/14A_FINAL_QA_CLOSEOUT_REPORT.md) |
 
 | 1.4 | 2026-11-17 | Prompt 14A-C4 final Git-status and handoff closeout: handoff banner reconciled to 17 November; live Git counts 17 modified tracked / 38 untracked / 55 individual / 48 display / 0 staged; audit 152/36/188 recorded as an unreproduced audit-environment observation; generated Python cache artifacts separately inventoried; no source or numerical change | [log §111](06_stage_2_progress_log.md); [precommit report](../qa_backups/14A_FINAL_PRECOMMIT_RECONCILIATION_REPORT.md) |
+| 1.5 | 2026-11-17 | Prompt 14B B-04 economy reconciliation: 47 B-04 formulas and 49 parameter records re-verified; B-06 public-service cost and B-05 research modifiers/facility upkeep adopted into B-04 (D-240/D-241); Example 4 reconciled to the B-05 farm and the `net economic result` definition published (D-242); 30-turn reference model and cross-system matrix recorded without retuning any value (D-243); 295/393/20 counts preserved; 14B validator added | [log §113](06_stage_2_progress_log.md); [14B report](25_prompt_14B_b04_economy_completion_report.md); [QA report](22_numerical_baseline_qa_report.md) |
 
-**End of B-14 v1.4 (Prompt 14A-C4 final Git-status and handoff closeout).**
+**End of B-14 v1.5 (Prompt 14B B-04 economy reconciliation).**
 
 ---
 
@@ -1066,3 +1067,33 @@ The Project X (108) audit's **152 modified / 36 untracked / 188 total / 0 staged
 **Status.** Prompt 14A remains **OPEN**; independent verification is recorded; formal owner acceptance is **PENDING and not claimed**. Prompt 14B remains **NOT AUTHORIZED / NOT STARTED**. The precommit report is [14A_FINAL_PRECOMMIT_RECONCILIATION_REPORT.md](../qa_backups/14A_FINAL_PRECOMMIT_RECONCILIATION_REPORT.md).
 
 **Exact next action:** owner review and commit of the accumulated changes, then formal acceptance or rejection of Prompt 14A; Prompt 14B remains subject to separate explicit owner authorization.
+
+---
+
+## 19. Prompt 14B — B-04 economy reconciliation status (2026-11-17)
+
+**Status:** **COMPLETE at the documentation, numerical-analysis and document-validation level.** No B-04 value was retuned; no formula was added, renumbered or retired; the 295 active identifiers, 393 parameter records and 20 B-04 worked examples are preserved. No runtime, database, scheduler or player exists.
+
+### 19.1 What was reconciled
+
+| Area | Result | Evidence |
+|---|---|---|
+| 47 active B-04 formulas | 36 executable + 11 analytical/governance identifiers reconciled against the register; F-EC-002a published as a full field table; F-EC-004/012/014 consume the B-05 modifiers; F-EC-018's `operating` defined | [14B report §2](25_prompt_14B_b04_economy_completion_report.md) |
+| 49 B-04 parameter records | every record retains `PROVISIONAL VALUE`; two metadata defects corrected (generator timing P3.7 → P3.4; unit vectors made explicit); no value promoted | [14B report §2.3](25_prompt_14B_b04_economy_completion_report.md) |
+| Starting economy | 1,500 crowns; 310 units; 600 book; 2,100 wealth; 1,690 free; standard full turn closes at **1,499** with a net economic result of **+77** | 14B Example H |
+| Four production chains | margins, power, capital and full cost re-derived; refining's actual standard-start margin is **−12**, not 0 | 14B §4.5 |
+| 11 resources | conservation identities reproduced in Examples A/G and the 30-turn model | 14B §4.7 |
+| Cross-system matrix | 35 dependency-matrix rows: 27 `VERIFIED CONSISTENT`, 4 `VERIFIED WITH DOCUMENTED LIMITATION`, 4 `CONTRADICTION IDENTIFIED`, 0 `NOT YET VERIFIED` (sum 35); separately, the 18-entry contradiction register and the 2 B-06 `OUTSIDE PROMPT 14B AUTHORITY` items are not part of the 35. | 14B §5 |
+| 20 + 8 worked examples | 20 recalculated; A–G and H added; all reproducible | 14B §6 |
+| 30-turn reference model | gross money creation fails by 24 crowns; net passes; idle fails both | 14B §4.9 |
+| Decisions | D-240…D-243 / DD-286…DD-289; no owner-reserved matter resolved | D-014 |
+
+**14B-C1 closeout note (2026-11-17).** The 49 B-04 parameter records now carry explicit D-014 **Category C** metadata in [the parameter inventory §6.1](22_numerical_parameter_inventory.md) (0 A/B/D, 0 unresolved; no value, status or source ID changed). The 35-row dependency matrix was recounted at **27 `VERIFIED CONSISTENT` / 4 `VERIFIED WITH DOCUMENTED LIMITATION` / 4 `CONTRADICTION IDENTIFIED` / 0 `NOT YET VERIFIED`**, with the 18-entry contradiction register and the 2 B-06 `OUTSIDE PROMPT 14B AUTHORITY` items kept separate. The QA report carries the 17-category evidence crosswalk (§8). The C1 corrections changed no numerical value and no formula identity.
+
+### 19.2 What was not established
+
+No balance acceptance, no playtest, no runtime validation and no economic simulation beyond the deterministic reference model. The standard start is cash-neutral (−1 crown/turn), oil is the binding input, power is overbuilt at the start, and refining is the weakest chain; these are recorded as findings, not retuned. The two external B-06 reference defects (`DMP-135` P3.7/P3.8 wording; `DMP-097a` `ECN-081` citation) remain **OUTSIDE PROMPT 14B AUTHORITY**. `UD-040` and `UD-046` remain Open.
+
+### 19.3 Next subphase
+
+Prompt 14C is **NOT AUTHORIZED**. Only the owner may authorize it.

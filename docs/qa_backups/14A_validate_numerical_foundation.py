@@ -95,8 +95,8 @@ CONST_META = {
     "B-04": {
         "3.1": ("Applied at nation creation", "Prompt 14 calibration; B-04 structure owner"),
         "3.2": ("P3.3 extraction", "Prompt 14 calibration; B-04 structure owner"),
-        "3.3": ("P3.4–P3.5 processing", "Prompt 14 calibration; B-04 structure owner"),
-        "3.4": ("P3.7 generator settlement", "Prompt 14 calibration; B-04 structure owner"),
+        "3.3": ("P3.5 processing", "Prompt 14 calibration; B-04 structure owner"),
+        "3.4": ("P3.4 power generation", "Prompt 14 calibration; B-04 structure owner"),
         "3.5": ("Read at settlement; not a per-turn change", "Prompt 14 calibration; B-04 structure owner"),
     },
     "B-05": {

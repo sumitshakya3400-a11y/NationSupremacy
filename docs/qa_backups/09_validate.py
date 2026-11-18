@@ -496,6 +496,7 @@ WORDS["two hundred and five"] = 205
 WORDS["two hundred and nineteen"] = 219
 WORDS["two hundred and thirty-six"] = 236
 WORDS["two hundred and thirty-seven"] = 237
+WORDS["two hundred and forty-three"] = 243
 m = re.search(r"holds \*\*([\w -]+?)\*\* entries", hand)
 check(bool(m) and WORDS.get(m.group(1).lower()) == len(d_ids),
       "AI_HANDOFF decision count matches the log",
@@ -530,7 +531,7 @@ check("with an **executed** validation | **0**" in trace or "executed** validati
 dd_rows = re.findall(r"^\| (DD-\d{3}) \|", dd, re.M)
 # 2026-11-11 (Prompt 13A): DD-246…DD-253 are the mirrored 13A positions, so the
 # contiguous expectation advances; the check still derives the list from the file.
-check(dd_rows == [f"DD-{i:03d}" for i in range(1, 286)], "design register carries DD-001..DD-285 contiguously", str(len(dd_rows)))
+check(dd_rows == [f"DD-{i:03d}" for i in range(1, 290)], "design register carries DD-001..DD-289 contiguously", str(len(dd_rows)))
 dd019 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-019 |")), "")
 dd033 = next((ln for ln in dd.splitlines() if ln.startswith("| DD-033 |")), "")
 check("Superseded by DD-033" in dd019 and "Approved" in dd033 and "values Provisional" in dd033,
@@ -614,13 +615,13 @@ check("Prompt 06" in ctx_handoff_row and "next action = Prompt 05" not in ctx_ha
       "AI_CONTEXT index row describes the Stage 2 handoff's current next action")
 
 hand_h = hand[hand.index("## H. Next authorized task"):hand.index("## I. Instructions")]
-check("Prompt 13D" in hand_h and not stale_next_actions(hand_h),
-      "AI_HANDOFF §H names Prompt 13D as the next task")
+check("Prompt 14B" in hand_h and not stale_next_actions(hand_h),
+      "AI_HANDOFF §H names Prompt 14B as the current task")
 s2_next = s2[s2.index("## 10. Next action"):s2.index("## 11. House rules")]
-check("Prompt 13D" in s2_next and not stale_next_actions(s2_next),
-      "Stage 2 handoff §10 names Prompt 13D as the next action")
+check("Prompt 14B" in s2_next and not stale_next_actions(s2_next),
+      "Stage 2 handoff §10 names Prompt 14B as the current action")
 log_next = log[:log.index("## 1.")] if "## 1." in log else log[:1200]
-check("Prompt 13D" in log_next, "Stage 2 progress log header names Prompt 13D")
+check("Prompt 14B" in log_next, "Stage 2 progress log header names Prompt 14B")
 
 # 15g. Prompt 02 specification (2026-10-23) ----------------------------------
 spec = read(DOCS / "stage-2" / "07_core_gameplay_loop_symbolic_world_and_turn_system.md")

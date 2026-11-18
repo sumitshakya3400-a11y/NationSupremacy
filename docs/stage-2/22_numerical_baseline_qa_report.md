@@ -607,3 +607,107 @@ They are generated artifacts, ignored by `.gitignore` (`__pycache__/`, `*.pyc`),
 **Status:** Prompt 14A remains **OPEN**; independent verification is recorded; formal owner acceptance is **PENDING and not claimed**. Prompt 14B remains **NOT AUTHORIZED / NOT STARTED**. The precommit report is [14A_FINAL_PRECOMMIT_RECONCILIATION_REPORT.md](../qa_backups/14A_FINAL_PRECOMMIT_RECONCILIATION_REPORT.md).
 
 **End of QA baseline report and C4 precommit reconciliation.**
+
+---
+
+## 7. Prompt 14B execution record (2026-11-17)
+
+**14B-C1 closeout (2026-11-17).** The 35-row matrix tally was corrected to **27/4/4/0** (the earlier 27/6/5 summary mixed matrix rows with contradiction-register entries), and the 49-record D-014 category metadata was added to [the parameter inventory §6.1](22_numerical_parameter_inventory.md). The detailed evidence crosswalk is §8 below. No value, formula identity or numerical status changed.
+
+**Scope.** Prompt 14B — B-04 economy, resources, income and treasury — reconciled the 47 active B-04 formulas and 49 B-04 parameter records, calculated the starting economy, the seven extraction chains, three generators, four recipes, maintenance, treasury, inventory, reference prices and margins, re-ran the 20 examples and added Examples A–H, built the 35-row cross-system matrix, and recorded F14B-01…F14B-20 without retuning a value. 35 dependency-matrix rows: 27 `VERIFIED CONSISTENT`, 4 `VERIFIED WITH DOCUMENTED LIMITATION`, 4 `CONTRADICTION IDENTIFIED`, 0 `NOT YET VERIFIED` (sum 35); separately, the 18-entry contradiction register and the 2 B-06 `OUTSIDE PROMPT 14B AUTHORITY` items are not part of the 35. See [25_prompt_14B_b04_economy_completion_report.md](25_prompt_14B_b04_economy_completion_report.md).
+
+**Actual results.** The 14B validator `14B_verify_b04_economy.py` passes **321/321** checks and **4/4** self-tests. `verify_economy_numbers.py` passes **170/170**. City 267/267, market, diplomacy, alliance, warfare, 09_validate 371/371, 10B 1036 checks with 73/73 negative fixtures, 11B 61/61 with 52/52 gates and 0 unresolved links, 11C PASS, 12A PASS, 12B 87/87, 12C 24/24, 13A 34/34, 13B 28/28, 13C 27/27, 13D 75/75, 14A 64 checks 0 failed, contract 9/9, contract tests 83/83, C2 security 46/46, C3 metadata 8/8, `validate_final.py` ALL CHECKS PASSED, links 0 unresolved, decision registers 12/12, next action 27/27. The four inherited failures remain: politics 878/879, 11A 29/30, 09A 941/943 and 09B 8 frozen-range problems.
+
+**Expectation advances.** The frozen register maxima in `validate_final.py`, `09_validate.py`, `12A_validate_foundations.py`, `13A`, `13B`, `test_next_action.py`, `14A_validate_numerical_foundation.py` and `verify_economy_numbers.py` were advanced to the D-243 / DD-289 / B-04 v1.5 / register v1.5 truth. No check was deleted, relaxed or converted into a warning.
+
+**Controlled contracts.** The protected clauses `F-EC-000b` and `F-EC-000f` are byte-identical; the contracts and projections were not changed. The whole-document source hashes in `index.json` and `evidence_mappings.json` were refreshed after the legitimate B-04/B-14/DECISIONS amendments; all 11 evidence mappings remain `NOT_REVIEWED`, and no human review or owner authorization is claimed.
+
+**Preservation.** 295 active formulas, 393 parameter records, 20 B-04 examples, 20 B-03 carry-ins, 11 resources, four recipes, three generators, 310 starting units, 1,500 crowns, 2,000 warehouse, 300 bp, the two-hour settlement, the four numerical statuses and every owner-reserved decision remain unchanged. No value was retuned; no formula was added, renumbered or retired.
+
+**Status.** Prompt 14A is OWNER ACCEPTED (2026-11-17). Prompt 14B is **COMPLETE at the documentation, numerical-analysis and document-validation level**, not implemented and not balance-accepted. Prompt 14C–14K remain **NOT AUTHORIZED**. No Git staging or commit was performed.
+
+---
+
+## 8. Prompt 14B — Detailed Evidence Crosswalk
+
+**Purpose.** This crosswalk maps each of the 17 required QA areas to its authoritative source, the supporting section/formula/parameter range, the completion-report section, the validator or test that exercised it, the actual result or limitation, and seven **separate** evidence dimensions. It is a navigation and traceability aid, **not** a second economic specification, and it does not collapse the dimensions into one overall PASS.
+
+### 8.1 Evidence-status vocabulary
+
+| Status | Meaning |
+|---|---|
+| `DOCUMENTED` | The rule, formula, parameter or analysis exists in an authoritative source and was checked structurally. |
+| `NUMERICALLY VALIDATED` | The arithmetic, formula or invariant was checked by an actually executed validator or test. |
+| `INTEGRATION CHECKED` | The ownership and cross-system contracts were checked against their authoritative sources. |
+| `RUNTIME VERIFIED` | The behaviour was implemented and verified in a running application. **Not used in this report.** |
+| `RUNTIME NOT VERIFIED` | No implementation, database, scheduler, API or UI exists; no runtime behaviour was observed. |
+| `MIGRATION VERIFIED` | The relevant database or data migration was implemented and verified. **Not used in this report.** |
+| `MIGRATION NOT VERIFIED` | A migration is in scope but was not implemented or verified. |
+| `BALANCE TESTED` | Economic performance and strategic interactions were evaluated with actual balance evidence. **Not used in this report.** |
+| `BALANCE NOT ACCEPTED` | The economic values are provisional and no balance acceptance is claimed. |
+| `PLAYTESTED` | Actual playtests were conducted and their results recorded. **Not used in this report.** |
+| `PLAYTESTING NOT EXECUTED` | No player, simulation or balance trial exists. |
+| `NOT APPLICABLE` | The dimension does not apply to this category or scope. |
+| `NOT YET VERIFIED` | The dimension applies but has no evidence yet. |
+
+No row claims `RUNTIME VERIFIED`, `MIGRATION VERIFIED`, `BALANCE TESTED` or `PLAYTESTED`. `NOT APPLICABLE` is used in the Migration column because Prompt 14B defines no database or data migration; a later implementation stage must replace it with `MIGRATION NOT VERIFIED` or `MIGRATION VERIFIED` if one is created. **Prompt 14B is a documentation, formula, numerical-analysis and cross-system consistency phase; it creates no runtime economy, no production database migration, no accepted balance and no gameplay test.** `NOT APPLICABLE` is a scope statement: Prompt 14B defines no database schema or migration, so there is no migration to verify; a later implementation stage must change this status if one is created.
+
+### 8.2 Source and result mapping
+
+The **Primary status** column is a short summary only. The authoritative per-dimension record is §8.3.
+
+| # | QA category | Authoritative source | Supporting section / formula / parameter range | Completion-report section | Validator / test | Result or limitation | Primary status |
+|---:|---|---|---|---|---|---|---|
+| 1 | Tax and income | B-04 rulebook; B-04 register | `ECN-094`, `ECN-146`; `F-EC-001`, `F-EC-003` | 14B §4.1 | `verify_economy_numbers.py` 170/170; `14B_verify_b04_economy.py` 321/321 | Standard 150; 100,000 people 300; 600 bp hunger 282; full starvation 105 | `NUMERICALLY VALIDATED` |
+| 2 | Resource inventory and accounting | B-04 rulebook §13; register §4.3 | `ECN-119`–`ECN-130`; `F-EC-021`–`F-EC-023`, `F-EC-028`–`F-EC-030` | 14B §4.7, §6 | `14B_verify_b04_economy.py` conservation checks | `310+106−69=347` (Example G); 11-resource deltas reconcile | `NUMERICALLY VALIDATED` |
+| 3 | Starting economy and initial parameters | B-04 §3.1; D-063; parameter inventory §6 | `ECN-121`; register §3.1; the 24 §3.1 records | 14B §3 | `14B_verify_b04_economy.py` constants and Example H checks | 310 units, 600 book, 2,100 wealth, 1,690 free, closing 1,499 | `NUMERICALLY VALIDATED` |
+| 4 | Extraction and production chains | B-04; register §3.2 | `ECN-042`/`ECN-046`/`ECN-049`/`ECN-148`; `F-EC-004`/`F-EC-005` | 14B §4.3 | `14B_verify_b04_economy.py` extraction and margin checks | Seven chains; capacity binds at the standard start; base margins +7/−1/+1/−1/+1/+1/+1 | `NUMERICALLY VALIDATED` |
+| 5 | Manufacturing and processing recipes | B-04 §10; D-046; register §3.3 | `ECN-066`–`ECN-079`; `F-EC-006`–`F-EC-012` | 14B §4.5 | `14B_verify_b04_economy.py` margin and dominance checks | Four recipes unchanged; loaded margins 0/+5/+2/+4; Example 4 155/23 | `NUMERICALLY VALIDATED` |
+| 6 | Food demand and civilian/military boundaries | B-04 §11; B-10 `F-WR-036` | `ECN-080`–`ECN-091`, `ECN-214`; `F-EC-002`, `F-EC-002a`, `F-EC-003` | 14B §4.2, §6 Examples C and F | `14B_verify_b04_economy.py` food checks | 50/100 demand; 0/600/3,000 bp; military ration separate and whole-cancelled; B-10 quantity not changed | `NUMERICALLY VALIDATED` |
+| 7 | Power demand, generation and fuel | B-04 §9; register §3.4 | `ECN-056`–`ECN-065`; `F-EC-006`, `F-EC-007`, `F-EC-008`, `F-EC-013` | 14B §4.4 | `14B_verify_b04_economy.py` power and utilisation checks | 6 GU; 2/6 used; 3.00/GU marginal vs 9.00/GU actual; fail-closed fuel | `NUMERICALLY VALIDATED` |
+| 8 | Maintenance and operating costs | B-04 `ECN-051`, `ECN-105`, `ECN-147`, `ECN-147a` | `F-EC-014`; register §3.3/§3.4 | 14B §4.6 | `14B_verify_b04_economy.py` maintenance checks; `verify_economy_numbers.py` ECN-147a block | 11-crown standard start; 1 crown pays oil; whole cancellation | `NUMERICALLY VALIDATED` |
+| 9 | Treasury, reservations, cash flow and closing balances | B-04 §12; register §4.3 | `ECN-092`–`ECN-118`, `ECN-125`–`ECN-128`; `F-EC-018`, `F-EC-019`, `F-EC-020` | 14B §4.7, Example G | `14B_verify_b04_economy.py` treasury identity | `1,500+135−11−80−10−20−30=1,484`; reservations never reduce total | `NUMERICALLY VALIDATED` |
+| 10 | Reference prices, margins and payback | Register §3.5/§5; D-058 | `F-EC-031`, `F-EC-032`, `F-EC-036`, `F-EC-037` | 14B §4.8 | `14B_verify_b04_economy.py` margin and payback checks | Gasoline 6.00, steel 6.375, aluminum 7.75, ammunition 5.60; Example 4 155/23 | `NUMERICALLY VALIDATED` |
+| 11 | Conservation and reconciliation | Register §4.3/§4.4 | `F-EC-024`, `F-EC-025`, `F-EC-026`, `F-EC-029`, `F-EC-030`, `F-EC-035` | 14B §4.7, §6 | `14B_verify_b04_economy.py` conservation checks | Resource, treasury, wealth and alliance identities in A/G and the 30-turn model | `NUMERICALLY VALIDATED` |
+| 12 | Worked economic examples A–H | 14B report §6; B-04 §20 | Examples 1–20; Examples A–H | 14B §6 | `14B_verify_b04_economy.py`; `verify_economy_numbers.py` | 28 examples reproduce; Example 4 corrected to 155/23 | `NUMERICALLY VALIDATED` |
+| 13 | Cross-system dependency matrix | 14B report §5; B-02/B-03/B-05–B-10 sources | X-01…X-35; C-01…C-18 register | 14B §5 | `14B_C1_validate_closeout.py` B-checks | 35 rows, 27/4/4/0; 18-entry register separate; 2 B-06 items outside authority | `INTEGRATION CHECKED` |
+| 14 | Parameter ownership and D-014 category metadata | Parameter inventory §6/§6.1 | 49 records; source IDs remain `None`; categories A/B/C/D | 14B §2.3; inventory §6.1 | `14B_C1_validate_closeout.py` A-checks | 49/49 Category C; 0 A/B/D; 0 unresolved; values and statuses unchanged | `DOCUMENTED` |
+| 15 | Exploit, dominance and money-creation | Register §5; 14B report §4.9/§4.10 | `F-EC-038`, `F-EC-039`; F14B-01…F14B-20 | 14B §4.9, §4.10 | `14B_verify_b04_economy.py` 30-turn checks | Gross 4,500 vs 4,476 (fails by 24); net passes; idle fails; no exploit loop; balance not accepted | `NUMERICALLY VALIDATED` |
+| 16 | Validation scripts and actual execution results | 14B report §8; this report §7 | 35 command rows | 14B §8 | `validate_final.py`; `validate_links.py`; the 14B §8.1 validators | Actual pass/fail counts in §8.1; four inherited failures preserved | `NUMERICALLY VALIDATED` |
+| 17 | Limitations and runtime/playtesting | 14B report §9; B-04 `ECN-228`; register `F-EC-046` | §9.1–§9.4 | 14B §9 | None (no runtime or playtest exists) | No implementation, simulation, player or balance acceptance; playtesting required | `DOCUMENTED` |
+
+### 8.3 Evidence-dimension matrix
+
+Every row is assessed separately for all seven dimensions. `NOT APPLICABLE` is used only where the dimension genuinely does not apply to that category or to the Prompt 14B scope.
+
+| # | QA category | Documentation | Numerical validation | Integration consistency | Runtime implementation | Migration | Gameplay balance | Playtesting |
+|---:|---|---|---|---|---|---|---|---|
+| 1 | Tax and income | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 2 | Resource inventory and accounting | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 3 | Starting economy and initial parameters | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 4 | Extraction and production chains | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 5 | Manufacturing and processing recipes | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 6 | Food demand and civilian/military boundaries | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 7 | Power demand, generation and fuel | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 8 | Maintenance and operating costs | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 9 | Treasury, reservations, cash flow and closing balances | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 10 | Reference prices, margins and payback | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 11 | Conservation and reconciliation | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 12 | Worked economic examples A–H | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 13 | Cross-system dependency matrix | `DOCUMENTED` | `NOT APPLICABLE` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `NOT APPLICABLE` | `NOT APPLICABLE` |
+| 14 | Parameter ownership and D-014 category metadata | `DOCUMENTED` | `NOT APPLICABLE` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `NOT APPLICABLE` | `NOT APPLICABLE` |
+| 15 | Exploit, dominance and money-creation | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+| 16 | Validation scripts and actual execution results | `DOCUMENTED` | `NUMERICALLY VALIDATED` | `INTEGRATION CHECKED` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `NOT APPLICABLE` | `NOT APPLICABLE` |
+| 17 | Limitations and runtime/playtesting | `DOCUMENTED` | `NOT APPLICABLE` | `NOT APPLICABLE` | `RUNTIME NOT VERIFIED` | `NOT APPLICABLE` | `BALANCE NOT ACCEPTED` | `PLAYTESTING NOT EXECUTED` |
+
+**Supporting evidence for each verified status.** The source/section/validator mapping in §8.2 is the evidence for `DOCUMENTED`, `NUMERICALLY VALIDATED` and `INTEGRATION CHECKED`. `RUNTIME NOT VERIFIED`, `NOT APPLICABLE`, `BALANCE NOT ACCEPTED` and `PLAYTESTING NOT EXECUTED` are supported by the absence of any implementation, schema, balance trial or playtest in the repository and are recorded in 14B report §9.
+
+### 8.4 Scope boundary
+
+Prompt 14B and 14B-C1/R1 do not create a runtime economy, a verified production database migration, accepted economic balance, completed gameplay testing or production readiness. No row claims any of them. A later implementation or playtest stage must add evidence and change the relevant cell rather than reinterpreting this table.
+
+## 9. Crosswalk maintenance rule
+
+The crosswalk is updated only when an authoritative section, formula ID, validator, evidence dimension or status changes. It must never be used to upgrade a documentation or arithmetic result into a runtime, migration, balance or playtesting claim. A future subphase that implements, migrates, balances or playtests a category must add that evidence explicitly rather than reinterpreting an existing row.
+
+**End of Prompt 14B execution record.**

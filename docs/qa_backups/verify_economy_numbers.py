@@ -237,13 +237,13 @@ def run_examples() -> None:
     check("Ex3 warehouse respected", total(e3["inv"]) <= WAREHOUSE, True)
 
     # Example 4 - capex versus opex.
-    check("Ex4 construction book value", capex(150, {"steel": 10, "gasoline": 5}), 250)
-    check("Ex4 treasury after capex", 1529 - 150, 1379)
+    check("Ex4 construction book value", capex(120, {"steel": 5}), 155)
+    check("Ex4 treasury after capex", 1529 - 120, 1409)
     next_turn_costs = 12 + (4 * 12) + 20 + 14 + 10 + 10 + 20
     check("Ex4 next-turn opex", next_turn_costs, 134)
     check("Ex4 next-turn net", 150 - next_turn_costs, 16)
     check("Ex4 extra batch margin", 20 - (12 + 1), 7)
-    check("Ex4 payback turns", -(-250 // 7), 36)
+    check("Ex4 payback turns", -(-155 // 7), 23)
 
     # Example 5 - reconciliation without a market fee.
     check("Ex5 closing treasury", 1529 + 150 - 121 - 150 + 50 - 30, 1428)
@@ -413,11 +413,9 @@ def check_example5_cross_document(documents: dict[Path, str]) -> None:
           "Hypothetical" in spec_market and "not adopted" in spec_market, True)
 
     # Both authoritative economic documents must report the revision they describe.
-    # B-04 v1.8 is the Prompt 09B-M documentation revision (the operational
-    # boundary moves to D-141, no purpose is currently spendable, and the ARL
-    # remains a receipt/accounting record); the formula register stays v1.3
-    # because no constant or formula changed.
-    for document, name, version in ((SPEC, "B-04", "2.0"), (REGISTER, "register", "1.4")):
+    # B-04 v2.1 and register v1.5 are the Prompt 14B reconciliation revisions
+    # (cross-system contract terms only; no constant, recipe or reference price changed).
+    for document, name, version in ((SPEC, "B-04", "2.1"), (REGISTER, "register", "1.5")):
         head = "\n".join(documents[document].splitlines()[:4])
         check(f"{name} header version", f"**Version:** {version}" in head, True)
 
@@ -440,6 +438,8 @@ DOC_TOKENS = [
     (REGISTER, "| Example | `2,000 − 310 = 1,690` |", "F-EC-023 example"),
     (REGISTER, "Wealth 2,100; 310 units", "worked example index row 1"),
     (REGISTER, "Closing 1,247; net −282; wealth +146", "worked example index row 3"),
+    (REGISTER, "Book value 155; margin 7; payback 23", "worked example index row 4 (B-05 farm)"),
+    (SPEC, "120 crowns + 5 steel", "Example 4 uses the B-05 farm catalogue cost"),
 ]
 
 STALE_TOKENS = [
@@ -454,6 +454,8 @@ STALE_TOKENS = [
     "market fee 2",
     "`FEE −2`",
     "Closing 1,426; identity holds",
+    "Book value 250; margin 7; payback 36",
+    "150 + 10×7 + 5×6 = 250",
     "+ 150 − 121 − 150 + 50 − 30 − 2",
 ]
 

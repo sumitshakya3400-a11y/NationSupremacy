@@ -242,12 +242,11 @@ class CurrentStateConsistencyTests(unittest.TestCase):
         pending = [row[0] for row in rows if row[2].strip() == "Pending"]
         self.assertEqual(pending, ["15"])
         row14 = next(row for row in rows if row[0] == "14")
-        self.assertIn("PROMPT 14A OPEN", row14[2])
-        self.assertIn("OWNER ACCEPTANCE PENDING", row14[2])
+        self.assertIn("PROMPT 14A OWNER ACCEPTED", row14[2])
+        self.assertIn("PROMPT 14B", row14[2])
         row13 = next(row for row in rows if row[0] == "13")
         self.assertIn("13D COMPLETE at the documentation level", row13[2])
-        self.assertIn("Prompt 14A is OPEN", row13[2])
-        self.assertIn("Prompt 14B is NOT AUTHORIZED", row13[2])
+        self.assertIn("Prompt 14A is OWNER ACCEPTED", row13[2])
         # A research pass must never be presented as a built interface.
         self.assertNotRegex(
             row13[2].lower(),
